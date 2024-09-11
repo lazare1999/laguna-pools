@@ -22,4 +22,4 @@ Laguna Pools is a Spring Boot application designed for pool administration and c
 Clone the repository to your local machine using Git:
 
 ```bash
-git clone https://github.com/your-username/lagunapools.git
+git clone https://github.com/your-username/laguna-pools.git
