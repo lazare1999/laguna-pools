@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+/laguna-pools-frontend/build/**
+/laguna-pools-frontend/node_modules/**

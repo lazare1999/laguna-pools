@@ -9,94 +9,99 @@ create table if not exists logs.authorise_history
     user_id        integer,
     is_success     integer,
     remote_address text,
-    column_5       integer,
-    column_6       integer,
-    column_7       integer,
-    column_8       integer,
-    column_9       integer,
     add_data       timestamp with time zone default now()
 );
 
 comment on column logs.authorise_history.is_success is '0 - success
 1 - not nuccess';
 
--- users
+-- Create the users schema
 CREATE SCHEMA users;
 
-create table if not exists users.users
+-- Users table
+CREATE TABLE IF NOT EXISTS users.users
 (
-    user_id                      serial
-        constraint users_pk
-            primary key,
-    user_name                   text,
-    user_password                text,
-    status_id                    integer   default 0,
-    column_15                    integer,
-    column_16                    integer,
-    column_17                    integer,
-    column_18                    integer,
-    column_19                    integer,
-    add_date                     timestamp default now() not null,
-    last_auth_date               timestamp
+    user_id        SERIAL PRIMARY KEY,
+    user_name      TEXT NOT NULL UNIQUE,
+    user_password  TEXT NOT NULL,
+    status_id      INTEGER DEFAULT 0,
+    login_attempts INTEGER DEFAULT 0,
+    is_locked      BOOLEAN DEFAULT FALSE,
+    created_by     TEXT,
+    updated_by     TEXT,
+    last_login_ip  TEXT,
+    add_date       TIMESTAMP DEFAULT NOW() NOT NULL,
+    last_auth_date TIMESTAMP
 );
 
-create table if not exists users.user_roles
+-- Applications table
+CREATE TABLE IF NOT EXISTS users.apps
 (
-    user_role_id serial
-        constraint user_roles_pkey
-            primary key,
-    user_id      integer                 not null,
-    target_id    integer                 not null,
-    add_date     timestamp default now() not null,
-    status_id    integer   default 0
+    id             SERIAL PRIMARY KEY,
+    app_name       TEXT NOT NULL,
+    role_target_id TEXT,
+    order_id       INTEGER,
+    browser_hash   TEXT,
+    parent_id      INTEGER
 );
 
-create unique index user_roles_users_uniq
-    on users.user_roles (user_id, target_id);
-
-create table if not exists users.targets
+-- Targets table
+CREATE TABLE IF NOT EXISTS users.targets
 (
-    target_id          serial
-        constraint targets_pkey
-            primary key,
-    target_name        text              not null,
-    target_description text,
-    app_id             integer default 0 not null,
-    order_by           integer default 0 not null,
-    group_by           text    default 0 not null
+    target_id          SERIAL PRIMARY KEY,
+    target_name        TEXT NOT NULL,
+    target_description TEXT,
+    app_id             INTEGER NOT NULL,
+    order_by           INTEGER DEFAULT 0 NOT NULL,
+    group_by           TEXT DEFAULT '0' NOT NULL,
+    CONSTRAINT fk_app FOREIGN KEY (app_id) REFERENCES users.apps (id)
 );
 
-create table if not exists users.apps
+-- User Roles table with foreign key constraints
+CREATE TABLE IF NOT EXISTS users.user_roles
 (
-    id             serial
-        constraint apps_pkey
-            primary key,
-    app_name       text,
-    role_target_id text,
-    order_id       integer,
-    browser_hash   text,
-    parent_id      integer
+    user_role_id SERIAL PRIMARY KEY,
+    user_id      INTEGER NOT NULL,
+    target_id    INTEGER NOT NULL,
+    add_date     TIMESTAMP DEFAULT NOW() NOT NULL,
+    status_id    INTEGER DEFAULT 0,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users.users (user_id),
+    CONSTRAINT fk_target FOREIGN KEY (target_id) REFERENCES users.targets (target_id)
 );
 
-create or replace view users.active_users(user_id, user_name, user_password) as
-SELECT users.user_id,
-       users.user_name,
-       users.user_password
-FROM users.users
-WHERE users.status_id = 0;
+-- Ensure uniqueness of user roles (user_id, target_id)
+CREATE UNIQUE INDEX user_roles_users_uniq
+    ON users.user_roles (user_id, target_id);
 
-create or replace view users.user_rolesv(user_name, role) as
-SELECT u.user_name,
-       t.target_name AS role
-FROM users.user_roles r,
-     users.active_users u,
-     users.targets t
-WHERE r.user_id = u.user_id
-  AND r.target_id = t.target_id;
+-- Active Users view (includes last_auth_date for more context)
+CREATE OR REPLACE VIEW users.active_users AS
+SELECT
+    u.user_id,
+    u.user_name,
+    u.user_password,
+    u.last_auth_date
+FROM users.users u
+WHERE u.status_id = 0;
 
-insert into users.apps (id, app_name, role_target_id, order_id, browser_hash, parent_id)
-values  (1, 'laguna', 'ROLE_LAGUNA', 1, 'laguna', null);
+-- User Roles View (Mapped to roles)
+CREATE OR REPLACE VIEW users.user_role_sv AS
+SELECT
+    u.user_name,
+    t.target_name AS role
+FROM
+    users.user_roles r
+        JOIN
+    users.active_users u ON r.user_id = u.user_id
+        JOIN
+    users.targets t ON r.target_id = t.target_id;
 
-insert into users.targets (target_id, target_name, target_description, app_id, order_by, group_by)
-values  (1, 'ROLE_LAGUNA', 'laguna', 1, 1, 'laguna'),
-        (2, 'ROLE_LAGUNA_ADMIN', 'laguna admin', 1, 2, 'laguna');
+-- Insert initial data into apps
+INSERT INTO users.apps (id, app_name, role_target_id, order_id, browser_hash, parent_id)
+VALUES
+    (1, 'laguna', 'ROLE_LAGUNA', 1, 'laguna', NULL);
+
+-- Insert initial data into targets
+INSERT INTO users.targets (target_id, target_name, target_description, app_id, order_by, group_by)
+VALUES
+    (1, 'ROLE_LAGUNA', 'laguna', 1, 1, 'laguna'),
+    (2, 'ROLE_LAGUNA_ADMIN', 'laguna admin', 1, 2, 'laguna');
