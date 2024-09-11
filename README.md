@@ -1,6 +1,6 @@
 # Laguna Pools
 
-Laguna Pools is a Spring Boot application designed for pool administration and customer management. The application features secure web authentication with username and password, user roles, and future database connectivity.
+Laguna Pools is a Spring Boot application designed for pool administration and customer management. The application features secure web authentication with username and password, user roles, and database connectivity.
 
 ## Features
 
@@ -22,4 +22,4 @@ Laguna Pools is a Spring Boot application designed for pool administration and c
 Clone the repository to your local machine using Git:
 
 ```bash
-git clone https://github.com/your-username/laguna-pools.git
+git clone https://github.com/lazare1999/laguna-pools.git
