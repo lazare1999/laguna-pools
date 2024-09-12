@@ -11,6 +11,8 @@ public interface MainService {
 
     ResponseEntity<Boolean> addRole(String token, Integer roleId);
 
+    ResponseEntity<Boolean> addUser(String token, AuthenticationRequest request);
+
     ResponseEntity<String> getUserName(String token);
 
     ResponseEntity<Boolean> logout(String token);

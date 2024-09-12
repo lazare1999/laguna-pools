@@ -48,7 +48,7 @@ public class MainServiceImpl implements MainService {
 
     @Override
     public ResponseEntity<Boolean> addRole(String token, Integer roleId) {
-        if (roleId==null)
+        if (roleId == null)
             return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
 
         if (!userDetailsService.checkIfRoleExists(roleId))
@@ -61,7 +61,7 @@ public class MainServiceImpl implements MainService {
 
         var userId = getCurrentApplicationUserId();
 
-        if (userId ==null || Objects.equals(userId, 0))
+        if (userId == null || Objects.equals(userId, 0))
             return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
 
         if (userDetailsService.roleIsAlreadyDefined(userId, roleId))
@@ -71,6 +71,11 @@ public class MainServiceImpl implements MainService {
             return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(true, headers, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> addUser(String token, AuthenticationRequest request) {
+        return null;
     }
 
     @Override
@@ -94,16 +99,16 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public ResponseEntity<?> createAuthenticationToken(AuthenticationRequest autRequest) throws Exception  {
+    public ResponseEntity<?> createAuthenticationToken(AuthenticationRequest autRequest) throws Exception {
         if (StringUtils.isEmpty(autRequest.getUsername()) || StringUtils.isEmpty(autRequest.getPassword()))
             return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
 
         var user = userRepository.findByUsername(autRequest.getUsername());
-        if (user ==null)
+        if (user == null)
             return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
 
         var newUser = userDetailsService.authenticateJwt(autRequest.getUsername(), encrypt(SALT, autRequest.getPassword()), Objects.equals(encrypt(SALT, autRequest.getPassword()), user.getPassword()));
-        if (newUser ==null)
+        if (newUser == null)
             return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
 
         try {

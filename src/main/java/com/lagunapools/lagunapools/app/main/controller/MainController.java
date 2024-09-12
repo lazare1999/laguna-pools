@@ -25,25 +25,32 @@ public class MainController {
     private final MainService mainService;
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
-    @RequestMapping({ "/add_role" })
+    @RequestMapping({"/add_role"})
     public ResponseEntity<Boolean> addRole(@RequestHeader("Authorization") String token, Integer roleId) {
         return mainService.addRole(token, roleId);
     }
 
+    @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
+    @RequestMapping({"/add_user"})
+    public ResponseEntity<Boolean> addUser(@RequestHeader("Authorization") String token,
+                                           AuthenticationRequest request) {
+        return mainService.addUser(token, request);
+    }
+
     @PreAuthorize("hasRole('ROLE_LAGUNA')")
-    @RequestMapping({ "/get_current_user_id" })
+    @RequestMapping({"/get_current_user_id"})
     public ResponseEntity<Integer> getCurrentUserId() {
         return new ResponseEntity<>(getCurrentApplicationUserId(), new HttpHeaders(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA')")
-    @RequestMapping({ "/get_user_name" })
+    @RequestMapping({"/get_user_name"})
     public ResponseEntity<String> getUserName(@RequestHeader("Authorization") String token) {
         return mainService.getUserName(token);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA')")
-    @RequestMapping({ "/logout_from_system" })
+    @RequestMapping({"/logout_from_system"})
     public ResponseEntity<Boolean> logout(@RequestHeader("Authorization") String token) {
         return mainService.logout(token);
     }
