@@ -1,8 +1,5 @@
 package com.lagunapools.lagunapools.app.main.models;
 
-
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
