@@ -23,9 +23,6 @@ jobs:
       - name: Build Spring Boot application with Gradle
         run: ./gradlew build
 
-      - name: List build/libs directory
-        run: ls -la build/libs
-
       - name: Run Spring Boot tests
         run: ./gradlew test
 
@@ -35,9 +32,6 @@ jobs:
           npm install
           npm run build-webpack
 
-      - name: List laguna-pools-frontend/dist directory
-        run: ls -la laguna-pools-frontend/dist
-
       - name: Run React tests
         working-directory: ./laguna-pools-frontend
         run: npm test
@@ -45,60 +39,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: spring-boot-build
-          path: build/libs/*.jar
-
-      - name: Upload React build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: react-build
-          path: laguna-pools-frontend/dist/
-
-      - name: Upload Docker Compose file
-        uses: actions/upload-artifact@v3
-        with:
-          name: docker-compose
-          path: docker/docker-compose.yaml
-
-      - name: Upload Dockerfiles
-        uses: actions/upload-artifact@v3
-        with:
-          name: dockerfiles
-          path: |
-            docker/react-frontend/Dockerfile
-            docker/spring-backend/Dockerfile
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: spring-boot-build
-          path: ./build/libs
-
-      - name: Download React build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: react-build
-          path: ./react-build
-
-      - name: Download Docker Compose file
-        uses: actions/download-artifact@v3
-        with:
-          name: docker-compose
-          path: ./docker-compose.yml
-
-      - name: Download Dockerfiles
-        uses: actions/download-artifact@v3
-        with:
-          name: dockerfiles
-          path: ./docker
 
       - name: Setup SSH Key
         run: |
@@ -106,17 +50,14 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Deploy to remote server
+      - name: Upload build artifacts via SCP
         run: |
-          scp -i ~/.ssh/id_rsa -r ./build/*.jar ubuntu@54.224.11.73:/opt/pools/docker/spring-backend
-          scp -i ~/.ssh/id_rsa -r ./react-build/* ubuntu@54.224.11.73:/opt/pools/docker/react-frontend
-          scp -i ~/.ssh/id_rsa ./docker/docker-compose.yml ubuntu@54.224.11.73:/opt/pools/docker/
-          scp -i ~/.ssh/id_rsa ./docker/react-frontend/Dockerfile ubuntu@54.224.11.73:/opt/pools/docker/react-frontend/Dockerfile
-          scp -i ~/.ssh/id_rsa ./docker/spring-backend/Dockerfile ubuntu@54.224.11.73:/opt/pools/docker/spring-backend/Dockerfile
-      - name: Restart Docker containers on remote server
+          scp -i ~/.ssh/id_rsa -r build/libs/laguna-pools-0.0.1.jar ubuntu@54.224.11.73:/opt/pools/docker/spring-backend/
+          scp -i ~/.ssh/id_rsa -r laguna-pools-frontend/dist/* ubuntu@54.224.11.73:/opt/pools/docker/react-frontend/
+          scp -i ~/.ssh/id_rsa docker/docker-compose.yml ubuntu@54.224.11.73:/opt/pools/docker/
+          scp -i ~/.ssh/id_rsa docker/react-frontend/Dockerfile ubuntu@54.224.11.73:/opt/pools/docker/react-frontend/Dockerfile
+          scp -i ~/.ssh/id_rsa docker/spring-backend/Dockerfile ubuntu@54.224.11.73:/opt/pools/docker/spring-backend/Dockerfile
+
+      - name: Restart Docker services
         run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@54.224.11.73 << 'EOF'
-            cd /opt/pools/docker
-            docker-compose down
-            docker-compose up -d
-          EOF
+          ssh -i ~/.ssh/id_rsa ubuntu@54.224.11.73 "cd /opt/pools/docker && docker compose down && docker compose up -d"
