@@ -57,6 +57,15 @@ jobs:
           name: react-build
           path: laguna-pools-frontend/dist/
 
+      - name: Upload Docker Compose and Dockerfiles
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-files
+          path: |
+            docker/docker-compose.yml
+            docker/react-frontend/Dockerfile
+            docker/spring-backend/Dockerfile
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -87,6 +96,12 @@ jobs:
         with:
           name: react-build
           path: laguna-pools-frontend/dist/
+
+      - name: Download Docker Compose and Dockerfiles
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-files
+          path: docker/
 
       - name: Upload build artifacts via SCP
         working-directory: ${{ github.workspace }}
