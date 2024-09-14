@@ -37,4 +37,6 @@ out/
 .vscode/
 
 /laguna-pools-frontend/build/**
+/laguna-pools-frontend/dist/**
 /laguna-pools-frontend/node_modules/**
+/docker/react-frontend/dist/**

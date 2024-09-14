@@ -5,31 +5,8 @@ plugins {
     id 'org.flywaydb.flyway' version '10.17.3'
 }
 
-def loadEnvFile() {
-    def envFile = file('.env')
-    if (envFile.exists()) {
-        envFile.eachLine { line ->
-            if (!line.trim().startsWith('#') && line.contains('=')) {
-                def (key, value) = line.split('=', 2).collect { it.trim() }
-                project.ext[key] = value
-            }
-        }
-    }
-}
-
-// Load environment variables
-loadEnvFile()
-
-flyway {
-    url = "jdbc:postgresql://localhost:5432/${project.hasProperty('POSTGRES_DB') ? project.POSTGRES_DB : 'default_db'}"
-    user = project.hasProperty('POSTGRES_USER') ? project.POSTGRES_USER : 'default_user'
-    password = project.hasProperty('POSTGRES_PASSWORD') ? project.POSTGRES_PASSWORD : 'default_password'
-    schemas = ['public']  // Adjust if necessary
-    locations = ['classpath:db/migration']
-}
-
 group = 'com.lagunapools'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 java {
     toolchain {
@@ -48,18 +25,22 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.flywaydb:flyway-database-postgresql'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-    implementation 'javax.persistence:javax.persistence-api'
+    implementation(
+            'org.springframework.boot:spring-boot-starter-data-jpa',
+            'org.springframework.boot:spring-boot-starter-security',
+            'org.springframework.boot:spring-boot-starter-thymeleaf',
+            'org.springframework.boot:spring-boot-starter-web',
+            'org.flywaydb:flyway-core',
+            'org.flywaydb:flyway-database-postgresql',
+            'org.thymeleaf.extras:thymeleaf-extras-springsecurity6',
+            'io.jsonwebtoken:jjwt-api:0.12.6',
+            'javax.annotation:javax.annotation-api:1.3.2'
 
+    )
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6',
+            'io.jsonwebtoken:jjwt-jackson:0.12.6'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
