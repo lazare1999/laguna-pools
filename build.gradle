@@ -33,7 +33,8 @@ dependencies {
             'org.flywaydb:flyway-core',
             'org.flywaydb:flyway-database-postgresql',
             'org.thymeleaf.extras:thymeleaf-extras-springsecurity6',
-            'io.jsonwebtoken:jjwt-api:0.12.6'
+            'io.jsonwebtoken:jjwt-api:0.12.6',
+            'javax.annotation:javax.annotation-api:1.3.2'
 
     )
     compileOnly 'org.projectlombok:lombok'
