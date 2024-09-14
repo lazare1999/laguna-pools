@@ -35,6 +35,9 @@ jobs:
           npm install
           npm run build-webpack
 
+      - name: List laguna-pools-frontend/dist directory
+        run: ls -la laguna-pools-frontend/dist
+
       - name: Run React tests
         working-directory: ./laguna-pools-frontend
         run: npm test
@@ -77,7 +80,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: spring-boot-build
-          path: ./build
+          path: ./build/libs
 
       - name: Download React build artifacts
         uses: actions/download-artifact@v3
