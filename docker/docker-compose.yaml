@@ -1,14 +1,20 @@
+networks:
+  laguna-network:
+    driver: bridge
+
 services:
   postgres:
     image: 'postgres:latest'
     container_name: laguna-pools-postgres-1
     restart: 'always'
     environment:
-      - POSTGRES_DB=laguna
-      - POSTGRES_PASSWORD=lagunaPassword
-      - POSTGRES_USER=lagunaUser
+      POSTGRES_DB: laguna
+      POSTGRES_PASSWORD: lagunaPassword
+      POSTGRES_USER: lagunaUser
     networks:
       - laguna-network
+    ports:
+      - '5432:5432'
   backend:
     container_name: laguna-pools-spring-backend-1
     restart: 'always'
@@ -29,20 +35,8 @@ services:
       - backend
     networks:
       - laguna-network
-  nginx:
-    image: 'nginx:latest'
-    container_name: laguna-pools-nginx-1
     ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - react-frontend
-    networks:
-      - laguna-network
+      - '3000:3000'
 
-networks:
-  laguna-network:
-    driver: bridge
+
 

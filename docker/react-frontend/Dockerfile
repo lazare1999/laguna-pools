@@ -1,17 +1,17 @@
-# Use a base image with Nginx
-FROM nginx:alpine
+# Use an appropriate base image
+FROM node:18-alpine
 
-# Copy the React build archive to the container
-COPY react-app.tar.gz /usr/share/nginx/html/
+# Install a simple HTTP server
+RUN npm install -g http-server
 
-# Change directory to the Nginx html directory
-WORKDIR /usr/share/nginx/html/
+# Set the working directory
+WORKDIR /usr/share/app
 
-# Extract the archive
-RUN tar -xzvf react-app.tar.gz
+# Copy the build files into the container
+COPY dist /usr/share/app
 
-# Remove the archive after extraction
-RUN rm react-app.tar.gz
+# Expose port 3000
+EXPOSE 3000
 
-# Expose port 80
-EXPOSE 80
+# Start the HTTP server
+CMD ["http-server", "-p", "3000"]
