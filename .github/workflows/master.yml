@@ -113,7 +113,7 @@ jobs:
       run: |
         scp -i ~/.ssh/id_rsa -r ./build/*.jar ubuntu@54.224.11.73:/opt/pools/docker/spring-backend
         scp -i ~/.ssh/id_rsa -r ./react-build/* ubuntu@54.224.11.73:/opt/pools/docker/react-frontend
-        scp -i ~/.ssh/id_rsa ./docker-compose.yml ubuntu@54.224.11.73:/opt/pools/docker/
+        scp -i ~/.ssh/id_rsa ./docker/docker-compose.yml ubuntu@54.224.11.73:/opt/pools/docker/
         scp -i ~/.ssh/id_rsa ./docker/react-frontend/Dockerfile ubuntu@54.224.11.73:/opt/pools/docker/react-frontend/Dockerfile
         scp -i ~/.ssh/id_rsa ./docker/spring-backend/Dockerfile ubuntu@54.224.11.73:/opt/pools/docker/spring-backend/Dockerfile
     - name: Restart Docker containers on remote server
