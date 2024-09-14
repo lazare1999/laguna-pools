@@ -57,7 +57,8 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: spring-boot-build
-        path: build/libs/laguna-pools-0.0.1.jar
+        path: build/libs/*.jar
+        if-no-files-found: warn
 
     - name: Upload React build artifacts
       uses: actions/upload-artifact@v3
