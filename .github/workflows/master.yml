@@ -58,7 +58,6 @@ jobs:
       with:
         name: spring-boot-build
         path: build/libs/*.jar
-        if-no-files-found: warn
 
     - name: Upload React build artifacts
       uses: actions/upload-artifact@v3
@@ -70,7 +69,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: docker-compose
-        path: docker/docker-compose.yml
+        path: docker/docker-compose.yaml
 
     - name: Upload Dockerfiles
       uses: actions/upload-artifact@v3
