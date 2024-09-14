@@ -50,13 +50,18 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
+      - name: Add remote server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ secrets.AWS_HOST }}" >> ~/.ssh/known_hosts
+
       - name: Upload build artifacts via SCP
         run: |
-          scp -i ~/.ssh/id_rsa -r build/libs/laguna-pools-0.0.1.jar ubuntu@54.224.11.73:/opt/pools/docker/spring-backend/
-          scp -i ~/.ssh/id_rsa -r laguna-pools-frontend/dist/* ubuntu@54.224.11.73:/opt/pools/docker/react-frontend/
-          scp -i ~/.ssh/id_rsa docker/docker-compose.yml ubuntu@54.224.11.73:/opt/pools/docker/
-          scp -i ~/.ssh/id_rsa docker/react-frontend/Dockerfile ubuntu@54.224.11.73:/opt/pools/docker/react-frontend/Dockerfile
-          scp -i ~/.ssh/id_rsa docker/spring-backend/Dockerfile ubuntu@54.224.11.73:/opt/pools/docker/spring-backend/Dockerfile
+          scp -i ~/.ssh/id_rsa -r build/libs/laguna-pools-0.0.1.jar ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/spring-backend/
+          scp -i ~/.ssh/id_rsa -r laguna-pools-frontend/dist/* ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/react-frontend/
+          scp -i ~/.ssh/id_rsa docker/docker-compose.yml ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/
+          scp -i ~/.ssh/id_rsa docker/react-frontend/Dockerfile ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/react-frontend/Dockerfile
+          scp -i ~/.ssh/id_rsa docker/spring-backend/Dockerfile ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/spring-backend/Dockerfile
 
       - name: Restart Docker services
         run: |
