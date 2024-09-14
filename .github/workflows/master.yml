@@ -45,6 +45,18 @@ jobs:
         working-directory: ./laguna-pools-frontend
         run: npm test
 
+      - name: Upload Spring Boot build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: spring-boot-build
+          path: build/libs/laguna-pools-0.0.1.jar
+
+      - name: Upload React build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-build
+          path: laguna-pools-frontend/dist/
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -64,8 +76,17 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H "${{ secrets.AWS_HOST }}" >> ~/.ssh/known_hosts
 
-      - name: List build/libs directory
-        run: ls -la build/libs
+      - name: Download Spring Boot build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: spring-boot-build
+          path: build/libs/
+
+      - name: Download React build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: react-build
+          path: laguna-pools-frontend/dist/
 
       - name: Upload build artifacts via SCP
         working-directory: ${{ github.workspace }}
