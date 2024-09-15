@@ -1,27 +1,26 @@
 import React, {useState} from 'react';
 import './App.css';
-import RegisterForm from "./components/register";
 import TopMenu from "./components/topMenu";
-import LoginForm from "./components/login";
+import ComponentMapper from "./utils/componentMapper";
+import {Component} from "./utils/componentsEnum";
+import {LOCAL_STORAGE_NAME} from "./utils/constants";
 
 function App() {
-    const [select, setSelect] = useState(0);
+    const [select, setSelect] = useState<Component>(Component.LOGIN);
 
-    const selectHandler = (n: number) => {
+    useState(() =>
+        setSelect(
+            localStorage.getItem(LOCAL_STORAGE_NAME) == "test_token" ? Component.TABLES : Component.LOGIN)
+    );
+
+    const selectHandler = (n: Component) => {
         setSelect(n);
-    }
-
-    // let token;
-    // useEffect(
-    //     () => {
-    //         token = localStorage.getItem("laguna_token") || "";
-    //     }
-    // );
+    };
 
     return (
         <div className="App">
             <TopMenu select={select} selectHandler={selectHandler}/>
-            {select == 0 ? <LoginForm/> : <RegisterForm/>}
+            <ComponentMapper selectHandler={selectHandler} componentIndex={select}/>
         </div>
     );
 }

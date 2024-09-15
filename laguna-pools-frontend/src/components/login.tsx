@@ -3,8 +3,13 @@ import {Avatar, Box, Button, Container, TextField} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Api from "../api/api";
 import PasswordField from "./passwordTextBox";
+import {LOCAL_STORAGE_NAME} from "../utils/constants";
 
-const LoginForm: React.FC = () => {
+interface LoginFormProps {
+    selectHandler: (index: number) => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
@@ -13,6 +18,9 @@ const LoginForm: React.FC = () => {
         const request = {username: username, password: password};
         console.log(request);
         Api.login(request);
+        if (localStorage.getItem(LOCAL_STORAGE_NAME) == "test_token") {
+            selectHandler(3);
+        }
     };
 
     return (
