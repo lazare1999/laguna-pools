@@ -11,16 +11,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Cache Gradle dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
@@ -46,19 +46,19 @@ jobs:
         run: npm test
 
       - name: Upload Spring Boot build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: spring-boot-build
           path: build/libs/laguna-pools-0.0.1.jar
 
       - name: Upload React build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: react-build
           path: laguna-pools-frontend/dist/
 
       - name: Upload Docker Compose and Dockerfiles
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docker-files
           path: |
@@ -72,7 +72,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup SSH Key
         run: |
@@ -86,19 +86,19 @@ jobs:
           ssh-keyscan -H "${{ secrets.AWS_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Download Spring Boot build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: spring-boot-build
           path: build/libs/
 
       - name: Download React build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: react-build
           path: laguna-pools-frontend/dist/
 
       - name: Download Docker Compose and Dockerfiles
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: docker-files
           path: docker/
@@ -115,4 +115,4 @@ jobs:
       - name: Restart Docker services
         working-directory: ${{ github.workspace }}
         run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@54.224.11.73 "cd /opt/pools/docker && docker compose down && docker compose up -d"
+          ssh -i ~/.ssh/id_rsa ubuntu@54.224.11.73 "cd /opt/pools/docker && docker compose up --detach --build --no-cache"
