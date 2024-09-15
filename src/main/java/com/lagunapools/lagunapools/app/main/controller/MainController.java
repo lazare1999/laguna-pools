@@ -65,4 +65,9 @@ public class MainController {
         return mainService.jwtViaRefreshToken(refreshToken);
     }
 
+    @RequestMapping(value = "/health_check", method = RequestMethod.GET)
+    public ResponseEntity<?> healthCheck() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

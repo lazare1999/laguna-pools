@@ -1,7 +1,9 @@
 import axios from "axios";
 
-const apiClient = axios.create({baseURL: "/api"});
-const authClient = axios.create({baseURL: "/authenticate"});
+// const apiClient = axios.create({baseURL: "/api"});
+const authClient = axios.create({
+    baseURL: "http://localhost:8080/authenticate"
+});
 
 const requestHeader = () => {
     const jwt = localStorage.getItem("laguna_token") || "";

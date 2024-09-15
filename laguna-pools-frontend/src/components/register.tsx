@@ -1,18 +1,17 @@
 import React, {useState} from 'react';
 import {Avatar, Box, Button, Container, TextField} from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Api from "../api/api";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PasswordField from "./passwordTextBox";
 
-const LoginForm: React.FC = () => {
+const RegisterForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const request = {username: username, password: password};
+        const request = {username, password};
         console.log(request);
-        Api.login(request);
+        // Api.register(request);
     };
 
     return (
@@ -26,7 +25,7 @@ const LoginForm: React.FC = () => {
                 }}
             >
                 <Avatar>
-                    <LockOutlinedIcon/>
+                    <PersonAddIcon/>
                 </Avatar>
                 <Box component="form" onSubmit={handleSubmit} sx={{mt: 1}}>
                     <TextField
@@ -45,7 +44,7 @@ const LoginForm: React.FC = () => {
                         variant="contained"
                         sx={{mt: 3, mb: 2}}
                     >
-                        Sign In
+                        Register
                     </Button>
                 </Box>
             </Box>
@@ -53,4 +52,4 @@ const LoginForm: React.FC = () => {
     );
 };
 
-export default LoginForm;
+export default RegisterForm;
