@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import TopMenu from "./components/topMenu";
+import ComponentMapper from "./utils/componentMapper";
+import {Component} from "./utils/componentsEnum";
+import {LOCAL_STORAGE_NAME} from "./utils/constants";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [select, setSelect] = useState<Component>(Component.LOGIN);
+
+    useState(() =>
+        setSelect(
+            localStorage.getItem(LOCAL_STORAGE_NAME) == "test_token" ? Component.TABLES : Component.LOGIN)
+    );
+
+    const selectHandler = (n: Component) => {
+        setSelect(n);
+    };
+
+    return (
+        <div className="App">
+            <TopMenu select={select} selectHandler={selectHandler}/>
+            <ComponentMapper selectHandler={selectHandler} componentIndex={select}/>
+        </div>
+    );
 }
 
 export default App;
