@@ -26,19 +26,19 @@ public class MainController {
     private final MainService mainService;
 
     @PreAuthorize("hasRole('ROLE_LAGUNA')")
-    @RequestMapping({"/get_current_user_id"})
+    @RequestMapping(value = "/get_current_user_id", method = RequestMethod.GET)
     public ResponseEntity<Integer> getCurrentUserId() {
         return new ResponseEntity<>(getCurrentApplicationUserId(), new HttpHeaders(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA')")
-    @RequestMapping({"/get_user_name"})
+    @RequestMapping(value = "/get_user_name", method = RequestMethod.GET)
     public ResponseEntity<String> getUserName(@RequestHeader("Authorization") String token) {
         return mainService.getUserName(token);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA')")
-    @RequestMapping({"/logout_from_system"})
+    @RequestMapping(value = "/logout_from_system", method = RequestMethod.POST)
     public ResponseEntity<Boolean> logout(@RequestHeader("Authorization") String token) {
         return mainService.logout(token);
     }
@@ -59,7 +59,7 @@ public class MainController {
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA')")
-    @RequestMapping({"/change_password"})
+    @RequestMapping(value = "/change_password", method = RequestMethod.POST)
     public ResponseEntity<Boolean> changePassword(@RequestHeader("Authorization") String token, ChangePasswordModel changePasswordModel) {
         return mainService.changePassword(token, changePasswordModel);
     }
