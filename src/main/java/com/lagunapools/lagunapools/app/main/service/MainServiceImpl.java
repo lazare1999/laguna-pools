@@ -2,7 +2,6 @@ package com.lagunapools.lagunapools.app.main.service;
 
 import com.lagunapools.lagunapools.app.main.models.AuthenticationRequest;
 import com.lagunapools.lagunapools.app.main.models.AuthenticationResponse;
-import com.lagunapools.lagunapools.app.main.models.ChangePasswordModel;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
@@ -12,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 import static com.lagunapools.lagunapools.utils.EncryptUtils.encrypt;
+import static com.lagunapools.lagunapools.utils.ResponseUtils.*;
 
 /**
  * Created by Lazo on 9/12/24
@@ -34,8 +32,6 @@ import static com.lagunapools.lagunapools.utils.EncryptUtils.encrypt;
 public class MainServiceImpl implements MainService {
 
     private static final Logger logger = LoggerFactory.getLogger(MainServiceImpl.class);
-
-    HttpHeaders headers = new HttpHeaders();
 
     private final UserRepository userRepository;
     private final UsersRepository usersRepository;
@@ -54,9 +50,9 @@ public class MainServiceImpl implements MainService {
         var userName = jwtTokenUtils.getUserNameViaToken(token);
 
         if (StringUtils.isEmpty(userName))
-            return new ResponseEntity<>("", headers, HttpStatus.BAD_REQUEST);
+            return badRequestResponse("");
 
-        return new ResponseEntity<>(userName, headers, HttpStatus.OK);
+        return okResponse(userName);
     }
 
     @Override
@@ -64,34 +60,34 @@ public class MainServiceImpl implements MainService {
         var userName = jwtTokenUtils.getUserNameViaToken(token);
 
         if (StringUtils.isEmpty(userName))
-            return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
+            return badRequestResponse(false);
 
-        return new ResponseEntity<>(true, headers, HttpStatus.OK);
+        return okResponse(true);
     }
 
     @Override
     public ResponseEntity<?> createAuthenticationToken(AuthenticationRequest autRequest) throws Exception {
         if (StringUtils.isEmpty(autRequest.getUsername()) || StringUtils.isEmpty(autRequest.getPassword()))
-            return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
+            return badRequestResponse("");
 
         var user = userRepository.findByUsername(autRequest.getUsername());
         if (user == null)
-            return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
+            return badRequestResponse("No User found with username " + autRequest.getUsername());
 
         var u = usersRepository.findByUserId(user.getUserId());
 
         if (u == null) {
-            return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
+            return badRequestResponse("");
         }
 
         Integer maxLoginAttempts = 3;
         if (u.getIsLocked() || Objects.equals(maxLoginAttempts, u.getLoginAttempts())) {
-            return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.LOCKED);
+            return lockedResponse("User is locked. Contact Administrator.");
         }
 
         Authentication newUser = userDetailsService.authenticateJwt(maxLoginAttempts, u, autRequest.getUsername(), encrypt(SALT, autRequest.getPassword()), Objects.equals(encrypt(SALT, autRequest.getPassword()), user.getPassword()));
         if (newUser == null)
-            return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.FORBIDDEN);
+            return forbiddenResponse("Wrong password.");
 
         try {
             authenticateManager.authenticate(newUser);
@@ -104,7 +100,7 @@ public class MainServiceImpl implements MainService {
 
         final AuthenticationResponse jwt = jwtTokenUtils.generateToken(userDetails);
 
-        return new ResponseEntity<>(jwt, headers, HttpStatus.OK);
+        return okResponse(jwt);
     }
 
     @Override
@@ -113,7 +109,7 @@ public class MainServiceImpl implements MainService {
         if (StringUtils.isNotEmpty(refreshToken)) {
             try {
                 if (jwtTokenUtils.extractAccessTokenStatus(refreshToken))
-                    return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
+                    return badRequestResponse("");
                 userName = jwtTokenUtils.extractUsername(refreshToken);
             } catch (Exception e) {
                 logger.error("An error occurred", e);
@@ -121,34 +117,13 @@ public class MainServiceImpl implements MainService {
         }
 
         if (userName == null)
-            return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
+            return badRequestResponse("");
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
 
         final AuthenticationResponse jwt = jwtTokenUtils.generateToken(userDetails);
 
-        return new ResponseEntity<>(jwt, headers, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Boolean> changePassword(String token, ChangePasswordModel changePasswordModel) {
-        var userName = jwtTokenUtils.getUserNameViaToken(token);
-
-        if (StringUtils.isEmpty(userName))
-            return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
-
-        var user = usersRepository.findByUserName(userName);
-
-        if (user == null)
-            return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
-
-        if (!Objects.equals(user.getUserPassword(), encrypt(SALT, changePasswordModel.getOldPassword())))
-            return new ResponseEntity<>(false, headers, HttpStatus.OK);
-
-        user.setUserPassword(encrypt(SALT, changePasswordModel.getNewPassword()));
-        usersRepository.save(user);
-
-        return new ResponseEntity<>(true, headers, HttpStatus.OK);
+        return okResponse(jwt);
     }
 
 }

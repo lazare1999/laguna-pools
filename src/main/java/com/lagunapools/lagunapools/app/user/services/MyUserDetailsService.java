@@ -187,12 +187,12 @@ public class MyUserDetailsService implements UserDetailsService {
 
     private void lockUserAccount(UsersDomain u) {
         u.setIsLocked(true);
-        usersRepository.saveAndFlush(u);
+        usersRepository.save(u);
     }
 
     private void incrementLoginAttempts(UsersDomain u, int currentAttempts) {
         u.setLoginAttempts(currentAttempts + 1);
-        usersRepository.saveAndFlush(u);
+        usersRepository.save(u);
     }
 
 
