@@ -34,8 +34,9 @@ dependencies {
             'org.flywaydb:flyway-database-postgresql',
             'org.thymeleaf.extras:thymeleaf-extras-springsecurity6',
             'io.jsonwebtoken:jjwt-api:0.12.6',
-            'org.jetbrains:annotations:24.1.0'
-
+            'org.jetbrains:annotations:24.1.0',
+            'org.springframework.boot:spring-boot-starter-jdbc',
+            'org.springframework.boot:spring-boot-starter-data-redis:3.3.3'
 
     )
     compileOnly 'org.projectlombok:lombok'
