@@ -33,13 +33,19 @@ public class UsersDomain {
     @Column(name = "status_id")
     private Integer statusId;
 
+    @Column(name = "login_attempts")
+    private Integer loginAttempts;
+
+    @Column(name = "is_locked")
+    private Boolean isLocked;
+
     @Column(name = "last_login_ip")
     private String lastLoginIp;
 
     @Column(name = "add_date")
-    private LocalDateTime add_date;
+    private LocalDateTime addDate;
 
     @Column(name = "last_auth_date")
-    private LocalDateTime last_auth_date;
+    private LocalDateTime lastAuthDate;
 
 }

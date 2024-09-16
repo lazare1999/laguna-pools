@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -77,9 +78,20 @@ public class MainServiceImpl implements MainService {
         if (user == null)
             return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
 
-        var newUser = userDetailsService.authenticateJwt(autRequest.getUsername(), encrypt(SALT, autRequest.getPassword()), Objects.equals(encrypt(SALT, autRequest.getPassword()), user.getPassword()));
+        var u = usersRepository.findByUserId(user.getUserId());
+
+        if (u == null) {
+            return null;
+        }
+
+        Integer maxLoginAttempts = 3;
+        if (u.getIsLocked() || Objects.equals(maxLoginAttempts, u.getLoginAttempts())) {
+            return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.LOCKED);
+        }
+
+        Authentication newUser = userDetailsService.authenticateJwt(maxLoginAttempts, u, autRequest.getUsername(), encrypt(SALT, autRequest.getPassword()), Objects.equals(encrypt(SALT, autRequest.getPassword()), user.getPassword()));
         if (newUser == null)
-            return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.FORBIDDEN);
 
         try {
             authenticateManager.authenticate(newUser);

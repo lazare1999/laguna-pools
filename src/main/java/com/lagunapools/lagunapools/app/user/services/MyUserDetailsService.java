@@ -1,10 +1,15 @@
 package com.lagunapools.lagunapools.app.user.services;
 
 import com.lagunapools.lagunapools.app.user.domains.AppUser;
+import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
+import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.security.ApplicationUser;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,12 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import jakarta.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Optional;
 
 /**
  * Created by Lazo on 9/11/24
@@ -36,6 +38,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     private static final Logger logger = LoggerFactory.getLogger(MyUserDetailsService.class);
     private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
     @Getter
     private JdbcTemplate jdbcTemplate;
@@ -64,7 +67,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     private Integer loadUserData(String username) {
         List<Integer> ans = getJdbcTemplate().query(usersByUsernameQuery, (rs, rowNum) -> rs.getInt(1), username);
-        return ans.isEmpty() ? 0 : ans.get(0) ;
+        return ans.isEmpty() ? 0 : ans.get(0);
     }
 
     protected JdbcTemplate createJdbcTemplate(DataSource dataSource) {
@@ -90,7 +93,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
 
         Integer userId = this.loadUserData(username);
-        if(userId == 0){
+        if (userId == 0) {
             return null;
         }
 
@@ -107,7 +110,7 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     public Boolean checkIfRoleExists(Integer roleId) {
-        if (roleId==null)
+        if (roleId == null)
             return false;
 
         List<Integer> ans = getJdbcTemplate().query(getRole, (rs, rowNum) -> rs.getInt(1), roleId);
@@ -116,7 +119,7 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     public Boolean roleIsAlreadyDefined(Integer userId, Integer roleId) {
-        if (userId ==null || roleId==null)
+        if (userId == null || roleId == null)
             return false;
 
         List<Integer> ans = getJdbcTemplate().query(getRoleIdQuery, (rs, rowNum) -> rs.getInt(1), userId, roleId);
@@ -125,7 +128,7 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     public Boolean addRole(Integer userId, Integer roleId) {
-        if (userId ==null || roleId==null)
+        if (userId == null || roleId == null)
             return false;
 
         String sql = "INSERT INTO users.user_roles(user_id, target_id) VALUES (?, ?);";
@@ -148,7 +151,7 @@ public class MyUserDetailsService implements UserDetailsService {
         return remoteAddr;
     }
 
-    public Authentication authenticateJwt(String userName, String password, boolean success) throws AuthenticationException {
+    public Authentication authenticateJwt(Integer maxLoginAttempts, UsersDomain u, String userName, String password, boolean success) throws AuthenticationException {
         String remoteAddress = null;
         ServletRequestAttributes ra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (ra != null) {
@@ -156,11 +159,20 @@ public class MyUserDetailsService implements UserDetailsService {
         }
 
         Integer userId = this.loadUserData(userName);
-        if(userId == 0){
+        if (userId == 0) {
             return null;
         }
 
-        if(!success) {
+        if (!success) {
+            int loginAttempts = Optional.ofNullable(u.getLoginAttempts()).orElse(0);
+
+            if (loginAttempts >= maxLoginAttempts) {
+                lockUserAccount(u);
+                return null;
+            } else {
+                incrementLoginAttempts(u, loginAttempts);
+            }
+
             logAuthorise(userId, 0, remoteAddress);
             return null;
         }
@@ -172,5 +184,16 @@ public class MyUserDetailsService implements UserDetailsService {
 
         return new UsernamePasswordAuthenticationToken(appUser, password, grantedAuths);
     }
+
+    private void lockUserAccount(UsersDomain u) {
+        u.setIsLocked(true);
+        usersRepository.saveAndFlush(u);
+    }
+
+    private void incrementLoginAttempts(UsersDomain u, int currentAttempts) {
+        u.setLoginAttempts(currentAttempts + 1);
+        usersRepository.saveAndFlush(u);
+    }
+
 
 }
