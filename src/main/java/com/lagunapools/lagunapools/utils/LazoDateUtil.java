@@ -1,7 +1,7 @@
 package com.lagunapools.lagunapools.utils;
 
-import io.micrometer.common.lang.Nullable;
 import io.micrometer.common.util.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,7 +20,6 @@ import java.util.Objects;
 public class LazoDateUtil {
 
     private final static String DATE_FORMAT = "yyyy-MM-dd";
-    public final static String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @Nullable
     public static Date stringToDate(String date) {
@@ -61,11 +60,13 @@ public class LazoDateUtil {
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     public static boolean isValidDate(String dateString) {
-        if (StringUtils.isEmpty(dateString)) { return false; }
+        if (StringUtils.isEmpty(dateString)) {
+            return false;
+        }
         try {
             DateFormat df = new SimpleDateFormat(DATE_FORMAT);
             df.setLenient(false);
@@ -78,10 +79,6 @@ public class LazoDateUtil {
 
     public static String dateToString(Date date) {
         return dateToString(date, "yyyy-MM-dd");
-    }
-
-    public static String dateTimeToString(Date date) {
-        return dateToString(date, "yyyy-MM-dd HH:MM:ss");
     }
 
     public static String dateToString(Date date, String format) {
@@ -155,7 +152,9 @@ public class LazoDateUtil {
     }
 
     public static LocalDate dateToLocalDate(Date date) {
-        if (date == null) {return null;}
+        if (date == null) {
+            return null;
+        }
         return LocalDate.parse(dateToString(date));
     }
 

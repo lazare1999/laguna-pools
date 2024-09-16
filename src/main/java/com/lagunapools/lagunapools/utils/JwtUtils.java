@@ -24,10 +24,14 @@ import java.util.function.Function;
 public class JwtUtils {
 
     @Value("${jwt.secret}")
-    private String SECRET_KEY;
+    private String JWT_SECRET_KEY;
 
     public static Long EXPIRES_IN_MILLIS = 300_000L;
-    public static Long REFRESH_EXPIRES_IN_MILLIS = 60000*60L;
+    public static Long REFRESH_EXPIRES_IN_MILLIS = 60000 * 60L;
+
+    public JwtUtils(@Value("${jwt.secret}") String jwtSecretKey) {
+        this.JWT_SECRET_KEY = jwtSecretKey;
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -49,7 +53,7 @@ public class JwtUtils {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY)))
+                .verifyWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(JWT_SECRET_KEY)))
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -70,14 +74,14 @@ public class JwtUtils {
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-            return Jwts
-                    .builder()
-                    .claims(claims)
-                    .subject(subject)
-                    .issuedAt(new Date(System.currentTimeMillis()))
-                    .expiration(new Date(System.currentTimeMillis() + EXPIRES_IN_MILLIS))
-                    .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY)), Jwts.SIG.HS512)
-                    .compact();
+        return Jwts
+                .builder()
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + EXPIRES_IN_MILLIS))
+                .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(JWT_SECRET_KEY)), Jwts.SIG.HS512)
+                .compact();
 
     }
 
@@ -88,7 +92,7 @@ public class JwtUtils {
                 .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRES_IN_MILLIS))
-                .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY)), Jwts.SIG.HS512)
+                .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(JWT_SECRET_KEY)), Jwts.SIG.HS512)
                 .compact();
     }
 
