@@ -92,7 +92,7 @@ const ClientsTable: React.FC = () => {
                         alignItems: "center",
                     }}
                 >
-                    New User
+                    New Client
                 </Button>
             </Box>
             <TableContainer>

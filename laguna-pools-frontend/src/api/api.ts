@@ -20,7 +20,7 @@ class Api {
         //         password: request.password,
         //     },
         //     requestHeader()
-        // );
+        // )
     };
 
     static register = (request: { username: string; password: string }) => {

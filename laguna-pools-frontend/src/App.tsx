@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import './App.css';
-import TopMenu from "./components/topMenu";
 import ComponentMapper from "./utils/componentMapper";
 import {Component} from "./utils/componentsEnum";
 import {LOCAL_STORAGE_NAME} from "./utils/constants";
+import isSignedIn from "./utils/genericUtils";
+import TopMenu from "./components/topMenu";
 
-function App() {
+const App = () => {
     const [select, setSelect] = useState<Component>(Component.LOGIN);
 
     useState(() =>
@@ -19,7 +20,7 @@ function App() {
 
     return (
         <div className="App">
-            <TopMenu select={select} selectHandler={selectHandler}/>
+            {isSignedIn() && <TopMenu selectHandler={selectHandler}/>}
             <ComponentMapper selectHandler={selectHandler} componentIndex={select}/>
         </div>
     );
