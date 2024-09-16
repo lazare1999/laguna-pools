@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -15,8 +18,12 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(schema = "users", name = "users")
-public class UsersDomain {
+public class UsersDomain implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 2L;
 
     @Id
     @Column(name = "user_id")
@@ -39,6 +46,12 @@ public class UsersDomain {
     @Column(name = "is_locked")
     private Boolean isLocked;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
     @Column(name = "last_login_ip")
     private String lastLoginIp;
 
@@ -47,5 +60,12 @@ public class UsersDomain {
 
     @Column(name = "last_auth_date")
     private LocalDateTime lastAuthDate;
+
+    public UsersDomain(String userName, String userPassword, String createdBy, String updatedBy) {
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+    }
 
 }
