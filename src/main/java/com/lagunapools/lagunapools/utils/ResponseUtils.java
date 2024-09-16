@@ -18,14 +18,6 @@ public class ResponseUtils {
         return createResponse(body, HttpStatus.BAD_REQUEST);
     }
 
-    public static <T> ResponseEntity<T> notFoundResponse(T body) {
-        return createResponse(body, HttpStatus.NOT_FOUND);
-    }
-
-    public static <T> ResponseEntity<T> internalServerErrorResponse(T body) {
-        return createResponse(body, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     public static <T> ResponseEntity<T> okResponse(T body) {
         return createResponse(body, HttpStatus.OK);
     }
