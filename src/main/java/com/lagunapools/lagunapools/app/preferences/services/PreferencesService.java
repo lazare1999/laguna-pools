@@ -1,0 +1,8 @@
+package com.lagunapools.lagunapools.app.preferences.services;
+
+import com.lagunapools.lagunapools.app.main.models.ChangePasswordModel;
+import org.springframework.http.ResponseEntity;
+
+public interface PreferencesService {
+    ResponseEntity<?> changePassword(String token, ChangePasswordModel changePasswordModel);
+}
