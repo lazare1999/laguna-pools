@@ -1,6 +1,7 @@
 package com.lagunapools.lagunapools.app.main.service;
 
 import com.lagunapools.lagunapools.app.main.models.AuthenticationRequest;
+import com.lagunapools.lagunapools.app.main.models.ChangePasswordModel;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -9,10 +10,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface MainService {
 
-    ResponseEntity<Boolean> addRole(String token, Integer roleId);
-
-    ResponseEntity<Boolean> addUser(String token, AuthenticationRequest request);
-
     ResponseEntity<String> getUserName(String token);
 
     ResponseEntity<Boolean> logout(String token);
@@ -20,5 +17,7 @@ public interface MainService {
     ResponseEntity<?> createAuthenticationToken(AuthenticationRequest autRequest) throws Exception;
 
     ResponseEntity<?> jwtViaRefreshToken(String refreshToken);
+
+    ResponseEntity<Boolean> changePassword(String token, ChangePasswordModel changePasswordModel);
 
 }

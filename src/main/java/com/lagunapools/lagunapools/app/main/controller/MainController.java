@@ -1,6 +1,7 @@
 package com.lagunapools.lagunapools.app.main.controller;
 
 import com.lagunapools.lagunapools.app.main.models.AuthenticationRequest;
+import com.lagunapools.lagunapools.app.main.models.ChangePasswordModel;
 import com.lagunapools.lagunapools.app.main.service.MainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -23,19 +24,6 @@ import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationU
 public class MainController {
 
     private final MainService mainService;
-
-    @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
-    @RequestMapping({"/add_role"})
-    public ResponseEntity<Boolean> addRole(@RequestHeader("Authorization") String token, Integer roleId) {
-        return mainService.addRole(token, roleId);
-    }
-
-    @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
-    @RequestMapping({"/add_user"})
-    public ResponseEntity<Boolean> addUser(@RequestHeader("Authorization") String token,
-                                           AuthenticationRequest request) {
-        return mainService.addUser(token, request);
-    }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA')")
     @RequestMapping({"/get_current_user_id"})
@@ -70,4 +58,9 @@ public class MainController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_LAGUNA')")
+    @RequestMapping({"/change_password"})
+    public ResponseEntity<Boolean> changePassword(@RequestHeader("Authorization") String token, ChangePasswordModel changePasswordModel) {
+        return mainService.changePassword(token, changePasswordModel);
+    }
 }

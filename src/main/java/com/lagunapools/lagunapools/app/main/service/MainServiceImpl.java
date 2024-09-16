@@ -2,7 +2,9 @@ package com.lagunapools.lagunapools.app.main.service;
 
 import com.lagunapools.lagunapools.app.main.models.AuthenticationRequest;
 import com.lagunapools.lagunapools.app.main.models.AuthenticationResponse;
+import com.lagunapools.lagunapools.app.main.models.ChangePasswordModel;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
+import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
 import com.lagunapools.lagunapools.utils.JwtUtils;
 import io.micrometer.common.util.StringUtils;
@@ -21,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 import static com.lagunapools.lagunapools.utils.EncryptUtils.encrypt;
-import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUserId;
 
 /**
  * Created by Lazo on 9/12/24
@@ -36,6 +37,7 @@ public class MainServiceImpl implements MainService {
     HttpHeaders headers = new HttpHeaders();
 
     private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
     private final AuthenticationManager authenticateManager;
 
@@ -45,38 +47,6 @@ public class MainServiceImpl implements MainService {
 
     @Value("${salt}")
     private String SALT;
-
-    @Override
-    public ResponseEntity<Boolean> addRole(String token, Integer roleId) {
-        if (roleId == null)
-            return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
-
-        if (!userDetailsService.checkIfRoleExists(roleId))
-            return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
-
-        var userName = jwtTokenUtils.getUserNameViaToken(token);
-
-        if (StringUtils.isEmpty(userName))
-            return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
-
-        var userId = getCurrentApplicationUserId();
-
-        if (userId == null || Objects.equals(userId, 0))
-            return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
-
-        if (userDetailsService.roleIsAlreadyDefined(userId, roleId))
-            return new ResponseEntity<>(true, headers, HttpStatus.OK);
-
-        if (!userDetailsService.addRole(userId, roleId))
-            return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
-
-        return new ResponseEntity<>(true, headers, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Boolean> addUser(String token, AuthenticationRequest request) {
-        return null;
-    }
 
     @Override
     public ResponseEntity<String> getUserName(String token) {
@@ -146,6 +116,27 @@ public class MainServiceImpl implements MainService {
         final AuthenticationResponse jwt = jwtTokenUtils.generateToken(userDetails);
 
         return new ResponseEntity<>(jwt, headers, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> changePassword(String token, ChangePasswordModel changePasswordModel) {
+        var userName = jwtTokenUtils.getUserNameViaToken(token);
+
+        if (StringUtils.isEmpty(userName))
+            return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
+
+        var user = usersRepository.findByUserName(userName);
+
+        if (user == null)
+            return new ResponseEntity<>(false, headers, HttpStatus.BAD_REQUEST);
+
+        if (!Objects.equals(user.getUserPassword(), encrypt(SALT, changePasswordModel.getOldPassword())))
+            return new ResponseEntity<>(false, headers, HttpStatus.OK);
+
+        user.setUserPassword(encrypt(SALT, changePasswordModel.getNewPassword()));
+        usersRepository.save(user);
+
+        return new ResponseEntity<>(true, headers, HttpStatus.OK);
     }
 
 }

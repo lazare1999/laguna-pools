@@ -25,13 +25,16 @@ public class UsersDomain {
     private Long userId;
 
     @Column(name = "user_name")
-    private String lastName;
+    private String userName;
 
     @Column(name = "user_password")
     private String userPassword;
 
     @Column(name = "status_id")
     private Integer statusId;
+
+    @Column(name = "last_login_ip")
+    private String lastLoginIp;
 
     @Column(name = "add_date")
     private LocalDateTime add_date;

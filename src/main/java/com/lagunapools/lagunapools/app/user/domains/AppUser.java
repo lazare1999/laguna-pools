@@ -29,4 +29,6 @@ public class AppUser {
     @Column(name = "user_password")
     private String password;
 
+    @Column(name = "last_auth_date")
+    private String lastAuthDate;
 }

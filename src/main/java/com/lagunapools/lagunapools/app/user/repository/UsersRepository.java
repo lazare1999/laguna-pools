@@ -10,4 +10,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface UsersRepository extends JpaRepository<UsersDomain, Long>, JpaSpecificationExecutor<UsersDomain> {
 
+    UsersDomain findByUserName(String userName);
+
+    UsersDomain findByUserId(Long userId);
+
 }
