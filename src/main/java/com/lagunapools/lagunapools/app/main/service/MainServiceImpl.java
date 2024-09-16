@@ -81,7 +81,7 @@ public class MainServiceImpl implements MainService {
         var u = usersRepository.findByUserId(user.getUserId());
 
         if (u == null) {
-            return null;
+            return new ResponseEntity<>("".toCharArray(), headers, HttpStatus.BAD_REQUEST);
         }
 
         Integer maxLoginAttempts = 3;
