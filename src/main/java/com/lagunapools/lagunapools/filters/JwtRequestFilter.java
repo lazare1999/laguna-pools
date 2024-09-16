@@ -2,6 +2,10 @@ package com.lagunapools.lagunapools.filters;
 
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
 import com.lagunapools.lagunapools.utils.JwtUtils;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,11 +15,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Created by Lazo on 9/12/24
@@ -41,7 +42,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             try {
-                if (!jwtUtils.extractAccessTokenStatus(jwt)) {
+                if (Objects.equals(jwtUtils.extractAccessTokenStatus(jwt), null) || !jwtUtils.extractAccessTokenStatus(jwt)) {
                     return;
                 }
 
