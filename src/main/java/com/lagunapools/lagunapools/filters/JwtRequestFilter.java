@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * Created by Lazo on 9/12/24
@@ -42,7 +41,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             try {
-                if (Objects.equals(jwtUtils.extractAccessTokenStatus(jwt), null) || !jwtUtils.extractAccessTokenStatus(jwt)) {
+                if (!jwtUtils.extractAccessTokenStatus(jwt)) {
                     return;
                 }
 
