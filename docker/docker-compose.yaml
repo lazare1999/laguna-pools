@@ -37,6 +37,14 @@ services:
       - laguna-network
     ports:
       - '3000:3000'
+  redis:
+    image: 'redis:latest'
+    container_name: laguna-pools-redis-1
+    restart: 'always'
+    networks:
+      - laguna-network
+    ports:
+      - '6379:6379'
 
 
 

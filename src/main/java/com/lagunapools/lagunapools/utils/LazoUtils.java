@@ -1,6 +1,5 @@
 package com.lagunapools.lagunapools.utils;
 
-import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.security.ApplicationUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -18,8 +17,6 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class LazoUtils {
-
-    private final UsersRepository usersRepository;
 
     public static <T> T mostCommonListValue(List<T> list) {
         if (list.isEmpty())
@@ -56,6 +53,5 @@ public class LazoUtils {
     public static Sort getSortDesc(String s) {
         return Sort.by(new Sort.Order(Sort.Direction.DESC, s));
     }
-
 
 }

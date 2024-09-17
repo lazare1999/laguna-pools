@@ -7,6 +7,10 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * Created by Lazo on 2024-09-11
@@ -16,8 +20,12 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Entity
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(schema = "users", name = "active_users")
-public class AppUser {
+public class AppUser implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "user_id")
@@ -29,4 +37,6 @@ public class AppUser {
     @Column(name = "user_password")
     private String password;
 
+    @Column(name = "last_auth_date")
+    private String lastAuthDate;
 }
