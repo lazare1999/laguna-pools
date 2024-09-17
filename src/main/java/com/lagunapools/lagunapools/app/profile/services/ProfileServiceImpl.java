@@ -1,10 +1,9 @@
 package com.lagunapools.lagunapools.app.profile.services;
 
 
-import com.lagunapools.lagunapools.app.main.models.ChangePasswordModel;
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
+import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
 import com.lagunapools.lagunapools.utils.JwtUtils;
-import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 import static com.lagunapools.lagunapools.utils.EncryptUtils.encrypt;
+import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUserId;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.badRequestResponse;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
 
@@ -32,21 +32,18 @@ public class ProfileServiceImpl implements ProfileService {
     private String SALT;
 
     @Override
-    public ResponseEntity<?> changePassword(String token, ChangePasswordModel changePasswordModel) {
-        var userName = jwtTokenUtils.getUserNameViaToken(token);
+    public ResponseEntity<?> changePassword(ChangePasswordModel changePasswordModel) {
 
-        if (StringUtils.isEmpty(userName))
-            return badRequestResponse("Username not found");
+        var user = usersRepository.findByUserId(Long.valueOf(getCurrentApplicationUserId()));
 
-        var user = usersRepository.findByUserName(userName);
-
-        if (user == null)
+        if (Objects.isNull(user))
             return badRequestResponse("User not found");
 
         if (!Objects.equals(user.getUserPassword(), encrypt(SALT, changePasswordModel.getOldPassword())))
             return badRequestResponse("Old password does not match");
 
         user.setUserPassword(encrypt(SALT, changePasswordModel.getNewPassword()));
+        user.setUpdatedBy(user.getUserName());
         usersRepository.save(user);
 
         return okResponse(true);
