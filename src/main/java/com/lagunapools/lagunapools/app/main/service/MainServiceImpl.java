@@ -68,7 +68,7 @@ public class MainServiceImpl implements MainService {
     @Override
     public ResponseEntity<?> createAuthenticationToken(AuthenticationRequest autRequest) throws Exception {
         if (StringUtils.isEmpty(autRequest.getUsername()) || StringUtils.isEmpty(autRequest.getPassword()))
-            return badRequestResponse("");
+            return badRequestResponse("1");
 
         var user = userRepository.findByUsername(autRequest.getUsername());
         if (user == null)
@@ -77,7 +77,7 @@ public class MainServiceImpl implements MainService {
         var u = usersRepository.findByUserId(user.getUserId());
 
         if (u == null) {
-            return badRequestResponse("");
+            return badRequestResponse("2");
         }
 
         Integer maxLoginAttempts = 3;
