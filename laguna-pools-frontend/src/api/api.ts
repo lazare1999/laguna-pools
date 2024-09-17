@@ -2,7 +2,7 @@ import axios from "axios";
 import {LOCAL_STORAGE_NAME} from "../utils/constants";
 
 const authClient = axios.create({
-    baseURL: "http://localhost:8080/authenticate",
+    baseURL: "backend:8080/authenticate",
 });
 
 const requestHeader = () => {

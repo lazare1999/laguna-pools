@@ -2,7 +2,7 @@ import axios from "axios";
 import {AuthenticationResponse} from "./authenticateResponse";
 
 const authClient = axios.create({
-    baseURL: "http://localhost:8080/",
+    baseURL: "backend:8080/",
 });
 
 const auth = new AuthenticationResponse({
