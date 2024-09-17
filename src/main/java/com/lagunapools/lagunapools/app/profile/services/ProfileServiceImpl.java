@@ -3,7 +3,6 @@ package com.lagunapools.lagunapools.app.profile.services;
 
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
-import com.lagunapools.lagunapools.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +24,6 @@ import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
 public class ProfileServiceImpl implements ProfileService {
 
     private final UsersRepository usersRepository;
-
-    private final JwtUtils jwtTokenUtils;
 
     @Value("${salt}")
     private String SALT;
