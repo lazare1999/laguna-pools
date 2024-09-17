@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import {FilterList} from "@mui/icons-material";
-import UserRow from "./userRow";
+import ClientRow from "./clientRow";
 import {initialUsers, User} from "../utils/mockUsers";
 import AddUserDialog from "./addUserDialog";
 
@@ -110,7 +110,7 @@ const ClientsTable: React.FC = () => {
                     </TableHead>
                     <TableBody>
                         {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
-                            <UserRow onDelete={handleDelete} key={index} user={user}/>
+                            <ClientRow onDelete={handleDelete} key={index} user={user}/>
                         ))}
                     </TableBody>
                 </Table>
