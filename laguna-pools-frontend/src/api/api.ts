@@ -2,7 +2,7 @@ import axios from "axios";
 import {LOCAL_STORAGE_NAME} from "../utils/constants";
 
 const authClient = axios.create({
-    baseURL: "https://laguna.lazarekvirtia.com/api/",
+    baseURL: "http://backend:8080",
 });
 
 const requestHeader = () => {

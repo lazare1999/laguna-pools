@@ -15,4 +15,10 @@ import lombok.Setter;
 public class AddRemoveRoleModel {
     private Integer roleId;
     private Long userId;
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
 }
