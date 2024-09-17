@@ -2,6 +2,9 @@ package com.lagunapools.lagunapools.utils;
 
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,16 +12,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Created by Lazo on 9/16/24
  */
 
+@SpringBootTest
+@ActiveProfiles("test")
 public class EncryptUtilsTest {
+
+    @Value("${salt}")
+    private String SALT;
+
     @Test
     public void testEncrypt() {
-        // Arrange
-        String salt = "somesalt";
         String passwordToHash = "123";
-        String expectedHash = "d74987729ee0d7f4aac61ddcaff5c43a897aa2cd97a9473c83dfd3bc9be2828f969c8e38ed3893d4029d276c171148e4289638413e7ed46ffde2211062189c92";
+        String expectedHash = "40700b4f6fe3475335e59af7930b8ae78efc1910762bf8c3d777d13df2882e9fcf88f030e061b02c236d6e7492ce905312bb796bb0a10c7f4329c280a9694fde";
 
         // Act
-        String actualHash = EncryptUtils.encrypt(salt, passwordToHash);
+        String actualHash = EncryptUtils.encrypt(SALT, passwordToHash);
 
         // Assert
         assertEquals(expectedHash, actualHash);

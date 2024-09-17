@@ -15,6 +15,8 @@ services:
       - laguna-network
     ports:
       - '5432:5432'
+    volumes:
+      - /data/laguna/postgres/data:/var/lib/postgresql/data
   backend:
     container_name: laguna-pools-spring-backend-1
     restart: 'always'
@@ -26,6 +28,8 @@ services:
       - postgres
     networks:
       - laguna-network
+    ports:
+      - '8080:8080'
   frontend:
     build:
       context: react-frontend
@@ -37,6 +41,16 @@ services:
       - laguna-network
     ports:
       - '3000:3000'
+  redis:
+    image: 'redis:latest'
+    container_name: laguna-pools-redis-1
+    restart: 'always'
+    networks:
+      - laguna-network
+    ports:
+      - '6379:6379'
+    volumes:
+      - /data/laguna/redis/data:/data
 
 
 
