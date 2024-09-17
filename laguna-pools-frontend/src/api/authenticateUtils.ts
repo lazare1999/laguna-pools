@@ -2,7 +2,14 @@ import axios from "axios";
 import {AuthenticationResponse} from "./authenticateResponse";
 
 const authClient = axios.create({
-    baseURL: "https://laguna.lazarekvirtia.com/api/",
+    baseURL: "http://backend:8080",
+    headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        // Include other headers as needed
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE, PUT',
+        'Access-Control-Allow-Headers': 'Authorization, Content-Type'
+    },
 });
 
 const auth = new AuthenticationResponse({
@@ -90,8 +97,7 @@ class AuthenticateUtils {
 
         try {
             await authClient.post(
-                `authenticate/?username=${username}&password=${password}`,
-                {}
+                `authenticate?username=${username}&password=${password}`
             ).then(res => {
                 console.log(res)
                 localStorage.setItem("laguna_username", username);
