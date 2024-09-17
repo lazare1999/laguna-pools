@@ -95,11 +95,12 @@ class AuthenticateUtils {
             );
 
             localStorage.setItem("laguna_username", username);
-
+            console.log(res);
             if (res.status === 200) {
                 await this.updateRefreshTokenLocal(res.data);
                 return true;
             }
+
         } catch (e) {
             return false;
         }
