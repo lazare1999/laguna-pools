@@ -1,46 +1,68 @@
-import React, {useEffect, useState} from 'react';
-import {AppBar, Box, Button, Grid, Toolbar, Typography} from '@mui/material';
+import React, {useState} from 'react';
+import {AppBar, Box, Button, Menu, MenuItem, Toolbar} from '@mui/material';
+import {ExitToApp, PersonAddAlt, TableChart} from '@mui/icons-material';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import PeopleIcon from '@mui/icons-material/People';
+import {Component} from '../utils/componentsEnum';
 import {LOCAL_STORAGE_NAME} from "../utils/constants";
-import {Component} from "../utils/componentsEnum";
-import componentNameMapper from "../utils/componentNameMapper";
 
 interface TopMenuProps {
-    select: number;
     selectHandler: (value: number) => void;
 }
 
-const TopMenu: React.FC<TopMenuProps> = ({select, selectHandler}) => {
-    const [token, setToken] = useState<string | null>(null);
+const TopMenu: React.FC<TopMenuProps> = ({selectHandler}) => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
 
-    useEffect(() => {
-        const storedToken = localStorage.getItem(LOCAL_STORAGE_NAME);
-        setToken(storedToken);
-    }, []);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const logOutHandler = () => {
+        localStorage.removeItem(LOCAL_STORAGE_NAME);
+        selectHandler(Component.LOGIN);
+    }
 
     return (
         <AppBar position="static">
             <Toolbar>
-                <Grid container alignItems="center">
-                    <Grid item xs={2}>
-                        <Box>
-                            {token !== "test_token" &&
-                                <Button color="inherit" onClick={() => selectHandler(Component.LOGIN)}>Login</Button>}
-                            {token !== "test_token" &&
-                                <Button color="inherit" onClick={() => selectHandler(Component.REGISTER)}>Sign
-                                    Up</Button>}
-                            {token === "test_token" &&
-                                <Button color="inherit" onClick={() => selectHandler(Component.TABLES)}>Tables</Button>}
-                        </Box>
-                    </Grid>
-
-                    <Grid item xs={8} container justifyContent="center">
-                        <Typography variant="h6" component="div">
-                            {componentNameMapper(select)}
-                        </Typography>
-                    </Grid>
-
-                    <Grid item xs={2}/>
-                </Grid>
+                <Button
+                    aria-controls={open ? 'users-menu' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleClick}
+                    color="inherit"
+                    startIcon={<PeopleAltIcon/>}
+                >
+                    Users
+                </Button>
+                <Menu
+                    id="users-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                >
+                    <MenuItem onClick={handleClose}>
+                        <Button color="inherit" startIcon={<PersonAddAlt/>}>New User</Button>
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                        <Button color="inherit" startIcon={<PeopleIcon/>}>Users List</Button>
+                    </MenuItem>
+                </Menu>
+                <Button color="inherit" startIcon={<TableChart/>} onClick={() => selectHandler(Component.TABLES)}>
+                    Tables
+                </Button>
+                <Box sx={{flexGrow: 1}}/>
+                <Button
+                    color="inherit"
+                    startIcon={<ExitToApp/>}
+                    onClick={() => logOutHandler()}
+                >
+                    Log out
+                </Button>
             </Toolbar>
         </AppBar>
     );
