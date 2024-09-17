@@ -3,13 +3,9 @@ package com.lagunapools.lagunapools.app.main.controller;
 import com.lagunapools.lagunapools.app.main.models.AuthenticationRequest;
 import com.lagunapools.lagunapools.app.main.service.MainService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUserId;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
@@ -20,6 +16,7 @@ import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class MainController {
 
     private final MainService mainService;
@@ -54,7 +51,7 @@ public class MainController {
 
     @GetMapping(value = "/health_check")
     public ResponseEntity<?> healthCheck() {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return okResponse("Good Health Check");
     }
 
 }
