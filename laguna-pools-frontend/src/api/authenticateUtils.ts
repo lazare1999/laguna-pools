@@ -89,18 +89,17 @@ class AuthenticateUtils {
         if (!username || !password) return false;
 
         try {
-            const res = await authClient.post(
+            await authClient.post(
                 `authenticate/?username=${username}&password=${password}`,
                 {}
-            );
-
-            localStorage.setItem("laguna_username", username);
-            console.log(res);
-            if (res.status === 200) {
-                await this.updateRefreshTokenLocal(res.data);
-                return true;
-            }
-
+            ).then(res => {
+                console.log(res)
+                localStorage.setItem("laguna_username", username);
+                if (res.status === 200) {
+                    this.updateRefreshTokenLocal(res.data);
+                    return true;
+                }
+            });
         } catch (e) {
             return false;
         }
