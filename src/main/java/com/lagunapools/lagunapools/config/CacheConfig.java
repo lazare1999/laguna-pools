@@ -36,24 +36,26 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10)); // Sets default TTL to 10 minutes
+                .entryTtl(Duration.ofMinutes(10));
 
-        // Custom configuration for specific caches
         var activeUsersCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(5)); // Example TTL for "activeUsersCache"
+                .entryTtl(Duration.ofMinutes(15));
 
-        // Custom configurations for specific caches
+        var allUsersCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(15));
+
         var usersByUsernameCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(1)); // Custom TTL for "usersByUsername"
+                .entryTtl(Duration.ofHours(1));
 
         var usersByIdCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(1)); // Custom TTL for "usersById"
+                .entryTtl(Duration.ofHours(1));
 
         var appUsersByUsernameCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(1)); // Custom TTL for "usersById"
+                .entryTtl(Duration.ofHours(1));
 
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
         cacheConfigurations.put("activeUsersCache", activeUsersCacheConfig);
+        cacheConfigurations.put("allUsersCache", allUsersCacheConfig);
         cacheConfigurations.put("usersByUsername", usersByUsernameCacheConfig);
         cacheConfigurations.put("usersById", usersByIdCacheConfig);
         cacheConfigurations.put("appUsersByUsername", appUsersByUsernameCacheConfig);

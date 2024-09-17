@@ -6,6 +6,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface UserRolesRepository extends JpaRepository<UserRolesDomain, Long>, JpaSpecificationExecutor<UserRolesDomain> {
 
-    UserRolesDomain findByUserId(long userId);
-
 }

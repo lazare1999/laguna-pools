@@ -46,11 +46,12 @@ public class MyUserDetailsService implements UserDetailsService {
     private static final String authoritiesByUsernameQuery = "select user_name, role from users.user_role_sv where user_name=?";
     private static final String usersByUsernameQuery = "select user_id from users.active_users where user_name=?";
     private static final String getRoleIdQuery = "select user_role_id from users.user_roles where user_id=? and target_id=?";
+    private static final String removeRoleByIdQuery = "delete from users.user_roles where user_id=? and target_id=?";
     private static final String getRole = "select target_id from users.targets where target_id=?";
 
-    private void updateLastAuthorisedTime(Integer userId) {
-        String sql = "UPDATE users.users SET  last_auth_date=now() WHERE user_id=?";
-        getJdbcTemplate().update(sql, userId);
+    private void updateLastAuthorisedTime(Integer userId, String lastLoginIp) {
+        String sql = "UPDATE users.users SET last_auth_date = now(), last_login_ip = ? WHERE user_id = ?";
+        getJdbcTemplate().update(sql, lastLoginIp, userId);
     }
 
     private void logAuthorise(Integer userId, Integer is_success, String remote_address) {
@@ -127,7 +128,19 @@ public class MyUserDetailsService implements UserDetailsService {
         return !ans.isEmpty();
     }
 
-    public Boolean addRole(Integer userId, Integer roleId) {
+    public Boolean removeRoleByUserIdAndRoleId(Integer userId, Integer roleId) {
+
+        List<Integer> ans = getJdbcTemplate().query(getRoleIdQuery, (rs, rowNum) -> rs.getInt(1), userId, roleId);
+
+        if (ans.isEmpty())
+            return false;
+
+        int rowsAffected = getJdbcTemplate().update(removeRoleByIdQuery, userId, roleId);
+
+        return rowsAffected > 0;
+    }
+
+    public Boolean addRole(Long userId, Integer roleId) {
         if (userId == null || roleId == null)
             return false;
 
@@ -179,7 +192,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         List<GrantedAuthority> grantedAuths = this.loadUserAuthorities(userName);
         ApplicationUser appUser = new ApplicationUser(userId, userName, password, true, true, true, true, grantedAuths);
-        updateLastAuthorisedTime(userId);
+        updateLastAuthorisedTime(userId, remoteAddress);
         logAuthorise(userId, 1, remoteAddress);
 
         return new UsernamePasswordAuthenticationToken(appUser, password, grantedAuths);
