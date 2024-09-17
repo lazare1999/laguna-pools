@@ -115,4 +115,4 @@ jobs:
       - name: Restart Docker services
         working-directory: ${{ github.workspace }}
         run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@54.224.11.73 "cd /opt/pools/docker && docker compose down && docker compose up --build"
+          ssh -i ~/.ssh/id_rsa ubuntu@54.224.11.73 "cd /opt/pools/docker && docker compose down && docker compose up --build -d"
