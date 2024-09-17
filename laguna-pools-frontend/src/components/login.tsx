@@ -19,7 +19,10 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
         console.log(request);
 
         AuthenticateUtils.authenticate(username, password)
-            .then(() => selectHandler(Component.TABLES))
+            .then((r) => {
+                console.log(r);
+                selectHandler(Component.TABLES);
+            })
             .catch(e => console.error(e));
     };
 
