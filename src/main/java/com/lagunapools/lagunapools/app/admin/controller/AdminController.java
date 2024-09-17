@@ -12,7 +12,6 @@ import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,14 +36,14 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping(value = "/active_users")
-    @Cacheable(value = "activeUsersCache")
+//    @Cacheable(value = "activeUsersCache", key = "#model.toString()")
     public List<AppUser> listActiveUsers(ActiveUsersSearchModel model) {
         return adminSearchService.listActiveUsers(model);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping(value = "/all_users")
-    @Cacheable(value = "allUsersCache")
+//    @Cacheable(value = "allUsersCache")
     public List<UsersDomain> listAllUsers(UsersSearchModel model) {
         return adminSearchService.listAllUsers(model);
     }

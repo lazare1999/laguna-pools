@@ -8,9 +8,9 @@ import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.utils.LazoUtils;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class AdminSearchServiceImpl implements AdminSearchService {
 
 
     @Override
-    @Cacheable(value = "activeUsersCache")
+//    @Cacheable(value = "activeUsersCache", key = "#activeUsersSearchModel.toString()")
     public List<AppUser> listActiveUsers(ActiveUsersSearchModel activeUsersSearchModel) {
         if (Objects.isNull(activeUsersSearchModel)
                 || activeUsersSearchModel.getPageKey() == null
@@ -46,8 +46,8 @@ public class AdminSearchServiceImpl implements AdminSearchService {
         var page = userRepository.findAll((root, query, builder) -> {
             Predicate predicate = builder.conjunction();
 
-            if (activeUsersSearchModel.getUserName() != null) {
-                predicate = builder.and(predicate, builder.like(root.get("userName"), "%" + activeUsersSearchModel.getUserName() + "%"));
+            if (StringUtils.isNotEmpty(activeUsersSearchModel.getUserName())) {
+                predicate = builder.and(predicate, builder.like(root.get("username"), "%" + activeUsersSearchModel.getUserName() + "%"));
             }
 
             if (activeUsersSearchModel.getUserId() != null) {
@@ -72,7 +72,7 @@ public class AdminSearchServiceImpl implements AdminSearchService {
     }
 
     @Override
-    @Cacheable(value = "allUsersCache")
+//    @Cacheable(value = "allUsersCache")
     public List<UsersDomain> listAllUsers(UsersSearchModel usersSearchModel) {
 
         if (Objects.isNull(usersSearchModel)
