@@ -16,4 +16,10 @@ public class ChangePasswordModel {
     private Long changePasswordCandidateUserId;
     private String oldPassword;
     private String newPassword;
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
 }

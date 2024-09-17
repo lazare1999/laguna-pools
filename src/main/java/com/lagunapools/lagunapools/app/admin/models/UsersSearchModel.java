@@ -31,4 +31,10 @@ public class UsersSearchModel implements Serializable {
     private LocalDateTime addDateTo;
     private LocalDateTime lastAuthDateFrom;
     private LocalDateTime lastAuthDateTo;
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
 }
