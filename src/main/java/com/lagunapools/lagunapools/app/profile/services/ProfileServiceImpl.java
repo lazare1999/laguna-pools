@@ -1,4 +1,4 @@
-package com.lagunapools.lagunapools.app.preferences.services;
+package com.lagunapools.lagunapools.app.profile.services;
 
 
 import com.lagunapools.lagunapools.app.main.models.ChangePasswordModel;
@@ -22,7 +22,7 @@ import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
 
 @Service
 @RequiredArgsConstructor
-public class PreferencesServiceImpl implements PreferencesService {
+public class ProfileServiceImpl implements ProfileService {
 
     private final UsersRepository usersRepository;
 

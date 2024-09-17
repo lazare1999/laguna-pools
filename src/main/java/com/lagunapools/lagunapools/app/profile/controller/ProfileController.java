@@ -1,8 +1,8 @@
-package com.lagunapools.lagunapools.app.preferences.controller;
+package com.lagunapools.lagunapools.app.profile.controller;
 
 
 import com.lagunapools.lagunapools.app.main.models.ChangePasswordModel;
-import com.lagunapools.lagunapools.app.preferences.services.PreferencesService;
+import com.lagunapools.lagunapools.app.profile.services.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("preferences")
+@RequestMapping("profile")
 @RequiredArgsConstructor
-public class PreferencesController {
+public class ProfileController {
 
-    private final PreferencesService preferencesService;
+    private final ProfileService profileService;
 
     @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA_CHANGE_PASSWORD')")
     @PostMapping(value = "/change_password")
     public ResponseEntity<?> changePassword(@RequestHeader("Authorization") String token, ChangePasswordModel changePasswordModel) {
-        return preferencesService.changePassword(token, changePasswordModel);
+        return profileService.changePassword(token, changePasswordModel);
     }
 
 }
