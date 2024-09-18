@@ -4,7 +4,7 @@ import {ExitToApp, PersonAddAlt, TableChart} from '@mui/icons-material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import PeopleIcon from '@mui/icons-material/People';
 import {Component} from '../utils/componentsEnum';
-import {LOCAL_STORAGE_NAME} from "../utils/constants";
+import {REFRESH_TOKEN_EXP_NAME, REFRESH_TOKEN_NAME} from "../utils/constants";
 
 interface TopMenuProps {
     selectHandler: (value: number) => void;
@@ -23,7 +23,8 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler}) => {
     };
 
     const logOutHandler = () => {
-        localStorage.removeItem(LOCAL_STORAGE_NAME);
+        localStorage.removeItem(REFRESH_TOKEN_NAME);
+        localStorage.removeItem(REFRESH_TOKEN_EXP_NAME);
         selectHandler(Component.LOGIN);
     }
 

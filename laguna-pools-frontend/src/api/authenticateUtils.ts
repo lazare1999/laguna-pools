@@ -1,5 +1,6 @@
 import axios from "axios";
 import {AuthenticationResponse} from "./authenticateResponse";
+import {REFRESH_TOKEN_EXP_NAME, REFRESH_TOKEN_NAME} from "../utils/constants";
 
 const authClient = axios.create({
     baseURL: "https://laguna.lazarekvirtia.com/api/",
@@ -48,8 +49,8 @@ class AuthenticateUtils {
     };
 
     static getJwtViaRefreshTokenFromLocalStorage = async () => {
-        const refreshToken = localStorage.getItem("refresh_token");
-        const refreshTokenExpiresIn = localStorage.getItem("refresh_token_expires_in");
+        const refreshToken = localStorage.getItem(REFRESH_TOKEN_NAME);
+        const refreshTokenExpiresIn = localStorage.getItem(REFRESH_TOKEN_EXP_NAME);
 
         if (!refreshToken || !refreshTokenExpiresIn) return null;
 
@@ -115,8 +116,8 @@ class AuthenticateUtils {
 
     static updateRefreshTokenLocal = async (res: any) => {
         auth.update(res);
-        localStorage.setItem("refresh_token", auth.refreshToken!);
-        localStorage.setItem("refresh_token_expires_in", auth.refreshExpiresIn!.toString());
+        localStorage.setItem(REFRESH_TOKEN_NAME, auth.refreshToken!);
+        localStorage.setItem(REFRESH_TOKEN_EXP_NAME, auth.refreshExpiresIn!.toString());
     };
 }
 
