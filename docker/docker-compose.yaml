@@ -17,6 +17,22 @@ services:
       - '5432:5432'
     volumes:
       - /data/laguna/postgres/data:/var/lib/postgresql/data
+  nginx:
+    image: 'nginx:latest'
+    restart: 'always'
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt/live/laguna.lazarekvirtia.com:/etc/letsencrypt/live/laguna.lazarekvirtia.com:ro  # Mount SSL certificates
+      - /etc/letsencrypt/options-ssl-nginx.conf:/etc/letsencrypt/options-ssl-nginx.conf:ro                # Mount SSL options
+      - /etc/letsencrypt/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem:ro                            # Mount DH params
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - laguna-network
+    depends_on:
+      - spring-backend
+      - react-frontend
   backend:
     container_name: laguna-pools-spring-backend-1
     restart: 'always'
@@ -39,8 +55,8 @@ services:
       - backend
     networks:
       - laguna-network
-    ports:
-      - '3000:3000'
+  #    ports:
+  #      - '3000:3000'
   redis:
     image: 'redis:latest'
     container_name: laguna-pools-redis-1
