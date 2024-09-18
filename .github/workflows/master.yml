@@ -55,7 +55,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: laguna-pools-frontend/dist/
+          path: |
+            laguna-pools-frontend/dist/
+            laguna-pools-frontend/public/
 
       - name: Upload Docker Compose and Dockerfiles
         uses: actions/upload-artifact@v4
@@ -96,7 +98,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: react-build
-          path: laguna-pools-frontend/dist/
+          path: |
+            laguna-pools-frontend/dist/
+            laguna-pools-frontend/public/
 
       - name: Download Docker Compose and Dockerfiles
         uses: actions/download-artifact@v4
@@ -109,6 +113,7 @@ jobs:
         run: |
           scp -i ~/.ssh/id_rsa -r build/libs/laguna-pools-0.0.1.jar ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/spring-backend/
           scp -i ~/.ssh/id_rsa -r laguna-pools-frontend/dist/* ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/react-frontend/dist/
+          scp -i ~/.ssh/id_rsa -r laguna-pools-frontend/public/* ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/react-frontend/public/
           scp -i ~/.ssh/id_rsa docker/docker-compose.yaml ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/
           scp -i ~/.ssh/id_rsa docker/nginx.conf ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/
           scp -i ~/.ssh/id_rsa docker/react-frontend/Dockerfile ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/react-frontend/Dockerfile
