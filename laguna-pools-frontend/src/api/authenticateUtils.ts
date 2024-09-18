@@ -112,14 +112,6 @@ class AuthenticateUtils {
         return false;
     };
 
-    static fetchHealthCheck = async () => {
-        try {
-            const response = await authClient.get('health_check');
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error fetching health check:', error);
-        }
-    };
 
     static updateRefreshTokenLocal = async (res: any) => {
         auth.update(res);

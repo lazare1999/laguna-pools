@@ -1,13 +1,21 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import ComponentMapper from "./utils/componentMapper";
 import {Component} from "./utils/componentsEnum";
 import {LOCAL_STORAGE_NAME} from "./utils/constants";
-import isSignedIn from "./utils/genericUtils";
 import TopMenu from "./components/topMenu";
 
 const App = () => {
     const [select, setSelect] = useState<Component>(Component.LOGIN);
+    const [openSessionWindow, setOpenSessionWindow] = useState(false);
+
+    useEffect(() => {
+        const expDate = localStorage.getItem("refresh_token_expires_in");
+        const expirationTime = expDate ? parseInt(expDate, 10) : null;
+        const isLoggedIn = expirationTime !== null && expirationTime > Date.now();
+        console.log("exp time: " + expirationTime + "\nnow: " + Date.now());
+        setOpenSessionWindow(isLoggedIn);
+    }, [select])
 
     useState(() =>
         setSelect(
@@ -20,7 +28,7 @@ const App = () => {
 
     return (
         <div className="App">
-            {isSignedIn() && <TopMenu selectHandler={selectHandler}/>}
+            {openSessionWindow && <TopMenu selectHandler={selectHandler}/>}
             <ComponentMapper selectHandler={selectHandler} componentIndex={select}/>
         </div>
     );
