@@ -38,4 +38,9 @@ public class UserRolesDomain {
     @Column(name = "status_id")
     private Integer statusId;
 
+    public UserRolesDomain(Long userId, Integer targetId) {
+        this.userId = userId;
+        this.targetId = targetId;
+    }
+
 }

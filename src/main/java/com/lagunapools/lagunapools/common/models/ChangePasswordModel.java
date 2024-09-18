@@ -1,4 +1,4 @@
-package com.lagunapools.lagunapools.app.main.models;
+package com.lagunapools.lagunapools.common.models;
 
 
 import lombok.Getter;
@@ -13,7 +13,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ChangePasswordModel {
-    private Long userId;
+    private Long changePasswordCandidateUserId;
     private String oldPassword;
     private String newPassword;
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
 }

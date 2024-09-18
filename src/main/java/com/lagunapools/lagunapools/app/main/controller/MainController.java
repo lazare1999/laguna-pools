@@ -3,7 +3,6 @@ package com.lagunapools.lagunapools.app.main.controller;
 import com.lagunapools.lagunapools.app.main.models.AuthenticationRequest;
 import com.lagunapools.lagunapools.app.main.service.MainService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +53,7 @@ public class MainController {
 
     @GetMapping(value = "/health_check")
     public ResponseEntity<?> healthCheck() {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return okResponse("Good Health Check\n");
     }
 
 }

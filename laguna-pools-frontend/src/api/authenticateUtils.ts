@@ -2,7 +2,12 @@ import axios from "axios";
 import {AuthenticationResponse} from "./authenticateResponse";
 
 const authClient = axios.create({
-    baseURL: "http://localhost:8080/",
+    baseURL: "https://laguna.lazarekvirtia.com/api/",
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'User-Agent': 'whatever',
+    },
 });
 
 const auth = new AuthenticationResponse({
@@ -89,22 +94,31 @@ class AuthenticateUtils {
         if (!username || !password) return false;
 
         try {
-            const res = await authClient.post(
-                `authenticate/?username=${username}&password=${password}`,
-                {}
-            );
-
-            localStorage.setItem("laguna_username", username);
-
-            if (res.status === 200) {
-                await this.updateRefreshTokenLocal(res.data);
-                return true;
-            }
+            console.log("HERE");
+            await authClient.post(
+                `authenticate?username=${username}&password=${password}`
+            ).then(res => {
+                console.log(res)
+                localStorage.setItem("laguna_username", username);
+                if (res.status === 200) {
+                    this.updateRefreshTokenLocal(res.data);
+                    return true;
+                }
+            });
         } catch (e) {
             return false;
         }
 
         return false;
+    };
+
+    static fetchHealthCheck = async () => {
+        try {
+            const response = await authClient.get('health_check');
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching health check:', error);
+        }
     };
 
     static updateRefreshTokenLocal = async (res: any) => {

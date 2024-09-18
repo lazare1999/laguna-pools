@@ -4,7 +4,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PasswordField from "./passwordTextBox";
 import {LOCAL_STORAGE_NAME} from "../utils/constants";
 import {Component} from "../utils/componentsEnum";
-import Api from "../api/api";
+import authenticateUtils from "../api/authenticateUtils";
 
 interface LoginFormProps {
     selectHandler: (select: Component) => void;
@@ -19,7 +19,7 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
         const request = {username: username, password: password};
         console.log(request);
 
-        Api.login({username, password})
+        authenticateUtils.authenticate(username, password)
             .then(() => selectHandler(Component.CLIENTS_TABLE))
             .catch(e => console.error(e));
 

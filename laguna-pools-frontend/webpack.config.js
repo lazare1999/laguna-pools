@@ -1,7 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+    optimization: {
+        usedExports: true,
+        minimize: true,
+        minimizer: [new TerserPlugin()],
+    },
     entry: './src/index.tsx', // Your main TypeScript entry point
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -37,6 +44,14 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './public/index.html', // Your HTML template
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {from: 'public/favicon.ico', to: 'favicon.ico'},
+                {from: 'public/manifest.json', to: 'manifest.json'},
+                {from: 'public/logo192.png', to: 'logo192.png'},
+                {from: 'public/logo512.png', to: 'logo512.png'},
+            ],
         }),
     ],
     mode: 'production',
