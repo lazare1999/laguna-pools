@@ -6,17 +6,19 @@ import {REFRESH_TOKEN_EXP_NAME} from "./utils/constants";
 import TopMenu from "./components/topMenu";
 
 const App = () => {
-    const [select, setSelect] = useState<Component>(Component.LOGIN);
+    const expDate = localStorage.getItem(REFRESH_TOKEN_EXP_NAME);
+    const expirationTime = expDate ? parseInt(expDate, 10) : null;
+    const isLoggedIn = expirationTime !== null && expirationTime > Date.now();
+    const [select, setSelect] = useState<Component>(isLoggedIn ? Component.CLIENTS_TABLE : Component.LOGIN);
     const [openSessionWindow, setOpenSessionWindow] = useState(false);
 
     useEffect(() => {
         const expDate = localStorage.getItem(REFRESH_TOKEN_EXP_NAME);
         const expirationTime = expDate ? parseInt(expDate, 10) : null;
         const isLoggedIn = expirationTime !== null && expirationTime > Date.now();
-        console.log("exp time: " + expirationTime + "\nnow: " + Date.now());
         setOpenSessionWindow(isLoggedIn);
-        if (isLoggedIn) setSelect(Component.CLIENTS_TABLE);
     }, [select])
+
 
     const selectHandler = (n: Component) => {
         setSelect(n);
