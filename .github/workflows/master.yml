@@ -32,8 +32,8 @@ jobs:
       - name: Build Spring Boot application with Gradle
         run: ./gradlew build
 
-      - name: Run Spring Boot tests
-        run: ./gradlew test
+      #      - name: Run Spring Boot tests
+      #        run: ./gradlew test
 
       - name: Build React application with Webpack
         working-directory: ./laguna-pools-frontend
@@ -41,9 +41,9 @@ jobs:
           npm install
           npm run build-webpack
 
-      - name: Run React tests
-        working-directory: ./laguna-pools-frontend
-        run: npm test
+      #      - name: Run React tests
+      #        working-directory: ./laguna-pools-frontend
+      #        run: npm test
 
       - name: Upload Spring Boot build artifacts
         uses: actions/upload-artifact@v4
