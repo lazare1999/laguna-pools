@@ -19,13 +19,13 @@
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
     "terser-webpack-plugin": "^5.3.10",
-    "web-vitals": "^2.1.4",
-    "webpack-bundle-analyzer": "^4.10.2"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build-webpack": "webpack",
+    "build-webpack": "webpack --mode production",
+    "dev-webpack": "webpack",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -54,6 +54,7 @@
     "typescript": "^4.9.5",
     "url-loader": "^4.1.1",
     "webpack": "^5.94.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-merge": "^6.0.1"
   }
