@@ -7,10 +7,6 @@ RUN npm install -g http-server
 # Set the working directory
 WORKDIR /usr/share/app
 
-# Copy everything from public directory except index.html
-COPY public/ /usr/share/app/
-RUN rm /usr/share/app/index.html
-
 # Copy the build files into the container
 COPY dist /usr/share/app
 
