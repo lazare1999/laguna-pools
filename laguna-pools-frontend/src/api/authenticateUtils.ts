@@ -2,7 +2,7 @@ import axios from "axios";
 import {AuthenticationResponse} from "./authenticateResponse";
 
 const authClient = axios.create({
-    baseURL: "/api",
+    baseURL: "https://laguna.lazarekvirtia.com/api/",
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -112,7 +112,7 @@ class AuthenticateUtils {
 
     static fetchHealthCheck = async () => {
         try {
-            const response = await authClient.get('/health_check');
+            const response = await authClient.get('health_check');
             console.log(response.data);
         } catch (error) {
             console.error('Error fetching health check:', error);
