@@ -23,11 +23,16 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler}) => {
     };
 
     const logOutHandler = () => {
-        localStorage.removeItem(REFRESH_TOKEN_NAME);
-        localStorage.removeItem(REFRESH_TOKEN_EXP_NAME);
-        console.log(`${REFRESH_TOKEN_NAME}: ${localStorage.getItem(REFRESH_TOKEN_NAME)}`);
-        console.log(`${REFRESH_TOKEN_NAME} and ${REFRESH_TOKEN_EXP_NAME} removed!`);
-        selectHandler(Component.LOGIN);
+        const logOutHandler = () => {
+            localStorage.removeItem(REFRESH_TOKEN_NAME);
+            localStorage.removeItem(REFRESH_TOKEN_EXP_NAME);
+            console.log(`${REFRESH_TOKEN_NAME}: ${localStorage.getItem(REFRESH_TOKEN_NAME)}`);
+            console.log(`${REFRESH_TOKEN_NAME} and ${REFRESH_TOKEN_EXP_NAME} removed!`);
+
+            setTimeout(() => {
+                selectHandler(Component.LOGIN);
+            }, 1000);
+        }
     }
 
     return (
