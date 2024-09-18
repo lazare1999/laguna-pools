@@ -1,7 +1,3 @@
-networks:
-  laguna-network:
-    driver: bridge
-
 services:
   postgres:
     image: 'postgres:latest'
@@ -19,6 +15,7 @@ services:
       - /data/laguna/postgres/data:/var/lib/postgresql/data
   nginx:
     image: 'nginx:latest'
+    container_name: laguna-pools-nginx-1
     restart: 'always'
     ports:
       - "80:80"
@@ -69,5 +66,8 @@ services:
     volumes:
       - /data/laguna/redis/data:/data
 
+networks:
+  laguna-network:
+    driver: bridge
 
 
