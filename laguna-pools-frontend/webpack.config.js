@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     optimization: {
@@ -43,12 +44,13 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './public/index.html', // Your HTML template
+        }),
+        new CopyWebpackPlugin({
             patterns: [
                 {from: 'public/favicon.ico', to: 'favicon.ico'},
                 {from: 'public/manifest.json', to: 'manifest.json'},
                 {from: 'public/logo192.png', to: 'logo192.png'},
                 {from: 'public/logo512.png', to: 'logo512.png'},
-                // Add other patterns if needed
             ],
         }),
     ],
