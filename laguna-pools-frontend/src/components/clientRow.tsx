@@ -1,22 +1,25 @@
 import React, {useState} from "react";
-import {IconButton, MenuItem, Select, TableCell, TableRow, TextField} from "@mui/material";
+import {Checkbox, IconButton, TableCell, TableRow, TextField} from "@mui/material";
 import {Delete, Edit, Save} from "@mui/icons-material";
 
-export interface SystemUser {
+interface Client {
     firstName: string;
     lastName: string;
-    lastJoinedDate: string;
-    role: string;
+    expirationDate: string;
+    attended: boolean;
+    plan: string;
+    sessions: number;
+    notes: string;
 }
 
 interface UserRowProps {
-    user: SystemUser;
-    onDelete: (userToDelete: SystemUser) => void;
+    user: Client;
+    onDelete: (user: Client) => void;
 }
 
 const ClientRow: React.FC<UserRowProps> = ({user, onDelete}) => {
     const [editMode, setEditMode] = useState<boolean>(false);
-    const [editableUser, setEditableUser] = useState<SystemUser>(user);
+    const [editableClient, setEditableClient] = useState<Client>(user);
 
     const handleEditClick = () => {
         setEditMode(true);
@@ -27,8 +30,8 @@ const ClientRow: React.FC<UserRowProps> = ({user, onDelete}) => {
     };
 
     const handleInputChange = (field: string, value: string | boolean | number) => {
-        setEditableUser({
-            ...editableUser,
+        setEditableClient({
+            ...editableClient,
             [field]: value,
         });
     };
@@ -46,30 +49,45 @@ const ClientRow: React.FC<UserRowProps> = ({user, onDelete}) => {
                 <>
                     <TableCell>
                         <TextField
-                            value={editableUser.firstName}
+                            value={editableClient.firstName}
                             onChange={(e) => handleInputChange("firstName", e.target.value)}
                         />
                         <TextField
-                            value={editableUser.lastName}
+                            value={editableClient.lastName}
                             onChange={(e) => handleInputChange("lastName", e.target.value)}
                         />
                     </TableCell>
                     <TableCell>
                         <TextField
                             type="date"
-                            value={editableUser.lastJoinedDate}
-                            onChange={(e) => handleInputChange("lastJoinedDate", e.target.value)}
+                            value={editableClient.expirationDate}
+                            onChange={(e) => handleInputChange("expirationDate", e.target.value)}
                         />
                     </TableCell>
                     <TableCell>
-                        <Select
-                            value={editableUser.role}
-                        >
-                            <MenuItem onClick={() => handleInputChange("role", "Admin")} value="Admin">Admin</MenuItem>
-                            <MenuItem onClick={() => handleInputChange("role", "User")} value="User">User</MenuItem>
-                            <MenuItem onClick={() => handleInputChange("role", "Moderator")}
-                                      value="Moderator">Moderator</MenuItem>
-                        </Select>
+                        <Checkbox
+                            checked={editableClient.attended}
+                            onChange={(e) => handleInputChange("attended", e.target.checked)}
+                        />
+                    </TableCell>
+                    <TableCell>
+                        <TextField
+                            value={editableClient.plan}
+                            onChange={(e) => handleInputChange("plan", e.target.value)}
+                        />
+                    </TableCell>
+                    <TableCell>
+                        <TextField
+                            type="number"
+                            value={editableClient.sessions}
+                            onChange={(e) => handleInputChange("sessions", +e.target.value)}
+                        />
+                    </TableCell>
+                    <TableCell>
+                        <TextField
+                            value={editableClient.notes}
+                            onChange={(e) => handleInputChange("notes", e.target.value)}
+                        />
                     </TableCell>
                     <TableCell>
                         <IconButton onClick={handleSaveClick}>
@@ -80,8 +98,13 @@ const ClientRow: React.FC<UserRowProps> = ({user, onDelete}) => {
             ) : (
                 <>
                     <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
-                    <TableCell>{user.lastJoinedDate}</TableCell>
-                    <TableCell>{user.role}</TableCell>
+                    <TableCell>{user.expirationDate}</TableCell>
+                    <TableCell>
+                        <Checkbox checked={user.attended} disabled/>
+                    </TableCell>
+                    <TableCell>{user.plan}</TableCell>
+                    <TableCell>{user.sessions}</TableCell>
+                    <TableCell>{user.notes}</TableCell>
                     <TableCell>
                         <IconButton onClick={handleEditClick}>
                             <Edit/>

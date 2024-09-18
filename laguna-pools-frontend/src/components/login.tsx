@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import {Avatar, Box, Button, Container, TextField} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PasswordField from "./passwordTextBox";
+import {LOCAL_STORAGE_NAME} from "../utils/constants";
 import {Component} from "../utils/componentsEnum";
-import AuthenticateUtils from "../api/authenticateUtils";
+import authenticateUtils from "../api/authenticateUtils";
 
 interface LoginFormProps {
     selectHandler: (select: Component) => void;
@@ -15,15 +16,16 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        const request = {username: username, password: password};
+        console.log(request);
 
-        // AuthenticateUtils.fetchHealthCheck().then(r => console.log(r));
-
-        AuthenticateUtils.authenticate(username, password)
-            .then((r) => {
-                console.log(r);
-                selectHandler(Component.TABLES);
-            })
+        authenticateUtils.authenticate(username, password)
+            .then(() => selectHandler(Component.CLIENTS_TABLE))
             .catch(e => console.error(e));
+
+        if (localStorage.getItem(LOCAL_STORAGE_NAME) == "test_token") {
+            selectHandler(Component.CLIENTS_TABLE);
+        }
     };
 
     return (

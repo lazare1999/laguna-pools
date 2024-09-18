@@ -6,7 +6,7 @@ const componentNameMapper = (component: Component) => {
             return "Login";
         case Component.REGISTER:
             return "Register";
-        case Component.TABLES:
+        case Component.CLIENTS_TABLE:
             return "Tables";
         default:
             return null;
