@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 module.exports = {
     optimization: {
@@ -42,7 +41,6 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     plugins: [
-        new BundleAnalyzerPlugin(),
         new HtmlWebpackPlugin({
             template: './public/index.html', // Your HTML template
             patterns: [
