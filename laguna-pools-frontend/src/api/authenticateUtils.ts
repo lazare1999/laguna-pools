@@ -2,7 +2,7 @@ import axios from "axios";
 import {AuthenticationResponse} from "./authenticateResponse";
 
 const authClient = axios.create({
-    baseURL: "http://backend:8080",
+    baseURL: "https://laguna.lazarekvirtia.com/api/",
     headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
