@@ -16,14 +16,14 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        AuthenticateUtils.fetchHealthCheck().then(r => console.log(r));
+        // AuthenticateUtils.fetchHealthCheck().then(r => console.log(r));
 
-        // AuthenticateUtils.authenticate(username, password)
-        //     .then((r) => {
-        //         console.log(r);
-        //         selectHandler(Component.TABLES);
-        //     })
-        //     .catch(e => console.error(e));
+        AuthenticateUtils.authenticate(username, password)
+            .then((r) => {
+                console.log(r);
+                selectHandler(Component.TABLES);
+            })
+            .catch(e => console.error(e));
     };
 
     return (
