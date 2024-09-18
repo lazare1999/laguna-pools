@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 module.exports = {
     optimization: {
@@ -48,6 +48,8 @@ module.exports = {
             patterns: [
                 {from: 'public/favicon.ico', to: 'favicon.ico'},
                 {from: 'public/manifest.json', to: 'manifest.json'},
+                {from: 'public/logo192.png', to: 'logo192.png'},
+                {from: 'public/logo512.png', to: 'logo512.png'},
                 // Add other patterns if needed
             ],
         }),
