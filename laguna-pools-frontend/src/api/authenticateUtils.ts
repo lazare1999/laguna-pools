@@ -6,6 +6,7 @@ const authClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'User-Agent': 'whatever',
     },
 });
 
