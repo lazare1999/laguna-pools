@@ -3,7 +3,7 @@ import {Avatar, Box, Button, Container, TextField} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PasswordField from "./passwordTextBox";
 import {Component} from "../utils/componentsEnum";
-import axios from "axios";
+import AuthenticateUtils from "../api/authenticateUtils";
 
 interface LoginFormProps {
     selectHandler: (select: Component) => void;
@@ -16,7 +16,7 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        axios.get('/health_check').then(r => console.log(r));
+        AuthenticateUtils.fetchHealthCheck().then(r => console.log(r));
 
         // AuthenticateUtils.authenticate(username, password)
         //     .then((r) => {

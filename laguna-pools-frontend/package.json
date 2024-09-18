@@ -27,7 +27,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://laguna.lazarekvirtia.com/api/",
+  "proxy": "https://laguna.lazarekvirtia.com",
   "eslintConfig": {
     "extends": [
       "react-app",
