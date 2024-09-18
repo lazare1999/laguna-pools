@@ -1,23 +1,15 @@
-import React, { useState } from "react";
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    TextField,
-    Checkbox,
-} from "@mui/material";
-import { User } from "../utils/mockUsers";
+import React, {useState} from "react";
+import {Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, TextField,} from "@mui/material";
+import {MockClient} from "../utils/mockClients";
 
 interface AddUserDialogProps {
     open: boolean;
     onClose: () => void;
-    onAddUser: (user: User) => void;
+    onAddUser: (user: MockClient) => void;
 }
 
-const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, onClose, onAddUser }) => {
-    const [newUser, setNewUser] = useState<User>({
+const AddUserDialog: React.FC<AddUserDialogProps> = ({open, onClose, onAddUser}) => {
+    const [newUser, setNewUser] = useState<MockClient>({
         firstName: "",
         lastName: "",
         expirationDate: "",
@@ -76,7 +68,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ open, onClose, onAddUser 
                     margin="normal"
                     value={newUser.expirationDate}
                     onChange={(e) => handleInputChange("expirationDate", e.target.value)}
-                    InputLabelProps={{ shrink: true }}
+                    InputLabelProps={{shrink: true}}
                 />
                 <TextField
                     label="Plan"

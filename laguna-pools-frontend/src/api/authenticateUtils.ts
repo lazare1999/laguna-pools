@@ -94,6 +94,7 @@ class AuthenticateUtils {
         if (!username || !password) return false;
 
         try {
+            console.log("HERE");
             await authClient.post(
                 `authenticate?username=${username}&password=${password}`
             ).then(res => {

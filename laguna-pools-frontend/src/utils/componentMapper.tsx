@@ -1,8 +1,9 @@
 import Login from "../components/login";
 import RegisterForm from "../components/register";
-import ClientsTable from "../components/tables";
+import ClientsTable from "../components/clientsTable";
 import React from "react";
 import {Component} from "./componentsEnum";
+import UsersTable from "../components/usersTable";
 
 interface ComponentMapperProps {
     componentIndex: Component
@@ -15,8 +16,10 @@ const ComponentMapper: React.FC<ComponentMapperProps> = ({componentIndex, select
             return <Login selectHandler={selectHandler}/>;
         case Component.REGISTER:
             return <RegisterForm/>;
-        case Component.TABLES:
+        case Component.CLIENTS_TABLE:
             return <ClientsTable/>;
+        case Component.USERS_TABLE:
+            return <UsersTable/>
         default:
             return null;
     }
