@@ -53,7 +53,7 @@ public class MainController {
 
     @GetMapping(value = "/health_check")
     public ResponseEntity<?> healthCheck() {
-        return okResponse("Good Health Check");
+        return okResponse("Good Health Check\n");
     }
 
 }

@@ -5,10 +5,7 @@ const authClient = axios.create({
     baseURL: "https://laguna.lazarekvirtia.com/api/",
     headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        // Include other headers as needed
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE, PUT',
-        'Access-Control-Allow-Headers': 'Authorization, Content-Type'
+        'Accept': 'application/json',
     },
 });
 
