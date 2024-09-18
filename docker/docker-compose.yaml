@@ -31,8 +31,9 @@ services:
     networks:
       - laguna-network
     depends_on:
-      - spring-backend
-      - react-frontend
+      - backend
+      - frontend
+    user: "0:0"
   backend:
     container_name: laguna-pools-spring-backend-1
     restart: 'always'
