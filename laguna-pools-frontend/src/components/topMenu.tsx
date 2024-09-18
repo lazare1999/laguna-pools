@@ -29,7 +29,7 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler}) => {
         console.log(`${REFRESH_TOKEN_NAME} and ${REFRESH_TOKEN_EXP_NAME} removed!`);
 
         setTimeout(() => {
-            selectHandler(Component.LOGIN);
+            // selectHandler(Component.LOGIN);
         }, 5000);
     }
 
