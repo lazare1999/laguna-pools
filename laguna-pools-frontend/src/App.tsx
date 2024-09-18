@@ -15,6 +15,7 @@ const App = () => {
         const isLoggedIn = expirationTime !== null && expirationTime > Date.now();
         console.log("exp time: " + expirationTime + "\nnow: " + Date.now());
         setOpenSessionWindow(isLoggedIn);
+        if (isLoggedIn) setSelect(Component.CLIENTS_TABLE);
     }, [select])
 
     const selectHandler = (n: Component) => {
