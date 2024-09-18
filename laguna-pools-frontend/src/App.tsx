@@ -13,6 +13,7 @@ const App = () => {
         const expDate = localStorage.getItem("refresh_token_expires_in");
         const expirationTime = expDate ? parseInt(expDate, 10) : null;
         const isLoggedIn = expirationTime !== null && expirationTime > Date.now();
+        console.log("exp time: " + expirationTime + "\nnow: " + Date.now());
         setOpenSessionWindow(isLoggedIn);
     }, [select])
 
