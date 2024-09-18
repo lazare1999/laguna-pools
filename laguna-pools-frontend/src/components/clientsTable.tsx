@@ -16,17 +16,17 @@ import {
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import {FilterList} from "@mui/icons-material";
 import ClientRow from "./clientRow";
-import {initialUsers, User} from "../utils/mockUsers";
+import {initialClients, MockClient} from "../utils/mockClients";
 import AddUserDialog from "./addUserDialog";
 
 const ClientsTable: React.FC = () => {
     const [filterText, setFilterText] = useState<string>("");
-    const [users, setUsers] = useState<User[]>(initialUsers);
+    const [users, setUsers] = useState<MockClient[]>(initialClients);
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
 
-    const handleDelete = (userToDelete: User) => {
+    const handleDelete = (userToDelete: MockClient) => {
         setUsers(users.filter(user => user !== userToDelete));
     };
 
@@ -34,7 +34,7 @@ const ClientsTable: React.FC = () => {
         const value = e.target.value.toLowerCase();
         setFilterText(value);
 
-        const filtered = initialUsers.filter((user) =>
+        const filtered = initialClients.filter((user) =>
             `${user.firstName} ${user.lastName}`.toLowerCase().includes(value)
         );
         setUsers(filtered);
@@ -57,7 +57,7 @@ const ClientsTable: React.FC = () => {
         setOpenDialog(false);
     };
 
-    const handleAddUser = (newUser: User) => {
+    const handleAddUser = (newUser: MockClient) => {
         setUsers([...users, newUser]);
     };
 

@@ -1,8 +1,8 @@
 import React, {useState} from "react";
-import {IconButton, TableCell, TableRow, TextField} from "@mui/material";
+import {IconButton, MenuItem, Select, TableCell, TableRow, TextField} from "@mui/material";
 import {Delete, Edit, Save} from "@mui/icons-material";
 
-interface User {
+export interface SystemUser {
     firstName: string;
     lastName: string;
     lastJoinedDate: string;
@@ -10,13 +10,13 @@ interface User {
 }
 
 interface UserRowProps {
-    user: User;
-    onDelete: (user: User) => void;  // Pass the delete handler as a prop
+    user: SystemUser;
+    onDelete: (userToDelete: SystemUser) => void;
 }
 
 const ClientRow: React.FC<UserRowProps> = ({user, onDelete}) => {
     const [editMode, setEditMode] = useState<boolean>(false);
-    const [editableUser, setEditableUser] = useState<User>(user);
+    const [editableUser, setEditableUser] = useState<SystemUser>(user);
 
     const handleEditClick = () => {
         setEditMode(true);
@@ -62,10 +62,14 @@ const ClientRow: React.FC<UserRowProps> = ({user, onDelete}) => {
                         />
                     </TableCell>
                     <TableCell>
-                        <TextField
+                        <Select
                             value={editableUser.role}
-                            onChange={(e) => handleInputChange("notes", e.target.value)}
-                        />
+                        >
+                            <MenuItem onClick={() => handleInputChange("role", "Admin")} value="Admin">Admin</MenuItem>
+                            <MenuItem onClick={() => handleInputChange("role", "User")} value="User">User</MenuItem>
+                            <MenuItem onClick={() => handleInputChange("role", "Moderator")}
+                                      value="Moderator">Moderator</MenuItem>
+                        </Select>
                     </TableCell>
                     <TableCell>
                         <IconButton onClick={handleSaveClick}>

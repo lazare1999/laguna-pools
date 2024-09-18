@@ -3,8 +3,8 @@ import {Avatar, Box, Button, Container, TextField} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PasswordField from "./passwordTextBox";
 import {LOCAL_STORAGE_NAME} from "../utils/constants";
-import AuthenticateUtils from "../api/authenticateUtils";
 import {Component} from "../utils/componentsEnum";
+import Api from "../api/api";
 
 interface LoginFormProps {
     selectHandler: (select: Component) => void;
@@ -19,12 +19,12 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
         const request = {username: username, password: password};
         console.log(request);
 
-        AuthenticateUtils.authenticate(username, password)
-            .then(() => selectHandler(Component.TABLES))
+        Api.login({username, password})
+            .then(() => selectHandler(Component.CLIENTS_TABLE))
             .catch(e => console.error(e));
 
         if (localStorage.getItem(LOCAL_STORAGE_NAME) == "test_token") {
-            selectHandler(Component.TABLES);
+            selectHandler(Component.CLIENTS_TABLE);
         }
     };
 

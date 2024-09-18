@@ -11,6 +11,17 @@ const requestHeader = () => {
 };
 
 class Api {
+    static login = async (request: { username: string; password: string }) => {
+        return localStorage.setItem(LOCAL_STORAGE_NAME, "test_token");
+        // return authClient.post(
+        //     "",
+        //     {
+        //         username: request.username,
+        //         password: request.password,
+        //     },
+        //     requestHeader()
+        // );
+    };
 
 }
 

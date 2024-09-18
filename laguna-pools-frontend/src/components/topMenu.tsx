@@ -46,13 +46,18 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler}) => {
                     onClose={handleClose}
                 >
                     <MenuItem onClick={handleClose}>
-                        <Button color="inherit" startIcon={<PersonAddAlt/>}>New User</Button>
+                        <Button color="inherit" startIcon={<PersonAddAlt/>}
+                                onClick={() => selectHandler(Component.REGISTER)}>
+                            New User
+                        </Button>
                     </MenuItem>
                     <MenuItem onClick={handleClose}>
-                        <Button color="inherit" startIcon={<PeopleIcon/>}>Users List</Button>
+                        <Button color="inherit" startIcon={<PeopleIcon/>}
+                                onClick={() => selectHandler(Component.USERS_TABLE)}>Users List</Button>
                     </MenuItem>
                 </Menu>
-                <Button color="inherit" startIcon={<TableChart/>} onClick={() => selectHandler(Component.TABLES)}>
+                <Button color="inherit" startIcon={<TableChart/>}
+                        onClick={() => selectHandler(Component.CLIENTS_TABLE)}>
                     Tables
                 </Button>
                 <Box sx={{flexGrow: 1}}/>

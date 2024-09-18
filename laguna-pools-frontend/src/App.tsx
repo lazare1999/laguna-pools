@@ -11,7 +11,7 @@ const App = () => {
 
     useState(() =>
         setSelect(
-            localStorage.getItem(LOCAL_STORAGE_NAME) == "test_token" ? Component.TABLES : Component.LOGIN)
+            localStorage.getItem(LOCAL_STORAGE_NAME) == "test_token" ? Component.CLIENTS_TABLE : Component.LOGIN)
     );
 
     const selectHandler = (n: Component) => {

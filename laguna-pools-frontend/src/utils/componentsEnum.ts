@@ -1,5 +1,6 @@
 export enum Component {
     LOGIN,
     REGISTER,
-    TABLES
+    CLIENTS_TABLE,
+    USERS_TABLE
 }
