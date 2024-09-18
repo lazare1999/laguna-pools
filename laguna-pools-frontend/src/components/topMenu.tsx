@@ -30,7 +30,7 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler}) => {
 
         setTimeout(() => {
             selectHandler(Component.LOGIN);
-        }, 1000);
+        }, 5000);
     }
 
     return (
