@@ -70,7 +70,7 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler}) => {
                 <Button
                     color="inherit"
                     startIcon={<ExitToApp/>}
-                    onClick={() => logOutHandler()}
+                    // onClick={() => logOutHandler()}
                 >
                     Log out
                 </Button>
