@@ -7,20 +7,21 @@ import TopMenu from "./components/topMenu";
 import AuthenticateUtils from "./api/authenticateUtils";
 
 const App = () => {
-    const expDate = localStorage.getItem(REFRESH_TOKEN_EXP_NAME);
-    const expirationTime = expDate ? parseInt(expDate, 10) : null;
-    const isLoggedIn = expirationTime !== null && expirationTime > Date.now();
-    const [select, setSelect] = useState<Component>(isLoggedIn ? Component.CLIENTS_TABLE : Component.LOGIN);
+    const [select, setSelect] = useState<Component>(Component.LOGIN);
     const [openSessionWindow, setOpenSessionWindow] = useState(false);
 
     useEffect(() => {
         const checkLoginStatus = async () => {
-            const token = await AuthenticateUtils.getAccessToken();
+            const token = await AuthenticateUtils.getJwtViaRefreshTokenFromLocalStorage();
             const isLoggedIn = token !== null;
             setOpenSessionWindow(isLoggedIn);
         };
         checkLoginStatus().then(r => r);
     }, []);
+
+    useEffect(() => {
+        
+    }, [select])
 
 
     const selectHandler = (n: Component) => {
@@ -37,7 +38,7 @@ const App = () => {
     return (
         <div className="App">
             {openSessionWindow && <TopMenu selectHandler={selectHandler} onLogout={logOutHandler}/>}
-            <ComponentMapper selectHandler={selectHandler} componentIndex={select}
+            <ComponentMapper selectHandler={selectHandler} currentComponent={select}
                              setOpenSessionWindow={setOpenSessionWindow}/>
         </div>
     );

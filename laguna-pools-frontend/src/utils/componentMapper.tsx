@@ -6,13 +6,13 @@ import {Component} from "./componentsEnum";
 import UsersTable from "../components/users/usersTable";
 
 interface ComponentMapperProps {
-    componentIndex: Component
+    currentComponent: Component
     selectHandler: (selectHandler: Component) => void;
     setOpenSessionWindow: (open: boolean) => void;
 }
 
-const ComponentMapper: React.FC<ComponentMapperProps> = ({componentIndex, selectHandler, setOpenSessionWindow}) => {
-    switch (componentIndex) {
+const ComponentMapper: React.FC<ComponentMapperProps> = ({currentComponent, selectHandler, setOpenSessionWindow}) => {
+    switch (currentComponent) {
         case Component.LOGIN:
             return <Login selectHandler={selectHandler} setOpenSessionWindow={setOpenSessionWindow}/>;
         case Component.REGISTER:

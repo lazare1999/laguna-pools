@@ -66,14 +66,14 @@ export class AuthenticationResponse {
 
         if (body.hasOwnProperty("expiresIn")) {
             this.expiresIn = this.isInteger(body.expiresIn) ? body.expiresIn : parseInt(body.expiresIn, 10);
-            this.expiresAt = new Date(Date.now() + this.expiresIn! * 1000); // expiresIn is expected to be in seconds, so we multiply by 1000
+            this.expiresAt = new Date(this.expiresIn!);
         }
 
         if (body.hasOwnProperty("refreshExpiresIn")) {
             this.refreshExpiresIn = this.isInteger(body.refreshExpiresIn)
                 ? body.refreshExpiresIn
                 : parseInt(body.refreshExpiresIn, 10);
-            this.refreshExpiresAt = new Date(Date.now() + this.refreshExpiresIn! * 1000); // Same logic for refresh token expiration
+            this.refreshExpiresAt = new Date(this.refreshExpiresIn!);
         }
     }
 
