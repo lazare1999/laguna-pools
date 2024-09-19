@@ -53,12 +53,16 @@ public class CacheConfig {
         var appUsersByUsernameCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofHours(1));
 
+        var rolesListCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofHours(1));
+
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
         cacheConfigurations.put("activeUsersCache", activeUsersCacheConfig);
         cacheConfigurations.put("allUsersCache", allUsersCacheConfig);
         cacheConfigurations.put("usersByUsername", usersByUsernameCacheConfig);
         cacheConfigurations.put("usersById", usersByIdCacheConfig);
         cacheConfigurations.put("appUsersByUsername", appUsersByUsernameCacheConfig);
+        cacheConfigurations.put("rolesList", rolesListCacheConfig);
 
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(defaultCacheConfig)

@@ -1,28 +1,15 @@
 import axios from "axios";
-import {LOCAL_STORAGE_NAME} from "../utils/constants";
-
-const authClient = axios.create({
-    baseURL: "https://laguna.lazarekvirtia.com/api/",
-});
+import AuthenticateUtils from "./authenticateUtils";
+import {API_BASE_URL} from "../config";
 
 const requestHeader = () => {
-    const jwt = localStorage.getItem(LOCAL_STORAGE_NAME) || "";
-    return {headers: {Authorization: `Bearer ${jwt}`}};
+    const jwt = AuthenticateUtils.getAccessToken();
+    return {Authorization: `Bearer ${jwt}`};
 };
 
-class Api {
-    static login = async (request: { username: string; password: string }) => {
-        return localStorage.setItem(LOCAL_STORAGE_NAME, "test_token");
-        // return authClient.post(
-        //     "",
-        //     {
-        //         username: request.username,
-        //         password: request.password,
-        //     },
-        //     requestHeader()
-        // );
-    };
+const authClient = axios.create({
+    baseURL: API_BASE_URL,
+    headers: requestHeader()
+});
 
-}
-
-export default Api;
+export default authClient;
