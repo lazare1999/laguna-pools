@@ -17,6 +17,9 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
         event.preventDefault();
 
         await authenticateUtils.authenticate(username, password).then((promise) => {
+
+            console.log(promise);
+
             if (promise)
                 selectHandler(Component.CLIENTS_TABLE);
             else
