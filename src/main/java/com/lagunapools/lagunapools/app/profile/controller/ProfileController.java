@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ public class ProfileController {
 
     @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA_CHANGE_PASSWORD')")
     @PostMapping(value = "/change_password")
-    public ResponseEntity<?> changePassword(ChangePasswordModel changePasswordModel) {
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordModel changePasswordModel) {
         return profileService.changePassword(changePasswordModel);
     }
 

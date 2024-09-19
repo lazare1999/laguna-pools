@@ -27,6 +27,7 @@ const requestHeader = () => {
 
 class AuthenticateUtils {
     static getJwtViaRefreshToken = async () => {
+        console.log("bbbb")
         try {
             const refreshToken = auth.refreshToken;
 
@@ -49,6 +50,9 @@ class AuthenticateUtils {
     };
 
     static getJwtViaRefreshTokenFromLocalStorage = async () => {
+
+        console.log("cccccc")
+
         const refreshToken = localStorage.getItem(REFRESH_TOKEN_NAME);
         const refreshTokenExpiresIn = localStorage.getItem(REFRESH_TOKEN_EXP_NAME);
 
@@ -101,14 +105,12 @@ class AuthenticateUtils {
                 localStorage.setItem("laguna_username", username);
                 if (res.status === 200) {
                     this.updateRefreshTokenLocal(res.data);
-                    return true;
                 }
-            }).catch(e => console.error(e));
+            });
         } catch (e) {
             return false;
         }
-
-        return false;
+        return true;
     };
 
 

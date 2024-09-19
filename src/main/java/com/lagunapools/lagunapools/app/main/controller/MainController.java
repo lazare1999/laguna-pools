@@ -23,19 +23,19 @@ public class MainController {
 
     private final MainService mainService;
 
-    @PreAuthorize("hasRole('ROLE_LAGUNA')")
+    @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA')")
     @GetMapping(value = "/get_current_user_id")
     public ResponseEntity<Integer> getCurrentUserId() {
         return okResponse(getCurrentApplicationUserId());
     }
 
-    @PreAuthorize("hasRole('ROLE_LAGUNA')")
+    @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA')")
     @GetMapping(value = "/get_user_name")
     public ResponseEntity<String> getUserName(@RequestHeader("Authorization") String token) {
         return mainService.getUserName(token);
     }
 
-    @PreAuthorize("hasRole('ROLE_LAGUNA')")
+    @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA')")
     @PostMapping(value = "/logout_from_system")
     public ResponseEntity<Boolean> logout(@RequestHeader("Authorization") String token) {
         return mainService.logout(token);

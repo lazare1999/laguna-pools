@@ -40,3 +40,4 @@ out/
 /laguna-pools-frontend/dist/**
 /laguna-pools-frontend/node_modules/**
 /docker/react-frontend/dist/**
+/src/main/java/com/lagunapools/lagunapools/config/WebConfig.java

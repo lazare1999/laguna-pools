@@ -4,13 +4,13 @@ import {ExitToApp, PersonAddAlt, TableChart} from '@mui/icons-material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import PeopleIcon from '@mui/icons-material/People';
 import {Component} from '../utils/componentsEnum';
-import {REFRESH_TOKEN_EXP_NAME, REFRESH_TOKEN_NAME} from "../utils/constants";
 
 interface TopMenuProps {
     selectHandler: (value: number) => void;
+    onLogout: () => void;
 }
 
-const TopMenu: React.FC<TopMenuProps> = ({selectHandler}) => {
+const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -21,14 +21,6 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler}) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const logOutHandler = () => {
-        localStorage.removeItem(REFRESH_TOKEN_NAME);
-        localStorage.removeItem(REFRESH_TOKEN_EXP_NAME);
-        console.log(`${REFRESH_TOKEN_NAME}: ${localStorage.getItem(REFRESH_TOKEN_NAME)}`);
-        console.log(`${REFRESH_TOKEN_NAME} and ${REFRESH_TOKEN_EXP_NAME} removed!`);
-        selectHandler(Component.LOGIN);
-    }
 
     return (
         <AppBar position="static">
@@ -67,7 +59,7 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler}) => {
                 <Button
                     color="inherit"
                     startIcon={<ExitToApp/>}
-                    onClick={() => logOutHandler()}
+                    onClick={onLogout}
                 >
                     Log out
                 </Button>

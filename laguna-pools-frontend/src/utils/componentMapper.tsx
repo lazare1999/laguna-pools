@@ -8,12 +8,13 @@ import UsersTable from "../components/users/usersTable";
 interface ComponentMapperProps {
     componentIndex: Component
     selectHandler: (selectHandler: Component) => void;
+    setOpenSessionWindow: (open: boolean) => void;
 }
 
-const ComponentMapper: React.FC<ComponentMapperProps> = ({componentIndex, selectHandler}) => {
+const ComponentMapper: React.FC<ComponentMapperProps> = ({componentIndex, selectHandler, setOpenSessionWindow}) => {
     switch (componentIndex) {
         case Component.LOGIN:
-            return <Login selectHandler={selectHandler}/>;
+            return <Login selectHandler={selectHandler} setOpenSessionWindow={setOpenSessionWindow}/>;
         case Component.REGISTER:
             return <RegisterForm/>;
         case Component.CLIENTS_TABLE:
