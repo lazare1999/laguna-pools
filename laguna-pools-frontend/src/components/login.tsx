@@ -4,28 +4,34 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PasswordField from "./common/passwordTextBox";
 import {Component} from "../utils/componentsEnum";
 import authenticateUtils from "../api/authenticateUtils";
+import {AlertDialog} from "../utils/alertsUtils";
 
 interface LoginFormProps {
     selectHandler: (select: Component) => void;
+    setOpenSessionWindow: (open: boolean) => void; // Add this line
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
+const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindow}) => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+
+    const [alertOpen, setAlertOpen] = useState<boolean>(false);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        await authenticateUtils.authenticate(username, password).then((promise) => {
+        try {
+            let ans = await authenticateUtils.authenticate(username, password);
 
-            console.log(promise);
-
-            if (promise)
+            if (ans) {
+                setOpenSessionWindow(true); // Update session window state
                 selectHandler(Component.CLIENTS_TABLE);
-            else
-                selectHandler(Component.LOGIN);
-        });
-
+            } else {
+                setAlertOpen(true);
+            }
+        } catch (error) {
+            setAlertOpen(true); // Handle errors and set alert
+        }
     };
 
     return (
@@ -60,6 +66,12 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
                     >
                         Sign In
                     </Button>
+                    <AlertDialog
+                        open={alertOpen}
+                        title='Error'
+                        message='Enter the correct data'
+                        onClose={() => setAlertOpen(false)}
+                    />
                 </Box>
             </Box>
         </Container>

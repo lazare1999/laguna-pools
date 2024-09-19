@@ -1,62 +1,92 @@
 import React, {useEffect, useState} from 'react';
 import {
-    Avatar,
     Box,
     Button,
     Checkbox,
+    CircularProgress,
     Container,
     FormControl,
     FormControlLabel,
     FormGroup,
+    FormLabel,
     TextField
 } from '@mui/material';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import PasswordField from "../common/passwordTextBox";
-import authClient from "../../api/api";
-import {TargetView} from "../models/targetViewModel";
+
+import authClient from '../../api/api'
+import {AlertDialog, Toast} from "../../utils/alertsUtils";
+import {HttpMethod} from "../../utils/httpMethodEnum";
 
 const RegisterForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [roles, setRoles] = useState<number[]>([]);
-    const [availableRoles, setAvailableRoles] = useState<TargetView[]>([]);
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const [roles, setRoles] = useState<Array<{ targetId: number; targetName: string; targetDescription: string }>>([]);
+    const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+
+    const [toastOpen, setToastOpen] = useState<boolean>(false);
+    const [alertOpen, setAlertOpen] = useState<boolean>(false);
+    const [alertMessage, setAlertMessage] = useState<string>("");
+    const [toastMessage, setToastMessage] = useState<string>("");
 
     useEffect(() => {
-        // Fetch roles when the component mounts
-        authClient.get<TargetView[]>("list_roles")
-            .then(response => {
-                if (response.status === 200)
-                    setAvailableRoles(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching roles:', error);
-            });
+        const fetchRolesList = async () => {
+            setLoading(true);
+            try {
+                const rolesData = await authClient.request('admin/list_roles', HttpMethod.GET);
+                if (Array.isArray(rolesData.data)) {
+                    setRoles(rolesData.data);
+                } else {
+                    setAlertMessage(`Fetched roles are not an array: ${rolesData.data}`);
+                    setAlertOpen(true);
+                    setRoles([]);
+                }
+            } catch (err) {
+                setAlertMessage(`Failed to fetch roles: ${err}`);
+                setAlertOpen(true);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchRolesList().then(r => r);
     }, []);
 
-    const handleAddUser = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        const newUser = {username, password, roles};
-
-        authClient.post('add_user', newUser).then(res => {
-            if (res.status === 200) {
-                window.confirm(`User added successfully, with id of: ${res.data}`);
-            } else if (res.status == 400) {
-                window.confirm(res.data);
-            }
-        }).catch(error => {
-            console.error('Error fetching data:', error);
-            throw error;
-        });
+    const handleRoleChange = (roleId: number) => {
+        setSelectedRoles(prevRoles =>
+            prevRoles.includes(roleId)
+                ? prevRoles.filter(id => id !== roleId)
+                : [...prevRoles, roleId]
+        );
     };
 
-    const handleRoleChange = (targetId: number) => {
-        if (roles.includes(targetId)) {
-            // Remove role if it's already selected
-            setRoles(roles.filter(role => role !== targetId));
-        } else {
-            // Add role if it's not selected
-            setRoles([...roles, targetId]);
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setSubmitLoading(true);
+
+        if (password !== confirmPassword) {
+            setAlertMessage('Passwords do not match.');
+            setAlertOpen(true);
+            setSubmitLoading(false);
+            return;
+        }
+
+        try {
+            const result = await authClient.request('admin/add_user', HttpMethod.POST, {
+                username,
+                password,
+                roles: selectedRoles
+            });
+
+            setToastMessage(`User added with id: ${result}`);
+            setToastOpen(true);
+
+        } catch (err) {
+            setAlertMessage(`Registration failed. Please try again. \n
+            ${err}`);
+            setAlertOpen(true);
+        } finally {
+            setSubmitLoading(false);
         }
     };
 
@@ -70,10 +100,7 @@ const RegisterForm: React.FC = () => {
                     alignItems: 'center',
                 }}
             >
-                <Avatar>
-                    <PersonAddIcon/>
-                </Avatar>
-                <Box component="form" onSubmit={handleAddUser} sx={{mt: 1}}>
+                <Box component="form" onSubmit={handleSubmit} sx={{mt: 1}}>
                     <TextField
                         margin="normal"
                         required
@@ -83,21 +110,43 @@ const RegisterForm: React.FC = () => {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
-                    <PasswordField password={password} setPassword={setPassword}/>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Confirm Password"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
                     <FormControl component="fieldset" margin="normal">
+                        <FormLabel component="legend">აირჩიეთ როლები</FormLabel> {/* Add this line for the label */}
                         <FormGroup>
-                            {availableRoles.map(role => (
-                                <FormControlLabel
-                                    key={role.targetId}
-                                    control={
-                                        <Checkbox
-                                            checked={roles.includes(role.targetId)}
-                                            onChange={() => handleRoleChange(role.targetId)}
-                                        />
-                                    }
-                                    label={role.targetName}
-                                />
-                            ))}
+                            {loading ? (
+                                <CircularProgress/>
+                            ) : (
+                                roles.map(role => (
+                                    <FormControlLabel
+                                        key={role.targetId}
+                                        control={
+                                            <Checkbox
+                                                checked={selectedRoles.includes(role.targetId)}
+                                                onChange={() => handleRoleChange(role.targetId)}
+                                            />
+                                        }
+                                        label={role.targetDescription}
+                                    />
+                                ))
+                            )}
                         </FormGroup>
                     </FormControl>
                     <Button
@@ -105,12 +154,22 @@ const RegisterForm: React.FC = () => {
                         fullWidth
                         variant="contained"
                         sx={{mt: 3, mb: 2}}
+                        disabled={submitLoading}
                     >
-                        Add User
+                        {submitLoading ? <CircularProgress size={24}/> : 'Register'}
                     </Button>
-                    <div style={{marginTop: '20px'}}>
-                        <p>Selected Roles: {roles.join(', ')}</p>
-                    </div>
+                    <Toast
+                        open={toastOpen}
+                        message={toastMessage}
+                        onClose={() => setToastOpen(false)}
+                        options={{autoHideDuration: 3000}}
+                    />
+                    <AlertDialog
+                        open={alertOpen}
+                        title='Error'
+                        message={alertMessage}
+                        onClose={() => setAlertOpen(false)}
+                    />
                 </Box>
             </Box>
         </Container>
