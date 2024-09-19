@@ -36,20 +36,20 @@ public class AdminController {
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping(value = "/active_users")
 //    @Cacheable(value = "activeUsersCache", key = "#model.toString()")
-    public List<AppUser> listActiveUsers(ActiveUsersSearchModel model) {
+    public List<AppUser> listActiveUsers(@ModelAttribute ActiveUsersSearchModel model) {
         return adminSearchService.listActiveUsers(model);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping(value = "/all_users")
 //    @Cacheable(value = "allUsersCache")
-    public List<UsersDomain> listAllUsers(UsersSearchModel model) {
+    public List<UsersDomain> listAllUsers(@ModelAttribute UsersSearchModel model) {
         return adminSearchService.listAllUsers(model);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping(value = "/user_details")
-    public ResponseEntity<UsersDomain> getUserDetails(Long userId) {
+    public ResponseEntity<UsersDomain> getUserDetails(@RequestParam Long userId) {
         return adminSearchService.getUserDetails(userId);
     }
 
@@ -67,13 +67,13 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @DeleteMapping(value = "/remove_user")
-    public ResponseEntity<?> removeUser(Long userId) {
+    public ResponseEntity<?> removeUser(@RequestParam Long userId) {
         return adminService.removeUser(userId);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @DeleteMapping(value = "/remove_users")
-    public ResponseEntity<?> removeUsers(List<Long> userIds) {
+    public ResponseEntity<?> removeUsers(@RequestParam List<Long> userIds) {
         return adminService.removeUsers(userIds);
     }
 

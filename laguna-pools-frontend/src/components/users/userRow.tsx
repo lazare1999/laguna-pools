@@ -1,99 +1,52 @@
 import React, {useState} from "react";
-import {IconButton, MenuItem, Select, TableCell, TableRow, TextField} from "@mui/material";
-import {Delete, Edit, Save} from "@mui/icons-material";
-
-export interface SystemUser {
-    firstName: string;
-    lastName: string;
-    lastJoinedDate: string;
-    role: string;
-}
+import {IconButton, TableCell, TableRow} from "@mui/material";
+import {User} from "../models/usersModel";
+import {Delete} from "@mui/icons-material";
+import {Toast} from "../../utils/alertsUtils"; // Import the User type
 
 interface UserRowProps {
-    user: SystemUser;
-    onDelete: (userToDelete: SystemUser) => void;
+    user: User;
+    onDelete: (userToDelete: User) => void;
 }
 
-const ClientRow: React.FC<UserRowProps> = ({user, onDelete}) => {
-    const [editMode, setEditMode] = useState<boolean>(false);
-    const [editableUser, setEditableUser] = useState<SystemUser>(user);
+
+const UserRow: React.FC<UserRowProps> = ({user, onDelete}) => {
+
+    const [toastOpen, setToastOpen] = useState<boolean>(false);
+    const [toastMessage, setToastMessage] = useState<string>("");
 
     const handleEditClick = () => {
-        setEditMode(true);
-    };
 
-    const handleSaveClick = () => {
-        setEditMode(false);
-    };
-
-    const handleInputChange = (field: string, value: string | boolean | number) => {
-        setEditableUser({
-            ...editableUser,
-            [field]: value,
-        });
+        setToastMessage(`EDIT`);
+        setToastOpen(true);
     };
 
     const handleDeleteClick = () => {
-        const confirmed = window.confirm(`Are you sure you want to delete ${user.firstName} ${user.lastName}?`);
-        if (confirmed) {
-            onDelete(user);
-        }
+        window.confirm(`Are you sure you want to delete ${user.username}?`);
+
     };
 
     return (
         <TableRow>
-            {editMode ? (
-                <>
-                    <TableCell>
-                        <TextField
-                            value={editableUser.firstName}
-                            onChange={(e) => handleInputChange("firstName", e.target.value)}
-                        />
-                        <TextField
-                            value={editableUser.lastName}
-                            onChange={(e) => handleInputChange("lastName", e.target.value)}
-                        />
-                    </TableCell>
-                    <TableCell>
-                        <TextField
-                            type="date"
-                            value={editableUser.lastJoinedDate}
-                            onChange={(e) => handleInputChange("lastJoinedDate", e.target.value)}
-                        />
-                    </TableCell>
-                    <TableCell>
-                        <Select
-                            value={editableUser.role}
-                        >
-                            <MenuItem onClick={() => handleInputChange("role", "Admin")} value="Admin">Admin</MenuItem>
-                            <MenuItem onClick={() => handleInputChange("role", "User")} value="User">User</MenuItem>
-                            <MenuItem onClick={() => handleInputChange("role", "Moderator")}
-                                      value="Moderator">Moderator</MenuItem>
-                        </Select>
-                    </TableCell>
-                    <TableCell>
-                        <IconButton onClick={handleSaveClick}>
-                            <Save/>
-                        </IconButton>
-                    </TableCell>
-                </>
-            ) : (
-                <>
-                    <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
-                    <TableCell>{user.lastJoinedDate}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                    <TableCell>
-                        <IconButton onClick={handleEditClick}>
-                            <Edit/>
-                        </IconButton>
-                        <IconButton onClick={handleDeleteClick} color="error">
-                            <Delete/>
-                        </IconButton>
-                    </TableCell>
-                </>
-            )}
+            <Toast
+                open={toastOpen}
+                message={toastMessage}
+                onClose={() => setToastOpen(false)}
+                options={{autoHideDuration: 3000}}
+            />
+            <TableCell>{user.userId}</TableCell>
+            <TableCell>{user.username}</TableCell>
+            <TableCell>{user.lastAuthDate}</TableCell>
+            <TableCell>
+                {/*<IconButton onClick={handleEditClick}>*/}
+                {/*    <Edit/>*/}
+                {/*</IconButton>*/}
+                <IconButton onClick={handleDeleteClick} color="error">
+                    <Delete/>
+                </IconButton>
+            </TableCell>
         </TableRow>
     );
 };
 
-export default ClientRow;
+export default UserRow;
