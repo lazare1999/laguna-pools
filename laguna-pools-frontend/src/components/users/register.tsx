@@ -13,7 +13,6 @@ import {
     InputAdornment,
     TextField
 } from '@mui/material';
-
 import authClient from '../../api/api'
 import {AlertDialog, Toast} from "../../utils/alertsUtils";
 import {HttpMethod} from "../../utils/httpMethodEnum";
@@ -98,19 +97,29 @@ const RegisterForm: React.FC = () => {
         }
     };
 
-    // Regular expression for strong password
-    // const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    const strongPasswordRegex = /^([@#](?=[^aeiou]{7,13}$)(?=[[:alnum:]]{7,13}$)(?=.*[A-Z]{1,}.*$).+)$/;
+    // Updated regex for strong password validation
+    const strongPasswordRegex = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$%^&*_])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
 
-    // Validate password and set error message
     const validatePassword = (pwd: string) => {
         if (!pwd) {
             setPasswordError('Password is required.');
         } else if (!strongPasswordRegex.test(pwd)) {
-            setPasswordError('Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character.');
+            setPasswordError('Password must be exactly 8 characters long, including at least two uppercase letters, two digits, three lowercase letters, and one special character.');
         } else {
             setPasswordError(null);
         }
+    };
+
+    // Check if form is valid for submission
+    const isFormValid = () => {
+        return !!(
+            username &&  // Ensure username is provided
+            password &&
+            confirmPassword &&
+            !passwordError &&
+            password === confirmPassword &&
+            selectedRoles.length > 0  // Ensure at least one role is selected
+        );
     };
 
     return (
@@ -161,10 +170,13 @@ const RegisterForm: React.FC = () => {
                             ),
                         }}
                     />
-                    <PasswordField label={'Confirm Password'} password={confirmPassword}
-                                   setPassword={setConfirmPassword}/>
+                    <PasswordField
+                        label="Confirm Password"
+                        password={confirmPassword}
+                        setPassword={setConfirmPassword}
+                    />
                     <FormControl component="fieldset" margin="normal">
-                        <FormLabel component="legend">აირჩიეთ როლები</FormLabel> {/* Add this line for the label */}
+                        <FormLabel component="legend">Select Roles</FormLabel>
                         <FormGroup>
                             {loading ? (
                                 <CircularProgress/>
@@ -189,7 +201,7 @@ const RegisterForm: React.FC = () => {
                         fullWidth
                         variant="contained"
                         sx={{mt: 3, mb: 2}}
-                        disabled={submitLoading}
+                        disabled={submitLoading || !isFormValid()}
                     >
                         {submitLoading ? <CircularProgress size={24}/> : 'Register'}
                     </Button>
@@ -201,7 +213,7 @@ const RegisterForm: React.FC = () => {
                     />
                     <AlertDialog
                         open={alertOpen}
-                        title='Error'
+                        title="Error"
                         message={alertMessage}
                         onClose={() => setAlertOpen(false)}
                     />
