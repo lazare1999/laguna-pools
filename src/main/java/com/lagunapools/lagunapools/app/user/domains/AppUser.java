@@ -39,4 +39,8 @@ public class AppUser implements Serializable {
 
     @Column(name = "last_auth_date")
     private String lastAuthDate;
+
+    @Column(name = "is_locked")
+    private Boolean isLocked;
+
 }
