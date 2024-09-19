@@ -1,14 +1,15 @@
 import React, {useState} from 'react';
-import {TextField, IconButton, InputAdornment} from '@mui/material';
+import {IconButton, InputAdornment, TextField} from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 interface PasswordFieldProps {
     password: string;
+    label: string;
     setPassword: (password: string) => void;
 }
 
-const PasswordField: React.FC<PasswordFieldProps> = ({password, setPassword}) => {
+const PasswordField: React.FC<PasswordFieldProps> = ({password, setPassword, label}) => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const togglePasswordVisibility = () => {
@@ -20,7 +21,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({password, setPassword}) =>
             margin="normal"
             required
             fullWidth
-            label="Password"
+            label={label}
             type={showPassword ? 'text' : 'password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}

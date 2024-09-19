@@ -27,7 +27,6 @@ const requestHeader = () => {
 
 class AuthenticateUtils {
     static getJwtViaRefreshToken = async () => {
-        console.log("bbbb")
         try {
             const refreshToken = auth.refreshToken;
 
@@ -50,8 +49,6 @@ class AuthenticateUtils {
     };
 
     static getJwtViaRefreshTokenFromLocalStorage = async () => {
-
-        console.log("cccccc")
 
         const refreshToken = localStorage.getItem(REFRESH_TOKEN_NAME);
         const refreshTokenExpiresIn = localStorage.getItem(REFRESH_TOKEN_EXP_NAME);

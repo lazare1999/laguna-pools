@@ -9,16 +9,23 @@ import {
     FormControlLabel,
     FormGroup,
     FormLabel,
+    IconButton,
+    InputAdornment,
     TextField
 } from '@mui/material';
 
 import authClient from '../../api/api'
 import {AlertDialog, Toast} from "../../utils/alertsUtils";
 import {HttpMethod} from "../../utils/httpMethodEnum";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
+import PasswordField from "../common/passwordTextBox";
 
 const RegisterForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [passwordError, setPasswordError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [roles, setRoles] = useState<Array<{ targetId: number; targetName: string; targetDescription: string }>>([]);
     const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
@@ -78,15 +85,31 @@ const RegisterForm: React.FC = () => {
                 roles: selectedRoles
             });
 
-            setToastMessage(`User added with id: ${result}`);
+            setToastMessage(`User added with id: ${result.data}`);
             setToastOpen(true);
 
         } catch (err) {
-            setAlertMessage(`Registration failed. Please try again. \n
-            ${err}`);
+            // @ts-ignore
+            const errorMessage = err.response?.data || err.message || "An unexpected error occurred.";
+            setAlertMessage(`${errorMessage}`);
             setAlertOpen(true);
         } finally {
             setSubmitLoading(false);
+        }
+    };
+
+    // Regular expression for strong password
+    // const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const strongPasswordRegex = /^([@#](?=[^aeiou]{7,13}$)(?=[[:alnum:]]{7,13}$)(?=.*[A-Z]{1,}.*$).+)$/;
+
+    // Validate password and set error message
+    const validatePassword = (pwd: string) => {
+        if (!pwd) {
+            setPasswordError('Password is required.');
+        } else if (!strongPasswordRegex.test(pwd)) {
+            setPasswordError('Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character.');
+        } else {
+            setPasswordError(null);
         }
     };
 
@@ -115,19 +138,31 @@ const RegisterForm: React.FC = () => {
                         required
                         fullWidth
                         label="Password"
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => {
+                            const newPassword = e.target.value;
+                            setPassword(newPassword);
+                            validatePassword(newPassword);
+                        }}
+                        helperText={passwordError}
+                        error={!!passwordError}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
                     />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Confirm Password"
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
+                    <PasswordField label={'Confirm Password'} password={confirmPassword}
+                                   setPassword={setConfirmPassword}/>
                     <FormControl component="fieldset" margin="normal">
                         <FormLabel component="legend">აირჩიეთ როლები</FormLabel> {/* Add this line for the label */}
                         <FormGroup>
