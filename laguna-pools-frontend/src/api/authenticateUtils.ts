@@ -1,13 +1,13 @@
 import axios from "axios";
 import {AuthenticationResponse} from "./authenticateResponse";
 import {REFRESH_TOKEN_EXP_NAME, REFRESH_TOKEN_NAME} from "../utils/constants";
+import {API_BASE_URL} from "../config";
 
-const authClient = axios.create({
-    baseURL: "https://laguna.lazarekvirtia.com/api/",
+const authClientForUtils = axios.create({
+    baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'User-Agent': 'whatever',
+        'Accept': 'application/json'
     },
 });
 
@@ -30,7 +30,7 @@ class AuthenticateUtils {
         try {
             const refreshToken = auth.refreshToken;
 
-            const res = await authClient.post(
+            const res = await authClientForUtils.post(
                 `jwt_via_refresh_token`,
                 {},
                 {
@@ -58,7 +58,7 @@ class AuthenticateUtils {
         if (new Date() > expiresAt) return null;
 
         try {
-            const res = await authClient.post(
+            const res = await authClientForUtils.post(
                 `jwt_via_refresh_token`,
                 {},
                 {
@@ -96,16 +96,15 @@ class AuthenticateUtils {
 
         try {
             console.log("HERE");
-            await authClient.post(
+            await authClientForUtils.post(
                 `authenticate?username=${username}&password=${password}`
             ).then(res => {
-                console.log(res)
                 localStorage.setItem("laguna_username", username);
                 if (res.status === 200) {
                     this.updateRefreshTokenLocal(res.data);
                     return true;
                 }
-            });
+            }).catch(e => console.error(e));
         } catch (e) {
             return false;
         }

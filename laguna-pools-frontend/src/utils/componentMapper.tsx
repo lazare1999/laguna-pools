@@ -1,9 +1,9 @@
 import Login from "../components/login";
-import RegisterForm from "../components/register";
-import ClientsTable from "../components/clientsTable";
+import RegisterForm from "../components/users/register";
+import ClientsTable from "../components/clients/clientsTable";
 import React from "react";
 import {Component} from "./componentsEnum";
-import UsersTable from "../components/usersTable";
+import UsersTable from "../components/users/usersTable";
 
 interface ComponentMapperProps {
     componentIndex: Component

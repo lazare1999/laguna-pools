@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {
     Box,
-    Button,
     IconButton,
     Paper,
     Table,
@@ -13,20 +12,17 @@ import {
     TableRow,
     TextField,
 } from "@mui/material";
-import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import {FilterList} from "@mui/icons-material";
-import ClientRow from "./clientRow";
-import {initialClients, MockClient} from "../utils/mockClients";
-import AddUserDialog from "./addUserDialog";
+import UserRow from "./userRow";
+import {initialUsers, MockUser} from "../../utils/mockUsers";
 
-const ClientsTable: React.FC = () => {
+const UsersTable: React.FC = () => {
     const [filterText, setFilterText] = useState<string>("");
-    const [users, setUsers] = useState<MockClient[]>(initialClients);
+    const [users, setUsers] = useState<MockUser[]>(initialUsers);
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
-    const [openDialog, setOpenDialog] = useState<boolean>(false);
 
-    const handleDelete = (userToDelete: MockClient) => {
+    const handleDelete = (userToDelete: MockUser) => {
         setUsers(users.filter(user => user !== userToDelete));
     };
 
@@ -34,7 +30,7 @@ const ClientsTable: React.FC = () => {
         const value = e.target.value.toLowerCase();
         setFilterText(value);
 
-        const filtered = initialClients.filter((user) =>
+        const filtered = initialUsers.filter((user) =>
             `${user.firstName} ${user.lastName}`.toLowerCase().includes(value)
         );
         setUsers(filtered);
@@ -47,18 +43,6 @@ const ClientsTable: React.FC = () => {
     const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
-    };
-
-    const handleOpenDialog = () => {
-        setOpenDialog(true);
-    };
-
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
-
-    const handleAddUser = (newUser: MockClient) => {
-        setUsers([...users, newUser]);
     };
 
     return (
@@ -80,37 +64,20 @@ const ClientsTable: React.FC = () => {
                     }}
                     sx={{flexGrow: 1}}
                 />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleOpenDialog}
-                    startIcon={<PersonAddAltIcon/>}
-                    sx={{
-                        ml: 2,
-                        height: "50px",
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                >
-                    New Client
-                </Button>
             </Box>
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
-                            <TableCell>Expiration Date</TableCell>
-                            <TableCell>Attendance</TableCell>
-                            <TableCell>Plan</TableCell>
-                            <TableCell>Sessions</TableCell>
-                            <TableCell>Notes</TableCell>
+                            <TableCell>Last Joined Date</TableCell>
+                            <TableCell>Role</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
-                            <ClientRow onDelete={handleDelete} key={index} user={user}/>
+                            <UserRow onDelete={handleDelete} key={index} user={user}/>
                         ))}
                     </TableBody>
                 </Table>
@@ -124,9 +91,8 @@ const ClientsTable: React.FC = () => {
                 onPageChange={handlePageChange}
                 onRowsPerPageChange={handleRowsPerPageChange}
             />
-            <AddUserDialog open={openDialog} onClose={handleCloseDialog} onAddUser={handleAddUser}/>
         </Paper>
     );
 };
 
-export default ClientsTable;
+export default UsersTable;

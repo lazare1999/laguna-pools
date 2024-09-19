@@ -9,6 +9,7 @@ import com.lagunapools.lagunapools.app.admin.services.AdminRolesService;
 import com.lagunapools.lagunapools.app.admin.services.AdminSearchService;
 import com.lagunapools.lagunapools.app.admin.services.AdminService;
 import com.lagunapools.lagunapools.app.user.domains.AppUser;
+import com.lagunapools.lagunapools.app.user.domains.TargetViewDomain;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
 import lombok.RequiredArgsConstructor;
@@ -88,6 +89,13 @@ public class AdminController {
     @PostMapping(value = "/change_user_password")
     public ResponseEntity<?> changeUserPassword(ChangePasswordModel changePasswordModel) {
         return adminService.changeUserPassword(changePasswordModel);
+    }
+
+    @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
+    @GetMapping({"/list_roles"})
+    //    @Cacheable(value = "rolesList")
+    public List<TargetViewDomain> listRoles() {
+        return adminRolesService.listRoles();
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")

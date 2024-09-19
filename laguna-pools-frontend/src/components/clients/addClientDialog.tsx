@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, TextField,} from "@mui/material";
-import {MockClient} from "../utils/mockClients";
+import {MockClient} from "../../utils/mockClients";
 
 interface AddUserDialogProps {
     open: boolean;
@@ -8,7 +8,7 @@ interface AddUserDialogProps {
     onAddUser: (user: MockClient) => void;
 }
 
-const AddUserDialog: React.FC<AddUserDialogProps> = ({open, onClose, onAddUser}) => {
+const AddClientDialog: React.FC<AddUserDialogProps> = ({open, onClose, onAddUser}) => {
     const [newUser, setNewUser] = useState<MockClient>({
         firstName: "",
         lastName: "",
@@ -109,4 +109,4 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({open, onClose, onAddUser})
     );
 };
 
-export default AddUserDialog;
+export default AddClientDialog;

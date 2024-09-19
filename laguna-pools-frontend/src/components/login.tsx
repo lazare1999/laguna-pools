@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import {Avatar, Box, Button, Container, TextField} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import PasswordField from "./passwordTextBox";
-import {LOCAL_STORAGE_NAME} from "../utils/constants";
+import PasswordField from "./common/passwordTextBox";
 import {Component} from "../utils/componentsEnum";
 import authenticateUtils from "../api/authenticateUtils";
 
@@ -14,18 +13,16 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler}) => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const request = {username: username, password: password};
-        console.log(request);
 
-        authenticateUtils.authenticate(username, password)
-            .then(() => selectHandler(Component.CLIENTS_TABLE))
-            .catch(e => console.error(e));
+        await authenticateUtils.authenticate(username, password).then((promise) => {
+            if (promise)
+                selectHandler(Component.CLIENTS_TABLE);
+            else
+                selectHandler(Component.LOGIN);
+        });
 
-        if (localStorage.getItem(LOCAL_STORAGE_NAME) == "test_token") {
-            selectHandler(Component.CLIENTS_TABLE);
-        }
     };
 
     return (
