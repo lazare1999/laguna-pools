@@ -6,6 +6,7 @@ import com.lagunapools.lagunapools.app.user.domains.TargetViewDomain;
 import com.lagunapools.lagunapools.app.user.repository.TargetViewRepository;
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class AdminRolesServiceImpl implements AdminRolesService {
     private final TargetViewRepository targetViewRepository;
 
     @Override
-    //    @Cacheable(value = "rolesList")
+    @Cacheable(value = "rolesList")
     public List<TargetViewDomain> listRoles() {
         return targetViewRepository.findAll();
     }

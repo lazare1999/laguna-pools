@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * Created by Lazo on 9/19/24
  */
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @Table(schema = "users", name = "target_view")
-public class TargetViewDomain {
+public class TargetViewDomain implements Serializable {
 
     @Id
     @Column(name = "target_id")
