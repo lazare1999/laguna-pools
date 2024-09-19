@@ -13,6 +13,7 @@ import com.lagunapools.lagunapools.app.user.domains.TargetViewDomain;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -90,7 +91,7 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping({"/list_roles"})
-    //    @Cacheable(value = "rolesList")
+    @Cacheable(value = "rolesList")
     public List<TargetViewDomain> listRoles() {
         return adminRolesService.listRoles();
     }
