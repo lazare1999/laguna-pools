@@ -1,6 +1,7 @@
 # Laguna Pools
 
-Laguna Pools is a Spring Boot application designed for pool administration and customer management. The application features secure web authentication with username and password, user roles, and database connectivity.
+Laguna Pools is a Spring Boot application designed for pool administration and customer management. The application
+features secure web authentication with username and password, user roles, and database connectivity.
 
 ## Features
 

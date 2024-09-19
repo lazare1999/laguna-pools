@@ -57,7 +57,7 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
-                    <PasswordField password={password} setPassword={setPassword}/>
+                    <PasswordField label={'Password'} password={password} setPassword={setPassword}/>
                     <Button
                         type="submit"
                         fullWidth

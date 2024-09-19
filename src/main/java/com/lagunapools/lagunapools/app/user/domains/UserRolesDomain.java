@@ -1,10 +1,7 @@
 package com.lagunapools.lagunapools.app.user.domains;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +21,8 @@ public class UserRolesDomain {
 
     @Id
     @Column(name = "user_role_id")
+    @SequenceGenerator(name = "user_roles_user_role_id_seq", sequenceName = "users.user_roles_user_role_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_roles_user_role_id_seq")
     private Long userRoleId;
 
     @Column(name = "user_id")
@@ -41,6 +40,8 @@ public class UserRolesDomain {
     public UserRolesDomain(Long userId, Integer targetId) {
         this.userId = userId;
         this.targetId = targetId;
+        this.addDate = LocalDateTime.now();
+        this.statusId = 0;
     }
 
 }

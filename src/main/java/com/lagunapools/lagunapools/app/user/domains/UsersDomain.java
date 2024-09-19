@@ -66,6 +66,11 @@ public class UsersDomain implements Serializable {
         this.userPassword = userPassword;
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
+        this.addDate = LocalDateTime.now();
+        this.statusId = 0;
+        this.loginAttempts = 0;
+        this.isLocked = false;
+        this.lastAuthDate = LocalDateTime.now();
     }
 
 }

@@ -5,7 +5,6 @@ import {HttpMethod} from "../utils/httpMethodEnum";
 
 const createAuthClient = async () => {
     try {
-        console.log("aaaaaaaaaaa")
         const jwt = await AuthenticateUtils.getAccessToken();
 
         return axios.create({

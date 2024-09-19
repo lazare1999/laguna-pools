@@ -12,15 +12,14 @@ const App = () => {
     const isLoggedIn = expirationTime !== null && expirationTime > Date.now();
     const [select, setSelect] = useState<Component>(isLoggedIn ? Component.CLIENTS_TABLE : Component.LOGIN);
     const [openSessionWindow, setOpenSessionWindow] = useState(false);
-    
+
     useEffect(() => {
-        console.log('Checking login status...'); // Updated log message
         const checkLoginStatus = async () => {
             const token = await AuthenticateUtils.getAccessToken();
             const isLoggedIn = token !== null;
             setOpenSessionWindow(isLoggedIn);
         };
-        checkLoginStatus();
+        checkLoginStatus().then(r => r);
     }, []);
 
 
