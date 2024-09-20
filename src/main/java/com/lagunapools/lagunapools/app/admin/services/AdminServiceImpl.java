@@ -2,12 +2,15 @@ package com.lagunapools.lagunapools.app.admin.services;
 
 
 import com.lagunapools.lagunapools.app.admin.models.AddUserModel;
+import com.lagunapools.lagunapools.app.admin.models.EditUserModel;
+import com.lagunapools.lagunapools.app.admin.models.EditUsersListModel;
 import com.lagunapools.lagunapools.app.user.domains.UserRolesDomain;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.app.user.repository.UserRolesRepository;
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
 import io.micrometer.common.util.StringUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -128,6 +131,25 @@ public class AdminServiceImpl implements AdminService {
         cUser.setUpdatedBy(getCurrentApplicationUser().getUsername());
         usersRepository.save(cUser);
 
+        return okResponse(true);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> changeUserDetails(EditUserModel changeModel) {
+        var cUser = usersRepository.findByUserId(changeModel.getUserId());
+        if (!changeModel.getNewPassword().isEmpty()) {
+            cUser.setUserPassword(encrypt(SALT, changeModel.getNewPassword()));
+        }
+
+        cUser.setUpdatedBy(getCurrentApplicationUser().getUsername());
+
+        return okResponse(true);
+    }
+
+    @Override
+    public ResponseEntity<?> changeUsersListDetails(EditUsersListModel changeModels) {
+        changeModels.getUsers().forEach(this::changeUserDetails);
         return okResponse(true);
     }
 

@@ -1,6 +1,8 @@
 package com.lagunapools.lagunapools.app.admin.services;
 
 import com.lagunapools.lagunapools.app.admin.models.AddUserModel;
+import com.lagunapools.lagunapools.app.admin.models.EditUserModel;
+import com.lagunapools.lagunapools.app.admin.models.EditUsersListModel;
 import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
 import org.springframework.http.ResponseEntity;
 
@@ -19,5 +21,9 @@ public interface AdminService {
     ResponseEntity<?> unlockOrLockUser(Long userId);
 
     ResponseEntity<?> changeUserPassword(ChangePasswordModel changePasswordModel);
+
+    ResponseEntity<?> changeUserDetails(EditUserModel changeModel);
+
+    ResponseEntity<?> changeUsersListDetails(EditUsersListModel changeModels);
 
 }

@@ -1,10 +1,7 @@
 package com.lagunapools.lagunapools.app.admin.controller;
 
 
-import com.lagunapools.lagunapools.app.admin.models.ActiveUsersSearchModel;
-import com.lagunapools.lagunapools.app.admin.models.AddRemoveRoleModel;
-import com.lagunapools.lagunapools.app.admin.models.AddUserModel;
-import com.lagunapools.lagunapools.app.admin.models.UsersSearchModel;
+import com.lagunapools.lagunapools.app.admin.models.*;
 import com.lagunapools.lagunapools.app.admin.services.AdminRolesService;
 import com.lagunapools.lagunapools.app.admin.services.AdminSearchService;
 import com.lagunapools.lagunapools.app.admin.services.AdminService;
@@ -106,6 +103,18 @@ public class AdminController {
     @DeleteMapping({"/remove_role"})
     public ResponseEntity<?> removeRole(AddRemoveRoleModel rm) {
         return adminRolesService.removeRole(rm);
+    }
+
+    @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
+    @PostMapping({"/edit_user"})
+    public ResponseEntity<?> editUser(@RequestBody EditUserModel request) {
+        return adminService.changeUserDetails(request);
+    }
+
+    @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
+    @PostMapping({"/edit_users_list"})
+    public ResponseEntity<?> editUsersList(@RequestBody EditUsersListModel request) {
+        return adminService.changeUsersListDetails(request);
     }
 
 }
