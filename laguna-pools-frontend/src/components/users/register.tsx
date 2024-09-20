@@ -19,6 +19,7 @@ import {HttpMethod} from "../../utils/httpMethodEnum";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import PasswordField from "../common/passwordTextBox";
+import {STRONG_PASSWORD_REGEX} from "../../utils/constants";
 
 const RegisterForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');
@@ -97,13 +98,11 @@ const RegisterForm: React.FC = () => {
         }
     };
 
-    // Updated regex for strong password validation
-    const strongPasswordRegex = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$%^&*_])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
 
     const validatePassword = (pwd: string) => {
         if (!pwd) {
             setPasswordError('Password is required.');
-        } else if (!strongPasswordRegex.test(pwd)) {
+        } else if (!STRONG_PASSWORD_REGEX.test(pwd)) {
             setPasswordError('Password must be exactly 8 characters long, including at least two uppercase letters, two digits, three lowercase letters, and one special character.');
         } else {
             setPasswordError(null);
@@ -112,13 +111,13 @@ const RegisterForm: React.FC = () => {
 
     // Check if form is valid for submission
     const isFormValid = () => {
-        return !!(
-            username &&  // Ensure username is provided
+        return (
+            username &&
             password &&
             confirmPassword &&
             !passwordError &&
             password === confirmPassword &&
-            selectedRoles.length > 0  // Ensure at least one role is selected
+            selectedRoles.length > 0
         );
     };
 
