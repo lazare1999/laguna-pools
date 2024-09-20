@@ -16,24 +16,23 @@ import {
 } from "@mui/material";
 import {FilterList} from "@mui/icons-material";
 import UserRow from "./userRow";
-import {User} from "../models/usersModel"; // Import the User type
-import {HttpMethod} from "../../utils/httpMethodEnum"; // Adjust path as needed
-import authClient from "../../api/api"; // Adjust path as needed
+import {User} from "../models/usersModel";
+import {HttpMethod} from "../../utils/httpMethodEnum";
+import authClient from "../../api/api";
 
 const UsersTable: React.FC = () => {
     const [filterText, setFilterText] = useState<string>("");
-    const [users, setUsers] = useState<User[]>([]); // Initialize with fetched data or empty array
+    const [users, setUsers] = useState<User[]>([]);
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
 
-    // Example of search model (adjust as needed)
     const searchParams = {
         pageKey: page,
         pageSize: rowsPerPage,
         userName: filterText,
-        isLocked: false // Set these as needed
+        isLocked: false
     };
 
     useEffect(() => {
@@ -41,6 +40,8 @@ const UsersTable: React.FC = () => {
             try {
                 const queryString = new URLSearchParams(searchParams as any).toString();
                 const response = await authClient.request(`admin/active_users?${queryString}`, HttpMethod.GET);
+
+                console.log(response.data);
 
                 if (Array.isArray(response.data)) {
                     setUsers(response.data);
@@ -56,30 +57,25 @@ const UsersTable: React.FC = () => {
         };
 
         fetchUsers().then(r => r);
-    }, [page, rowsPerPage, filterText]); // Include dependencies that affect the fetch
+    }, [page, rowsPerPage, filterText]);
 
-    // Handle user deletion
     const handleDelete = (userToDelete: User) => {
         setUsers(users.filter(user => user.userId !== userToDelete.userId));
     };
 
-    // Handle user edit save
     const handleSaveEdit = (updatedUser: User) => {
         setUsers(users.map(user => (user.userId === updatedUser.userId ? updatedUser : user)));
     };
 
-    // Handle filter text change
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.toLowerCase();
         setFilterText(value);
     };
 
-    // Handle page change
     const handlePageChange = (event: unknown, newPage: number) => {
         setPage(newPage);
     };
 
-    // Handle rows per page change
     const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
