@@ -32,10 +32,7 @@ const UsersTable: React.FC = () => {
     const searchParams = {
         pageKey: page,
         pageSize: rowsPerPage,
-        // userId: null, // Set these as needed
         userName: filterText,
-        // lastAuthDateFrom: null, // Set these as needed
-        // lastAuthDateTo: null, // Set these as needed
         isLocked: false // Set these as needed
     };
 
@@ -64,6 +61,11 @@ const UsersTable: React.FC = () => {
     // Handle user deletion
     const handleDelete = (userToDelete: User) => {
         setUsers(users.filter(user => user.userId !== userToDelete.userId));
+    };
+
+    // Handle user edit save
+    const handleSaveEdit = (updatedUser: User) => {
+        setUsers(users.map(user => (user.userId === updatedUser.userId ? updatedUser : user)));
     };
 
     // Handle filter text change
@@ -119,7 +121,12 @@ const UsersTable: React.FC = () => {
                     </TableHead>
                     <TableBody>
                         {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
-                            <UserRow onDelete={handleDelete} key={user.userId} user={user}/>
+                            <UserRow
+                                key={user.userId}
+                                user={user}
+                                onDelete={handleDelete}
+                                onSaveEdit={handleSaveEdit} // Pass the save handler
+                            />
                         ))}
                     </TableBody>
                 </Table>
