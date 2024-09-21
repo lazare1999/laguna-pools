@@ -8,7 +8,7 @@ import {AlertDialog} from "../utils/alertsUtils";
 
 interface LoginFormProps {
     selectHandler: (select: Component) => void;
-    setOpenSessionWindow: (open: boolean) => void; // Add this line
+    setOpenSessionWindow: (open: boolean) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindow}) => {
