@@ -1,14 +1,12 @@
 package com.lagunapools.lagunapools.app.user.domains;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by Lazo on 9/11/24
@@ -16,9 +14,11 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Entity(name = "users")
+@Builder
+//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(schema = "users", name = "users")
 public class UsersDomain implements Serializable {
 
@@ -60,6 +60,15 @@ public class UsersDomain implements Serializable {
 
     @Column(name = "last_auth_date")
     private LocalDateTime lastAuthDate;
+
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @JoinTable(
+            schema = "users",
+            name = "user_roles", // the join table name
+            joinColumns = @JoinColumn(name = "user_id"), // foreign key for User
+            inverseJoinColumns = @JoinColumn(name = "target_id") // foreign key for TargetViewDomain
+    )
+    private List<TargetDomain> targetDomains;
 
     public UsersDomain(String userName, String userPassword, String createdBy, String updatedBy) {
         this.userName = userName;

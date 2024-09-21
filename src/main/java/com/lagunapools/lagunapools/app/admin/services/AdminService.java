@@ -20,6 +20,8 @@ public interface AdminService {
 
     ResponseEntity<?> unlockOrLockUser(Long userId);
 
+    ResponseEntity<?> disableOrEnableUser(Long userId);
+
     ResponseEntity<?> changeUserPassword(ChangePasswordModel changePasswordModel);
 
     ResponseEntity<?> changeUserDetails(EditUserModel changeModel);

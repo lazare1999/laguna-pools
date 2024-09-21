@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Lazo on 9/21/24
@@ -17,10 +18,12 @@ import java.util.List;
 @NoArgsConstructor
 public class ActiveUsersResponseModel {
     private Long total;
-    private List<AppUser> content;
+    private List<ActiveUserResponseModel> content;
 
-    public ActiveUsersResponseModel(Long total, List<AppUser> content) {
+    public ActiveUsersResponseModel(Long total, List<AppUser> appUsers) {
         this.total = total;
-        this.content = content;
+        this.content = appUsers.stream()
+                .map(ActiveUserResponseModel::new)
+                .collect(Collectors.toList());
     }
 }

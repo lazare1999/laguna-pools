@@ -5,11 +5,12 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 interface PasswordFieldProps {
     password: string;
+    helperText: string;
     label: string;
-    setPassword: (password: string) => void;
+    onChange: any;
 }
 
-const PasswordField: React.FC<PasswordFieldProps> = ({password, setPassword, label}) => {
+const PasswordField: React.FC<PasswordFieldProps> = ({password, helperText, onChange, label}) => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const togglePasswordVisibility = () => {
@@ -24,7 +25,9 @@ const PasswordField: React.FC<PasswordFieldProps> = ({password, setPassword, lab
             label={label}
             type={showPassword ? 'text' : 'password'}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            helperText={helperText}
+            error={!!helperText}
+            onChange={onChange}
             InputProps={{
                 endAdornment: (
                     <InputAdornment position="end">

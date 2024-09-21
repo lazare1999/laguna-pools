@@ -9,32 +9,27 @@ import {
     FormControlLabel,
     FormGroup,
     FormLabel,
-    IconButton,
-    InputAdornment,
     TextField
 } from '@mui/material';
 import authClient from '../../api/api'
 import {AlertDialog, Toast} from "../../utils/alertsUtils";
 import {HttpMethod} from "../../utils/httpMethodEnum";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import Visibility from "@mui/icons-material/Visibility";
 import PasswordField from "../common/passwordTextBox";
-import {STRONG_PASSWORD_REGEX} from "../../utils/constants";
+import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../../utils/constants";
 
 const RegisterForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [passwordError, setPasswordError] = useState<string | null>(null);
-    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [passwordError, setPasswordError] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [roles, setRoles] = useState<Array<{ targetId: number; targetName: string; targetDescription: string }>>([]);
     const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [submitLoading, setSubmitLoading] = useState<boolean>(false);
 
-    const [toastOpen, setToastOpen] = useState<boolean>(false);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
+    const [toastOpen, setToastOpen] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<string>("");
 
     useEffect(() => {
@@ -103,10 +98,20 @@ const RegisterForm: React.FC = () => {
         if (!pwd) {
             setPasswordError('Password is required.');
         } else if (!STRONG_PASSWORD_REGEX.test(pwd)) {
-            setPasswordError('Password must be exactly 8 characters long, including at least two uppercase letters, two digits, three lowercase letters, and one special character.');
+            setPasswordError(PASSWORD_ERROR_TEXT);
         } else {
-            setPasswordError(null);
+            setPasswordError("");
         }
+    };
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+        validatePassword(newPassword);
+    };
+
+    const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setConfirmPassword(e.target.value);
     };
 
     // Check if form is valid for submission
@@ -146,43 +151,17 @@ const RegisterForm: React.FC = () => {
                             }
                         }}
                     />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
+                    <PasswordField
                         label="Password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(e) => {
-                            const newPassword = e.target.value;
-                            setPassword(newPassword);
-                            validatePassword(newPassword);
-                        }}
+                        password={password}
+                        onChange={handlePasswordChange}
                         helperText={passwordError}
-                        error={!!passwordError}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <VisibilityOff/> : <Visibility/>}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                        slotProps={{
-                            inputLabel: {
-                                shrink: true,
-                            }
-                        }}
                     />
                     <PasswordField
                         label="Confirm Password"
                         password={confirmPassword}
-                        setPassword={setConfirmPassword}
+                        onChange={handleConfirmPasswordChange}
+                        helperText={""}
                     />
                     <FormControl component="fieldset" margin="normal">
                         <FormLabel component="legend">Select Roles</FormLabel>

@@ -9,7 +9,9 @@ import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.utils.LazoUtils;
 import io.micrometer.common.util.StringUtils;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,7 @@ public class AdminSearchServiceImpl implements AdminSearchService {
 
 
     @Override
+    @Transactional
 //    @Cacheable(value = "activeUsersCache", key = "#activeUsersSearchModel.toString()")
     public ActiveUsersResponseModel listActiveUsers(ActiveUsersSearchModel activeUsersSearchModel) {
         if (Objects.isNull(activeUsersSearchModel)
@@ -44,6 +47,8 @@ public class AdminSearchServiceImpl implements AdminSearchService {
         }
 
         var page = userRepository.findAll((root, query, builder) -> {
+
+            Objects.requireNonNull(query).distinct(true);
             Predicate predicate = builder.conjunction();
 
             if (StringUtils.isNotEmpty(activeUsersSearchModel.getUserName())) {
@@ -63,6 +68,16 @@ public class AdminSearchServiceImpl implements AdminSearchService {
 
             if (activeUsersSearchModel.getIsLocked() != null) {
                 predicate = builder.and(predicate, builder.equal(root.get("isLocked"), activeUsersSearchModel.getIsLocked()));
+            }
+
+            if (activeUsersSearchModel.getRoles() != null && !activeUsersSearchModel.getRoles().isEmpty()) {
+                CriteriaBuilder.In<String> rolesPredicate = builder.in(root.get("targetDomains").get("targetName"));
+
+                for (String role : activeUsersSearchModel.getRoles()) {
+                    rolesPredicate.value(role);
+                }
+
+                predicate = builder.and(predicate, rolesPredicate);
             }
 
             return predicate;
