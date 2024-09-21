@@ -30,7 +30,7 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
                 setAlertOpen(true);
             }
         } catch (error) {
-            setAlertOpen(true); // Handle errors and set alert
+            setAlertOpen(true);
         }
     };
 

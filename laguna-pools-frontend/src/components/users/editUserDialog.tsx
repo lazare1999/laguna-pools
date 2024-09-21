@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 import {User} from "../models/usersModel";
 
 interface EditUserDialogProps {
@@ -13,8 +13,6 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
     const [editedUser, setEditedUser] = useState<User>(user);
     const [password, setPassword] = useState<string>("");
     const [repeatPassword, setRepeatPassword] = useState<string>("");
-
-    const roles = ["Admin", "User", "Manager"];
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -39,17 +37,10 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
         }
         const updatedUser = {
             ...editedUser,
-            password: password || editedUser.password, // Only update password if it's provided
+            password: password || editedUser.password,
         };
         onSave(updatedUser);
         onClose();
-    };
-
-    const handleRolesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEditedUser((prevUser) => ({
-            ...prevUser,
-            roles: [e.target.value],
-        }));
     };
 
     return (
@@ -60,14 +51,6 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
                     label="Username"
                     name="username"
                     value={editedUser.username}
-                    onChange={handleInputChange}
-                    fullWidth
-                    margin="dense"
-                />
-                <TextField
-                    label="Last Auth Date"
-                    name="lastAuthDate"
-                    value={editedUser.lastAuthDate}
                     onChange={handleInputChange}
                     fullWidth
                     margin="dense"
@@ -88,21 +71,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
                     fullWidth
                     margin="dense"
                 />
-                <TextField
-                    label="Roles"
-                    name="roles"
-                    select
-                    value={editedUser.roles[0]}
-                    onChange={handleRolesChange}
-                    fullWidth
-                    margin="dense"
-                >
-                    {roles.map((role) => (
-                        <MenuItem key={role} value={role}>
-                            {role}
-                        </MenuItem>
-                    ))}
-                </TextField>
+
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose} color="primary">
