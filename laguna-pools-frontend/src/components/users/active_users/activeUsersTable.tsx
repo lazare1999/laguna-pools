@@ -3,7 +3,16 @@ import {
     Alert,
     Box,
     Button,
+    Checkbox,
+    CircularProgress,
+    FormControl,
+    InputLabel,
+    ListItemText,
+    MenuItem,
+    OutlinedInput,
     Paper,
+    Select,
+    SelectChangeEvent,
     Snackbar,
     Table,
     TableBody,
@@ -23,6 +32,17 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
 const ActiveUsersTable: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [count, setCount] = useState<number>(0);
@@ -34,8 +54,14 @@ const ActiveUsersTable: React.FC = () => {
     const [isLocked, setIsLocked] = useState<boolean>(false);
     const [lastAuthDateFrom, setLastAuthDateFrom] = useState<string>("");
     const [lastAuthDateTo, setLastAuthDateTo] = useState<string>("");
+    const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+
+    const [roles, setRoles] = useState<Array<{ targetId: number; targetName: string; targetDescription: string }>>([]);
+
+    const [loading, setLoading] = useState<boolean>(false);
 
     const fetchUsers = async () => {
+        setLoading(true)
         try {
 
             const params: Record<string, any> = {
@@ -43,6 +69,7 @@ const ActiveUsersTable: React.FC = () => {
                 pageSize: rowsPerPage,
                 userName: filterText,
                 isLocked: isLocked,
+                roles: selectedRoles.join(','),
             };
 
             // Include lastAuthDateFrom and lastAuthDateTo only if they are not null
@@ -64,15 +91,36 @@ const ActiveUsersTable: React.FC = () => {
                 setAlertOpen(true);
                 setUsers([]);
             }
+            setLoading(false)
         } catch (error) {
             setAlertMessage(`Error fetching users: ${error}`);
             setAlertOpen(true);
         }
     };
 
+    const fetchRolesList = async () => {
+        try {
+            const rolesData = await authClient.request('admin/list_roles', HttpMethod.GET);
+            if (Array.isArray(rolesData.data)) {
+                setRoles(rolesData.data);
+            } else {
+                setAlertMessage(`Fetched roles are not an array: ${rolesData.data}`);
+                setAlertOpen(true);
+                setRoles([]);
+            }
+        } catch (err) {
+            setAlertMessage(`Failed to fetch roles: ${err}`);
+            setAlertOpen(true);
+        }
+    };
+
+    useEffect(() => {
+        fetchRolesList().then(r => r); // Call once on mount
+    }, []);
+
     useEffect(() => {
         fetchUsers().then(r => r);
-    }, [page, rowsPerPage, filterText, isLocked, lastAuthDateFrom, lastAuthDateTo]);
+    }, [page, rowsPerPage, filterText, isLocked, lastAuthDateFrom, lastAuthDateTo, selectedRoles]);
 
     const handleLock = (lockUser: User) => {
         setUsers(users.map(user => (user.userId === lockUser.userId ? lockUser : user)));
@@ -120,12 +168,23 @@ const ActiveUsersTable: React.FC = () => {
         fetchUsers().then(r => r);
     };
 
+    const handleRoleChange = (event: SelectChangeEvent<typeof selectedRoles>) => {
+        const {
+            target: {value},
+        } = event;
+        setSelectedRoles(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
     const handleClearAll = () => {
         setFilterText("");
         setIsLocked(false);
         setLastAuthDateFrom("");
         setLastAuthDateTo("");
+        setSelectedRoles([]);
     };
+
 
     return (
         <Paper>
@@ -139,14 +198,12 @@ const ActiveUsersTable: React.FC = () => {
                 <TextField
                     label="Filter by username"
                     variant="outlined"
-                    
                     value={filterText}
                     onChange={handleFilterChange}
                     fullWidth
                     margin="normal"
-                    sx={{flexGrow: 1}}
+                    sx={{flexGrow: 1, height: 64}}
                 />
-
                 <TextField
                     label="Last Auth Date From"
                     type="datetime-local"
@@ -154,14 +211,13 @@ const ActiveUsersTable: React.FC = () => {
                     value={lastAuthDateFrom}
                     onChange={handleDateFromChange}
                     margin="normal"
-                    sx={{width: 300, marginLeft: 2}}
+                    sx={{minWidth: 190, marginLeft: 2, height: 64}}
                     slotProps={{
                         inputLabel: {
                             shrink: true,
                         }
                     }}
                 />
-
                 <TextField
                     label="Last Auth Date To"
                     type="datetime-local"
@@ -169,14 +225,33 @@ const ActiveUsersTable: React.FC = () => {
                     value={lastAuthDateTo}
                     onChange={handleDateToChange}
                     margin="normal"
-                    sx={{width: 300, marginLeft: 2}}
+                    sx={{minWidth: 190, marginLeft: 2, height: 64}}
                     slotProps={{
                         inputLabel: {
                             shrink: true,
                         }
                     }}
                 />
-
+                <FormControl sx={{minWidth: 300, marginLeft: 2}}>
+                    <InputLabel id="roles-select-label">Roles</InputLabel>
+                    <Select
+                        labelId="roles-select-label"
+                        id="roles-select"
+                        multiple
+                        value={selectedRoles}
+                        onChange={handleRoleChange}
+                        input={<OutlinedInput label="Roles"/>}
+                        renderValue={(selected) => selected.join(', ')}
+                        MenuProps={MenuProps}
+                    >
+                        {roles.map((role) => (
+                            <MenuItem key={role.targetId} value={role.targetDescription}>
+                                <Checkbox checked={selectedRoles.includes(role.targetDescription)}/>
+                                <ListItemText primary={role.targetDescription}/>
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
                 <Button
                     variant="outlined"
                     onClick={handleToggleIsLocked}
@@ -191,11 +266,22 @@ const ActiveUsersTable: React.FC = () => {
                 >
                     {isLocked ? <LockOutlinedIcon color="warning"/> : <LockOpenOutlinedIcon/>}
                 </Button>
-
                 <Button
-                    startIcon={<Refresh/>}
-                    onClick={handleRefresh}
                     variant="outlined"
+                    onClick={handleRefresh}
+                    sx={{
+                        paddingLeft: 3,
+                        paddingRight: 3,
+                        ml: 2,
+                        height: "50px",
+                        display: "flex",
+                        alignItems: "center",
+                    }}
+                > <Refresh/>
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={handleClearAll}
                     sx={{
                         paddingLeft: 3,
                         paddingRight: 3,
@@ -205,22 +291,7 @@ const ActiveUsersTable: React.FC = () => {
                         alignItems: "center",
                     }}
                 >
-                    Refresh
-                </Button>
-                <Button
-                    startIcon={<ClearAllIcon/>}
-                    onClick={handleClearAll}
-                    variant="outlined"
-                    sx={{
-                        paddingLeft: 3,
-                        paddingRight: 3,
-                        marginLeft: 2,
-                        height: "50px",
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                >
-                    Clear
+                    <ClearAllIcon/>
                 </Button>
             </Box>
             <TableContainer>
@@ -230,23 +301,29 @@ const ActiveUsersTable: React.FC = () => {
                             <TableCell>#</TableCell>
                             <TableCell>Username</TableCell>
                             <TableCell>Last auth date</TableCell>
+                            <TableCell>roles</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users.map((user, index) => {
-                            const rowNumber = page * rowsPerPage + index + 1; // Calculate row number
-                            return (
-                                <ActiveUserRow
-                                    key={user.userId}
-                                    user={user}
-                                    onLock={handleLock}
-                                    onDelete={handleDelete}
-                                    onSaveEdit={handleSaveEdit}
-                                    rowIndex={rowNumber}
-                                />
-                            );
-                        })}
+                        {loading ? (
+                            <CircularProgress/>
+                        ) : (
+                            users.map((user, index) => {
+                                const rowNumber = page * rowsPerPage + index + 1; // Calculate row number
+                                return (
+                                    <ActiveUserRow
+                                        key={user.userId}
+                                        user={user}
+                                        onLock={handleLock}
+                                        onDelete={handleDelete}
+                                        onSaveEdit={handleSaveEdit}
+                                        rowIndex={rowNumber}
+                                        roles={roles}
+                                    />
+                                );
+                            })
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>

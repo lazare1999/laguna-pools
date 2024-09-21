@@ -34,6 +34,10 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
         }
     };
 
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
+    };
+
     return (
         <Container component="main" maxWidth="xs">
             <Box
@@ -65,7 +69,8 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
                     <PasswordField
                         label={'Password'}
                         password={password}
-                        setPassword={setPassword}
+                        onChange={handlePasswordChange}
+                        helperText={""}
                     />
                     <Button
                         type="submit"

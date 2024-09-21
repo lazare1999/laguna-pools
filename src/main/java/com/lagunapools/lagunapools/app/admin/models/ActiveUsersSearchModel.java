@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by Lazo on 9/17/24
@@ -25,6 +26,7 @@ public class ActiveUsersSearchModel implements Serializable {
     private LocalDateTime lastAuthDateFrom;
     private LocalDateTime lastAuthDateTo;
     private Boolean isLocked;
+    private List<String> roles;
 
     @Override
     public String toString() {

@@ -41,4 +41,7 @@ public class TargetDomain {
     @ManyToMany(targetEntity = UsersDomain.class, cascade = CascadeType.DETACH)
     private List<UsersDomain> usersDomains;
 
+    @ManyToMany(targetEntity = UsersDomain.class, cascade = CascadeType.DETACH)
+    private List<AppUser> appUser;
+
 }
