@@ -1,6 +1,7 @@
 package com.lagunapools.lagunapools.app.admin.models;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ActiveUsersSearchModel implements Serializable {
     private Integer pageKey;
     private Integer pageSize;

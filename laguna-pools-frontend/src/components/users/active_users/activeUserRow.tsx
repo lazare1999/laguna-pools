@@ -1,23 +1,41 @@
 import React, {useState} from "react";
 import {IconButton, TableCell, TableRow} from "@mui/material";
-import {User} from "../models/usersModel";
-import {Delete} from "@mui/icons-material";
-import {Toast} from "../../utils/alertsUtils";
+import {User} from "../../models/usersModel";
+import {Toast} from "../../../utils/alertsUtils";
 import EditUserDialog from "./editUserDialog";
+import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import PersonRemoveAlt1OutlinedIcon from '@mui/icons-material/PersonRemoveAlt1Outlined';
+import {format} from "date-fns";
 
 interface UserRowProps {
     user: User;
+    rowIndex: number;
+    onLock: (userLock: User) => void;
     onDelete: (userToDelete: User) => void;
     onSaveEdit: (updatedUser: User) => void;
 }
 
-const UserRow: React.FC<UserRowProps> = ({user, onDelete, onSaveEdit}) => {
+const ActiveUserRow: React.FC<UserRowProps> = ({user, rowIndex, onLock, onDelete, onSaveEdit}) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [toastOpen, setToastOpen] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<string>("");
 
     const handleEditClick = () => {
         setDialogOpen(true);
+    };
+
+    const handleLockUserClick = () => {
+        const action = user.isLocked ? 'unlock' : 'lock';
+        if (window.confirm(`Are you sure you want to ${action} ${user.username}?`)) {
+            setToastMessage(`User ${user.username} has been ${user.isLocked ? 'unlocked' : 'locked'}!`);
+            setToastOpen(true);
+
+            // unlock_or_lock_user
+
+            user.isLocked = !user.isLocked;
+            onLock(user);
+        }
     };
 
     const handleDeleteClick = () => {
@@ -36,6 +54,8 @@ const UserRow: React.FC<UserRowProps> = ({user, onDelete, onSaveEdit}) => {
         setToastOpen(true);
     };
 
+    const formattedLastAuthDate = format(new Date(user.lastAuthDate), 'MMMM dd, yyyy, hh:mm a');
+
     return (
         <>
             <Toast
@@ -44,13 +64,16 @@ const UserRow: React.FC<UserRowProps> = ({user, onDelete, onSaveEdit}) => {
                 onClose={() => setToastOpen(false)}
                 options={{autoHideDuration: 3000}}
             />
-            <TableRow onClick={handleEditClick} style={{cursor: 'pointer'}}>
-                <TableCell>{user.userId}</TableCell>
-                <TableCell>{user.username}</TableCell>
-                <TableCell>{user.lastAuthDate}</TableCell>
+            <TableRow style={{cursor: 'pointer'}}>
+                <TableCell>{rowIndex}</TableCell>
+                <TableCell onClick={handleEditClick}>{user.username}</TableCell>
+                <TableCell>{formattedLastAuthDate}</TableCell>
                 <TableCell>
+                    <IconButton onClick={handleLockUserClick} color="info">
+                        {user.isLocked ? <LockOutlinedIcon color="warning"/> : <LockOpenOutlinedIcon/>}
+                    </IconButton>
                     <IconButton onClick={handleDeleteClick} color="error">
-                        <Delete/>
+                        <PersonRemoveAlt1OutlinedIcon/>
                     </IconButton>
                 </TableCell>
             </TableRow>
@@ -64,4 +87,4 @@ const UserRow: React.FC<UserRowProps> = ({user, onDelete, onSaveEdit}) => {
     );
 };
 
-export default UserRow;
+export default ActiveUserRow;

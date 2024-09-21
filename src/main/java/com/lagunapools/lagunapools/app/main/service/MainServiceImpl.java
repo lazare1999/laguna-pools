@@ -7,6 +7,7 @@ import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
 import com.lagunapools.lagunapools.utils.JwtUtils;
 import io.micrometer.common.util.StringUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,7 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<?> createAuthenticationToken(AuthenticationRequest autRequest) throws Exception {
         if (StringUtils.isEmpty(autRequest.getUsername()) || StringUtils.isEmpty(autRequest.getPassword()))
             return badRequestResponse("1");
@@ -81,13 +83,19 @@ public class MainServiceImpl implements MainService {
         }
 
         Integer maxLoginAttempts = 3;
-        if (u.getIsLocked() || Objects.equals(maxLoginAttempts, u.getLoginAttempts())) {
-            return lockedResponse("User is locked. Contact Administrator.");
-        }
-
         Authentication newUser = userDetailsService.authenticateJwt(maxLoginAttempts, u, autRequest.getUsername(), encrypt(SALT, autRequest.getPassword()), Objects.equals(encrypt(SALT, autRequest.getPassword()), user.getPassword()));
         if (newUser == null)
             return forbiddenResponse("Wrong password.");
+
+        boolean userIsAdmin = u.getTargetDomains().stream()
+                .anyMatch(r -> Objects.equals(r.getTargetName(), "ROLE_LAGUNA_ADMIN"));
+
+        if (!userIsAdmin || u.getIsLocked() || Objects.equals(maxLoginAttempts, u.getLoginAttempts())) {
+            return lockedResponse("User is locked. Contact Administrator.");
+        } else {
+            u.setLoginAttempts(0);
+            usersRepository.save(u);
+        }
 
         try {
             authenticateManager.authenticate(newUser);

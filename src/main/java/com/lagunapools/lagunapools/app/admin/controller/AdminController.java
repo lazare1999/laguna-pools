@@ -5,7 +5,6 @@ import com.lagunapools.lagunapools.app.admin.models.*;
 import com.lagunapools.lagunapools.app.admin.services.AdminRolesService;
 import com.lagunapools.lagunapools.app.admin.services.AdminSearchService;
 import com.lagunapools.lagunapools.app.admin.services.AdminService;
-import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.domains.TargetViewDomain;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
@@ -33,7 +32,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping(value = "/active_users")
 //    @Cacheable(value = "activeUsersCache", key = "#model.toString()")
-    public List<AppUser> listActiveUsers(@ModelAttribute ActiveUsersSearchModel model) {
+    public ActiveUsersResponseModel listActiveUsers(@ModelAttribute ActiveUsersSearchModel model) {
         return adminSearchService.listActiveUsers(model);
     }
 

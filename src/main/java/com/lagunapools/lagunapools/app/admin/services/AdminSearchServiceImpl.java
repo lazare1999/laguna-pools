@@ -1,9 +1,9 @@
 package com.lagunapools.lagunapools.app.admin.services;
 
 
+import com.lagunapools.lagunapools.app.admin.models.ActiveUsersResponseModel;
 import com.lagunapools.lagunapools.app.admin.models.ActiveUsersSearchModel;
 import com.lagunapools.lagunapools.app.admin.models.UsersSearchModel;
-import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
@@ -36,11 +36,11 @@ public class AdminSearchServiceImpl implements AdminSearchService {
 
     @Override
 //    @Cacheable(value = "activeUsersCache", key = "#activeUsersSearchModel.toString()")
-    public List<AppUser> listActiveUsers(ActiveUsersSearchModel activeUsersSearchModel) {
+    public ActiveUsersResponseModel listActiveUsers(ActiveUsersSearchModel activeUsersSearchModel) {
         if (Objects.isNull(activeUsersSearchModel)
                 || activeUsersSearchModel.getPageKey() == null
                 || activeUsersSearchModel.getPageSize() == null) {
-            return new ArrayList<>();
+            return new ActiveUsersResponseModel();
         }
 
         var page = userRepository.findAll((root, query, builder) -> {
@@ -68,7 +68,7 @@ public class AdminSearchServiceImpl implements AdminSearchService {
             return predicate;
         }, PageRequest.of(activeUsersSearchModel.getPageKey(), activeUsersSearchModel.getPageSize(), LazoUtils.getSortAsc("userId")));
 
-        return page.toList();
+        return new ActiveUsersResponseModel(page.getTotalElements(), page.toList());
     }
 
     @Override

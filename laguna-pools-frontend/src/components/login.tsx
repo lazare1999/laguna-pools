@@ -30,7 +30,7 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
                 setAlertOpen(true);
             }
         } catch (error) {
-            setAlertOpen(true); // Handle errors and set alert
+            setAlertOpen(true);
         }
     };
 
@@ -56,8 +56,17 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
                         autoFocus
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        slotProps={{
+                            inputLabel: {
+                                shrink: true,
+                            }
+                        }}
                     />
-                    <PasswordField label={'Password'} password={password} setPassword={setPassword}/>
+                    <PasswordField
+                        label={'Password'}
+                        password={password}
+                        setPassword={setPassword}
+                    />
                     <Button
                         type="submit"
                         fullWidth

@@ -4,5 +4,6 @@ export interface User {
     username: string;
     password: string;
     lastAuthDate: string;
+    isLocked: boolean;
     roles: Array<string>;
 }
