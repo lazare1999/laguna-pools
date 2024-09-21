@@ -117,6 +117,23 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
+    public ResponseEntity<?> disableOrEnableUser(Long userId) {
+        if (Objects.equals(userId, null))
+            return badRequestResponse(false);
+
+        var user0 = usersRepository.findById(userId);
+        if (user0.isEmpty())
+            return badRequestResponse("User does not exist");
+
+        var user = user0.get();
+        user.setStatusId(user.getStatusId() == 0 ? 1 : 0);
+        user.setUpdatedBy(getCurrentApplicationUser().getUsername());
+        usersRepository.save(user);
+        return okResponse(true);
+    }
+
+    @Override
+    @Transactional
     public ResponseEntity<?> changeUserPassword(ChangePasswordModel cm) {
         if (Objects.equals(cm.getChangePasswordCandidateUserId(), null)
                 || Objects.equals(cm.getNewPassword(), null))
@@ -138,12 +155,13 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public ResponseEntity<?> changeUserDetails(EditUserModel changeModel) {
         var cUser = usersRepository.findByUserId(changeModel.getUserId());
-        if (!changeModel.getNewPassword().isEmpty()) {
+        if (StringUtils.isNotEmpty(changeModel.getNewPassword())) {
             cUser.setUserPassword(encrypt(SALT, changeModel.getNewPassword()));
         }
 
+        cUser.setUserName(changeModel.getNewUsername());
         cUser.setUpdatedBy(getCurrentApplicationUser().getUsername());
-
+        usersRepository.save(cUser);
         return okResponse(true);
     }
 

@@ -75,8 +75,14 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @PostMapping(value = "/unlock_or_lock_user")
-    public ResponseEntity<?> unlockOrLockUser(@RequestBody Long userId) {
+    public ResponseEntity<?> unlockOrLockUser(@RequestParam Long userId) {
         return adminService.unlockOrLockUser(userId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
+    @PostMapping(value = "/disable_or_enable_user")
+    public ResponseEntity<?> disableOrEnableUser(@RequestParam Long userId) {
+        return adminService.disableOrEnableUser(userId);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")

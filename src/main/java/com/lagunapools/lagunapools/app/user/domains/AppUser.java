@@ -1,17 +1,12 @@
 package com.lagunapools.lagunapools.app.user.domains;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by Lazo on 2024-09-11
@@ -19,9 +14,10 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Entity(name = "active_users")
+@Builder
 @Table(schema = "users", name = "active_users")
 public class AppUser implements Serializable {
 
@@ -43,5 +39,15 @@ public class AppUser implements Serializable {
 
     @Column(name = "is_locked")
     private Boolean isLocked;
+
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @JoinTable(
+            schema = "users",
+            name = "user_roles", // the join table name
+            joinColumns = @JoinColumn(name = "user_id"), // foreign key for User
+            inverseJoinColumns = @JoinColumn(name = "target_id") // foreign key for TargetViewDomain
+    )
+    private List<TargetDomain> targetDomains;
+
 
 }
