@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
-import {User} from "../models/usersModel";
+import {User} from "../../models/usersModel";
 
 interface EditUserDialogProps {
     open: boolean;

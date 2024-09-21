@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {IconButton, TableCell, TableRow} from "@mui/material";
 import {User} from "../../models/usersModel";
 import {Toast} from "../../../utils/alertsUtils";
-import EditUserDialog from "../editUserDialog";
+import EditUserDialog from "./editUserDialog";
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonRemoveAlt1OutlinedIcon from '@mui/icons-material/PersonRemoveAlt1Outlined';

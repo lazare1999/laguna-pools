@@ -25,7 +25,7 @@ import ClearAllIcon from '@mui/icons-material/ClearAll';
 
 const ActiveUsersTable: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
-    const [pageSize, setPageSize] = useState<number>(0);
+    const [count, setCount] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10); // Set default to 10 rows per page
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -57,9 +57,8 @@ const ActiveUsersTable: React.FC = () => {
             const response = await authClient.request(`admin/active_users?${queryString}`, HttpMethod.GET);
 
             if (Array.isArray(response.data.content)) {
-                console.log(response.data);
                 setUsers(response.data.content);
-                setPageSize(response.data.total);
+                setCount(response.data.total);
             } else {
                 setAlertMessage(`Fetched users are not an array: ${response.data}`);
                 setAlertOpen(true);
@@ -73,7 +72,7 @@ const ActiveUsersTable: React.FC = () => {
 
     useEffect(() => {
         fetchUsers().then(r => r);
-    }, [page, rowsPerPage]);
+    }, [page, rowsPerPage, filterText, isLocked, lastAuthDateFrom, lastAuthDateTo]);
 
     const handleLock = (lockUser: User) => {
         setUsers(users.map(user => (user.userId === lockUser.userId ? lockUser : user)));
@@ -100,7 +99,7 @@ const ActiveUsersTable: React.FC = () => {
         setLastAuthDateTo(e.target.value);
     };
 
-    const handlePageChange = (event: unknown, newPage: number) => {
+    const handlePageChange = (_: unknown, newPage: number) => {
         setPage(newPage);
     };
 
@@ -140,6 +139,7 @@ const ActiveUsersTable: React.FC = () => {
                 <TextField
                     label="Filter by username"
                     variant="outlined"
+                    
                     value={filterText}
                     onChange={handleFilterChange}
                     fullWidth
@@ -234,7 +234,7 @@ const ActiveUsersTable: React.FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => {
+                        {users.map((user, index) => {
                             const rowNumber = page * rowsPerPage + index + 1; // Calculate row number
                             return (
                                 <ActiveUserRow
@@ -253,7 +253,7 @@ const ActiveUsersTable: React.FC = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={pageSize}
+                count={count}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handlePageChange}
