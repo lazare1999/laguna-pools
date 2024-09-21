@@ -3,7 +3,7 @@ import RegisterForm from "../components/users/register";
 import ClientsTable from "../components/clients/clientsTable";
 import React from "react";
 import {Component} from "./componentsEnum";
-import UsersTable from "../components/users/usersTable";
+import ActiveUsersTable from "../components/users/active_users/activeUsersTable";
 
 interface ComponentMapperProps {
     currentComponent: Component
@@ -19,8 +19,8 @@ const ComponentMapper: React.FC<ComponentMapperProps> = ({currentComponent, sele
             return <RegisterForm/>;
         case Component.CLIENTS_TABLE:
             return <ClientsTable/>;
-        case Component.USERS_TABLE:
-            return <UsersTable/>
+        case Component.ACTIVE_USERS_TABLE:
+            return <ActiveUsersTable/>
         default:
             return null;
     }

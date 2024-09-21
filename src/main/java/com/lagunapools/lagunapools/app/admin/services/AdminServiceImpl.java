@@ -39,6 +39,7 @@ public class AdminServiceImpl implements AdminService {
     private String SALT;
 
     @Override
+    @Transactional
     public ResponseEntity<?> addUser(AddUserModel u) {
         if (Objects.equals(u, null)
                 || StringUtils.isEmpty(u.getPassword())
@@ -74,6 +75,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<?> removeUser(Long userId) {
         if (Objects.equals(null, userId))
             return badRequestResponse(false);
@@ -94,6 +96,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<?> unlockOrLockUser(Long userId) {
         if (Objects.equals(userId, null))
             return badRequestResponse(false);
@@ -113,9 +116,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<?> changeUserPassword(ChangePasswordModel cm) {
         if (Objects.equals(cm.getChangePasswordCandidateUserId(), null)
-                || Objects.equals(cm.getOldPassword(), null)
                 || Objects.equals(cm.getNewPassword(), null))
             return badRequestResponse(false);
 
@@ -123,9 +126,6 @@ public class AdminServiceImpl implements AdminService {
 
         if (Objects.isNull(cUser))
             return badRequestResponse("User not found");
-
-        if (!Objects.equals(cUser.getUserPassword(), encrypt(SALT, cm.getOldPassword())))
-            return badRequestResponse("Old password does not match");
 
         cUser.setUserPassword(encrypt(SALT, cm.getNewPassword()));
         cUser.setUpdatedBy(getCurrentApplicationUser().getUsername());

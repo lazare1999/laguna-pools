@@ -11,6 +11,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * Created by Lazo on 2024-09-11
@@ -38,7 +39,7 @@ public class AppUser implements Serializable {
     private String password;
 
     @Column(name = "last_auth_date")
-    private String lastAuthDate;
+    private LocalDateTime lastAuthDate;
 
     @Column(name = "is_locked")
     private Boolean isLocked;

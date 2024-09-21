@@ -37,6 +37,11 @@ const PasswordField: React.FC<PasswordFieldProps> = ({password, setPassword, lab
                     </InputAdornment>
                 ),
             }}
+            slotProps={{
+                inputLabel: {
+                    shrink: true,
+                }
+            }}
         />
     );
 };

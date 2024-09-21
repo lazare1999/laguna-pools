@@ -140,6 +140,11 @@ const RegisterForm: React.FC = () => {
                         autoFocus
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        slotProps={{
+                            inputLabel: {
+                                shrink: true,
+                            }
+                        }}
                     />
                     <TextField
                         margin="normal"
@@ -167,6 +172,11 @@ const RegisterForm: React.FC = () => {
                                     </IconButton>
                                 </InputAdornment>
                             ),
+                        }}
+                        slotProps={{
+                            inputLabel: {
+                                shrink: true,
+                            }
                         }}
                     />
                     <PasswordField

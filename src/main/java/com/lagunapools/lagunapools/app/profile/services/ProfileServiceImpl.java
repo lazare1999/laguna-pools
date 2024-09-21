@@ -3,6 +3,7 @@ package com.lagunapools.lagunapools.app.profile.services;
 
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class ProfileServiceImpl implements ProfileService {
     private String SALT;
 
     @Override
+    @Transactional
     public ResponseEntity<?> changePassword(ChangePasswordModel changePasswordModel) {
 
         var user = usersRepository.findByUserId(Long.valueOf(getCurrentApplicationUserId()));

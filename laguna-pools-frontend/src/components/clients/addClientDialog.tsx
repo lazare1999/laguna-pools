@@ -68,7 +68,11 @@ const AddClientDialog: React.FC<AddUserDialogProps> = ({open, onClose, onAddUser
                     margin="normal"
                     value={newUser.expirationDate}
                     onChange={(e) => handleInputChange("expirationDate", e.target.value)}
-                    InputLabelProps={{shrink: true}}
+                    slotProps={{
+                        inputLabel: {
+                            shrink: true,
+                        }
+                    }}
                 />
                 <TextField
                     label="Plan"
