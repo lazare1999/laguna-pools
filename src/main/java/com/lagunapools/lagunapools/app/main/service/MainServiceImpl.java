@@ -68,12 +68,6 @@ public class MainServiceImpl implements MainService {
 
         List<String> roles = user.getTargetDomains().stream().map(TargetDomain::getTargetName).toList();
         return new UserRolesResponse(roles);
-//        var userName = jwtTokenUtils.getUserNameViaToken(token);
-//
-//        if (StringUtils.isEmpty(userName))
-//            return badRequestResponse("");
-//
-//        return okResponse(userName);
     }
 
     @Override
