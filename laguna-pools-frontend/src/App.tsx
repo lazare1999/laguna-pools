@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import ComponentMapper from "./utils/componentMapper";
 import {Component} from "./utils/componentsEnum";
-import {REFRESH_TOKEN_EXP_NAME, REFRESH_TOKEN_NAME, TOKEN_EXP_NAME} from "./utils/constants";
+import {REFRESH_TOKEN_EXP_NAME, REFRESH_TOKEN_NAME} from "./utils/constants";
 import TopMenu from "./components/topMenu";
 import AuthenticateUtils from "./api/authenticateUtils";
 import PasswordDialog from "./components/users/reLoginDialog";
@@ -27,10 +27,10 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        const token = localStorage.getItem(TOKEN_EXP_NAME);
+        const token = localStorage.getItem(REFRESH_TOKEN_EXP_NAME);
 
-        if (token !== null) {  // Ensure the token is not null
-            const tokenDate = new Date(token); // Convert token string to number and then to a Date
+        if (token !== null && select !== Component.LOGIN) {
+            const tokenDate = new Date(Number(token));
             const currentDate = new Date();
 
             console.log(`current: ${currentDate}\ntoken: ${tokenDate}\nres: ${currentDate > tokenDate}`);

@@ -1,5 +1,3 @@
-import {TOKEN_EXP_NAME} from "../utils/constants";
-
 export interface IAuthenticationResponse {
     jwt?: string;
     expiresIn?: number;
@@ -77,8 +75,6 @@ export class AuthenticationResponse {
                 : parseInt(body.refreshExpiresIn, 10);
             this.refreshExpiresAt = new Date(this.refreshExpiresIn!);
         }
-
-        localStorage.setItem(TOKEN_EXP_NAME, this.expiresAt!.toString());
     }
 
     isInteger(value: any): boolean {
