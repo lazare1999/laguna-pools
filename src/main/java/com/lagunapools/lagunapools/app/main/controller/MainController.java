@@ -1,6 +1,7 @@
 package com.lagunapools.lagunapools.app.main.controller;
 
 import com.lagunapools.lagunapools.app.main.models.AuthenticationRequest;
+import com.lagunapools.lagunapools.app.main.models.UserRolesResponse;
 import com.lagunapools.lagunapools.app.main.service.MainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,13 @@ public class MainController {
     public ResponseEntity<String> getUserName(@RequestHeader("Authorization") String token) {
         return mainService.getUserName(token);
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA')")
+    @GetMapping(value = "/get_user_roles")
+    public UserRolesResponse getUserRoles(@RequestHeader("Authorization") String token) {
+        return mainService.getUserRoles(token);
+    }
+
 
     @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA')")
     @PostMapping(value = "/logout_from_system")

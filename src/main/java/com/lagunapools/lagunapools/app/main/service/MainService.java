@@ -1,6 +1,7 @@
 package com.lagunapools.lagunapools.app.main.service;
 
 import com.lagunapools.lagunapools.app.main.models.AuthenticationRequest;
+import com.lagunapools.lagunapools.app.main.models.UserRolesResponse;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 public interface MainService {
 
     ResponseEntity<String> getUserName(String token);
+
+    UserRolesResponse getUserRoles(String token);
 
     ResponseEntity<Boolean> logout(String token);
 

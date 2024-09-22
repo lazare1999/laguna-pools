@@ -100,6 +100,7 @@ const ActiveUsersTable: React.FC = () => {
     const fetchRolesList = async () => {
         try {
             const rolesData = await authClient.request('admin/list_roles', HttpMethod.GET);
+
             if (Array.isArray(rolesData.data)) {
                 setRoles(rolesData.data);
             } else {
@@ -114,7 +115,7 @@ const ActiveUsersTable: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchRolesList().then(r => r); // Call once on mount
+        fetchRolesList().then(r => r);
     }, []);
 
     useEffect(() => {
@@ -314,7 +315,7 @@ const ActiveUsersTable: React.FC = () => {
                             </TableRow>
                         ) : (
                             users.map((user, index) => {
-                                const rowNumber = page * rowsPerPage + index + 1; // Calculate row number
+                                const rowNumber = page * rowsPerPage + index + 1;
                                 return (
                                     <ActiveUserRow
                                         key={user.userId}
