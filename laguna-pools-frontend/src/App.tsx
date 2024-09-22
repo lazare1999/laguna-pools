@@ -6,11 +6,13 @@ import {REFRESH_TOKEN_EXP_NAME, REFRESH_TOKEN_NAME} from "./utils/constants";
 import TopMenu from "./components/topMenu";
 import AuthenticateUtils from "./api/authenticateUtils";
 import PasswordDialog from "./components/users/reLoginDialog";
+import LoadingPageProgress from "./components/common/loadingPage";
 
 const App = () => {
     const [select, setSelect] = useState<Component>(Component.LOGIN);
     const [openSessionWindow, setOpenSessionWindow] = useState(false);
     const [reLoginDialogOpen, setReLoginDialogOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const checkLoginStatus = async () => {
         const token = await AuthenticateUtils.getJwtViaRefreshTokenFromLocalStorage();
@@ -20,8 +22,10 @@ const App = () => {
     useEffect(() => {
         checkLoginStatus().then(p => {
             if (p) {
+                setLoading(true);
                 setSelect(Component.CLIENTS_TABLE);
                 setOpenSessionWindow(p);
+                setLoading(false);
             }
         })
     }, []);
@@ -59,11 +63,15 @@ const App = () => {
 
     return (
         <div className="App">
-            <PasswordDialog onClose={closeDialogHandler} open={reLoginDialogOpen}
-                            setOpenSessionWindow={open => setOpenSessionWindow(open)}/>
-            {openSessionWindow && <TopMenu selectHandler={selectHandler} onLogout={logOutHandler}/>}
-            <ComponentMapper selectHandler={selectHandler} currentComponent={select}
-                             setOpenSessionWindow={setOpenSessionWindow}/>
+            {loading ?
+                <LoadingPageProgress/> :
+                <>
+                    <PasswordDialog onClose={closeDialogHandler} open={reLoginDialogOpen}
+                                    setOpenSessionWindow={open => setOpenSessionWindow(open)}/>
+                    {openSessionWindow && <TopMenu selectHandler={selectHandler} onLogout={logOutHandler}/>}
+                    <ComponentMapper selectHandler={selectHandler} currentComponent={select}
+                                     setOpenSessionWindow={setOpenSessionWindow}/>
+                </>}
         </div>
     );
 }
