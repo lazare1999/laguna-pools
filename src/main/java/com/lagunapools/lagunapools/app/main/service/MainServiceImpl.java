@@ -104,7 +104,7 @@ public class MainServiceImpl implements MainService {
         boolean userIsAdmin = u.getTargetDomains().stream()
                 .anyMatch(r -> Objects.equals(r.getTargetName(), "ROLE_LAGUNA_ADMIN"));
 
-        if (!userIsAdmin || u.getIsLocked() || Objects.equals(maxLoginAttempts, u.getLoginAttempts())) {
+        if (!userIsAdmin && (u.getIsLocked() || Objects.equals(maxLoginAttempts, u.getLoginAttempts()))) {
             return lockedResponse("User is locked. Contact Administrator.");
         } else {
             u.setLoginAttempts(0);

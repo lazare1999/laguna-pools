@@ -75,7 +75,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
             const response = await authClient.request('admin/edit_user', HttpMethod.POST, {
                 userId: editedUser.userId,
                 newUsername: editedUser.username,
-                newPassword: editedUser.password,
+                newPassword: password,
                 newRoles: selectedRoles
             });
 

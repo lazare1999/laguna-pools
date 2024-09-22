@@ -26,6 +26,7 @@ repositories {
 
 dependencies {
     implementation(
+            'com.fasterxml.jackson.datatype:jackson-datatype-joda',
             'org.springframework.boot:spring-boot-starter-data-jpa',
             'org.springframework.boot:spring-boot-starter-security',
             'org.springframework.boot:spring-boot-starter-thymeleaf',
