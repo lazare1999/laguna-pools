@@ -21,12 +21,12 @@ const App = () => {
 
     useEffect(() => {
         checkLoginStatus().then(p => {
+            setLoading(true);
             if (p) {
-                setLoading(true);
                 setSelect(Component.CLIENTS_TABLE);
                 setOpenSessionWindow(p);
-                setLoading(false);
             }
+            setLoading(false);
         })
     }, []);
 
@@ -44,6 +44,8 @@ const App = () => {
                 setReLoginDialogOpen(true);
             }
         }
+
+        console.log("loading: " + loading);
     }, [select]);
 
     const closeDialogHandler = () => {

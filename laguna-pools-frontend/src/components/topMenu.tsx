@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppBar, Box, Button, Menu, MenuItem, Toolbar} from '@mui/material';
 import {ExitToApp, PersonAddAlt, TableChart} from '@mui/icons-material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -12,7 +12,12 @@ interface TopMenuProps {
 
 const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [role, setRole] = useState('');
     const open = Boolean(anchorEl);
+
+    useEffect(() => {
+        console.log("loaded");
+    })
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);

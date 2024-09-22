@@ -15,7 +15,6 @@ const LoadingPage: React.FC<LoadingPageProps> = ({label}) => {
                 alignItems: 'center',
                 height: '80%',
                 width: '100%',
-                // backgroundColor: '#f0f4f8',
                 textAlign: 'center',
                 p: 2,
             }}
@@ -28,7 +27,6 @@ const LoadingPage: React.FC<LoadingPageProps> = ({label}) => {
                     width: '40%',
                     height: 7,
                     borderRadius: 5,
-                    // backgroundColor: '#d3d3d3',
                     '& .MuiLinearProgress-bar': {
                         backgroundColor: '#0067a1',
                     },
