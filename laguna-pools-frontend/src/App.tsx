@@ -64,7 +64,7 @@ const App = () => {
     return (
         <div className="App">
             {loading ?
-                <LoadingPageProgress/> :
+                <LoadingPageProgress label={"Please wait while we load your page..."}/> :
                 <>
                     <PasswordDialog onClose={closeDialogHandler} open={reLoginDialogOpen}
                                     setOpenSessionWindow={open => setOpenSessionWindow(open)}/>
