@@ -71,7 +71,7 @@ public class AdminSearchServiceImpl implements AdminSearchService {
             }
 
             if (activeUsersSearchModel.getRoles() != null && !activeUsersSearchModel.getRoles().isEmpty()) {
-                CriteriaBuilder.In<String> rolesPredicate = builder.in(root.get("targetDomains").get("targetName"));
+                CriteriaBuilder.In<String> rolesPredicate = builder.in(root.get("targetDomains").get("targetDescription"));
 
                 for (String role : activeUsersSearchModel.getRoles()) {
                     rolesPredicate.value(role);

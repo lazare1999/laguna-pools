@@ -22,11 +22,10 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
 
     useEffect(() => {
         UserApiService.getRoles().then(r => {
-            console.log("roles: " + r.data.roles);
             setRoles(r.data.roles);
         }).catch(err => console.error(err));
 
-    })
+    }, []);
 
     const hasRole = (role: string) => {
         return roles.includes(role);
