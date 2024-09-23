@@ -5,6 +5,7 @@ import com.lagunapools.lagunapools.app.clients.models.AllClientsResponseDTO;
 import com.lagunapools.lagunapools.app.clients.models.ClientDTO;
 import com.lagunapools.lagunapools.app.clients.repository.ClientEntity;
 import com.lagunapools.lagunapools.app.clients.repository.ClientsRepository;
+import com.lagunapools.lagunapools.app.clients.repository.GroupRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,15 +21,19 @@ import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
 @Service
 public class ClientsServiceImpl implements ClientsService {
     private final ClientsRepository clientsRepository;
+    private final GroupRepository groupRepository;
 
-    public ClientsServiceImpl(ClientsRepository clientsRepository) {
+    public ClientsServiceImpl(ClientsRepository clientsRepository, GroupRepository groupRepository) {
         this.clientsRepository = clientsRepository;
+        this.groupRepository = groupRepository;
     }
 
     @Override
     public ResponseEntity<?> addClient(ClientDTO client) {
         try {
-            clientsRepository.save(new ClientEntity(client));
+            ClientEntity newClient = new ClientEntity(client);
+            newClient.setGroup(groupRepository.getReferenceById(client.getGroupId()));
+            clientsRepository.save(newClient);
         } catch (Exception ex) {
             ex.printStackTrace();
             return badRequestResponse(ex.getStackTrace());
