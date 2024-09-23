@@ -4,7 +4,6 @@ import {
     Box,
     Button,
     Checkbox,
-    CircularProgress,
     FormControl,
     InputLabel,
     ListItemText,
@@ -31,6 +30,7 @@ import authClient from "../../../api/api";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import ClearAllIcon from '@mui/icons-material/ClearAll';
+import LoadingPage from "../../common/loadingPage";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -72,7 +72,6 @@ const ActiveUsersTable: React.FC = () => {
                 roles: selectedRoles.join(','),
             };
 
-            // Include lastAuthDateFrom and lastAuthDateTo only if they are not null
             if (lastAuthDateFrom) {
                 params.lastAuthDateFrom = lastAuthDateFrom;
             }
@@ -101,6 +100,7 @@ const ActiveUsersTable: React.FC = () => {
     const fetchRolesList = async () => {
         try {
             const rolesData = await authClient.request('admin/list_roles', HttpMethod.GET);
+
             if (Array.isArray(rolesData.data)) {
                 setRoles(rolesData.data);
             } else {
@@ -115,7 +115,7 @@ const ActiveUsersTable: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchRolesList().then(r => r); // Call once on mount
+        fetchRolesList().then(r => r);
     }, []);
 
     useEffect(() => {
@@ -293,6 +293,7 @@ const ActiveUsersTable: React.FC = () => {
                 >
                     <ClearAllIcon/>
                 </Button>
+
             </Box>
             <TableContainer>
                 <Table>
@@ -307,10 +308,14 @@ const ActiveUsersTable: React.FC = () => {
                     </TableHead>
                     <TableBody>
                         {loading ? (
-                            <CircularProgress/>
+                            <TableRow>
+                                <TableCell colSpan={5} align="center">
+                                    <LoadingPage label="Loading Data..."/>
+                                </TableCell>
+                            </TableRow>
                         ) : (
                             users.map((user, index) => {
-                                const rowNumber = page * rowsPerPage + index + 1; // Calculate row number
+                                const rowNumber = page * rowsPerPage + index + 1;
                                 return (
                                     <ActiveUserRow
                                         key={user.userId}

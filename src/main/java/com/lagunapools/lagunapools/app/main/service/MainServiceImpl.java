@@ -2,6 +2,9 @@ package com.lagunapools.lagunapools.app.main.service;
 
 import com.lagunapools.lagunapools.app.main.models.AuthenticationRequest;
 import com.lagunapools.lagunapools.app.main.models.AuthenticationResponse;
+import com.lagunapools.lagunapools.app.main.models.UserRolesResponse;
+import com.lagunapools.lagunapools.app.user.domains.AppUser;
+import com.lagunapools.lagunapools.app.user.domains.TargetDomain;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
@@ -19,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.lagunapools.lagunapools.utils.EncryptUtils.encrypt;
@@ -57,6 +61,16 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
+    @Transactional
+    public UserRolesResponse getUserRoles(String token) {
+        var userName = jwtTokenUtils.getUserNameViaToken(token);
+        AppUser user = userRepository.findByUsername(userName);
+
+        List<String> roles = user.getTargetDomains().stream().map(TargetDomain::getTargetName).toList();
+        return new UserRolesResponse(roles);
+    }
+
+    @Override
     public ResponseEntity<Boolean> logout(String token) {
         var userName = jwtTokenUtils.getUserNameViaToken(token);
 
@@ -90,7 +104,7 @@ public class MainServiceImpl implements MainService {
         boolean userIsAdmin = u.getTargetDomains().stream()
                 .anyMatch(r -> Objects.equals(r.getTargetName(), "ROLE_LAGUNA_ADMIN"));
 
-        if (!userIsAdmin || u.getIsLocked() || Objects.equals(maxLoginAttempts, u.getLoginAttempts())) {
+        if (!userIsAdmin && (u.getIsLocked() || Objects.equals(maxLoginAttempts, u.getLoginAttempts()))) {
             return lockedResponse("User is locked. Contact Administrator.");
         } else {
             u.setLoginAttempts(0);

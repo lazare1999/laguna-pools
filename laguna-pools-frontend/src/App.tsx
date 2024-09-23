@@ -5,24 +5,52 @@ import {Component} from "./utils/componentsEnum";
 import {REFRESH_TOKEN_EXP_NAME, REFRESH_TOKEN_NAME} from "./utils/constants";
 import TopMenu from "./components/topMenu";
 import AuthenticateUtils from "./api/authenticateUtils";
+import PasswordDialog from "./components/users/reLoginDialog";
+import LoadingPageProgress from "./components/common/loadingPage";
 
 const App = () => {
     const [select, setSelect] = useState<Component>(Component.LOGIN);
     const [openSessionWindow, setOpenSessionWindow] = useState(false);
+    const [reLoginDialogOpen, setReLoginDialogOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    const checkLoginStatus = async () => {
+        const token = await AuthenticateUtils.getJwtViaRefreshTokenFromLocalStorage();
+        return token !== null;
+    };
 
     useEffect(() => {
-        const checkLoginStatus = async () => {
-            const token = await AuthenticateUtils.getJwtViaRefreshTokenFromLocalStorage();
-            const isLoggedIn = token !== null;
-            setOpenSessionWindow(isLoggedIn);
-        };
-        checkLoginStatus().then(r => r);
+        checkLoginStatus().then(p => {
+            setLoading(true);
+            if (p) {
+                setSelect(Component.CLIENTS_TABLE);
+                setOpenSessionWindow(p);
+            }
+            setLoading(false);
+        })
     }, []);
 
     useEffect(() => {
-        
-    }, [select])
+        const token = localStorage.getItem(REFRESH_TOKEN_EXP_NAME);
 
+        if (token !== null && select !== Component.LOGIN) {
+            const tokenDate = new Date(Number(token));
+            const currentDate = new Date();
+
+            console.log(`current: ${currentDate}\ntoken: ${tokenDate}\nres: ${currentDate > tokenDate}`);
+
+            const tokenExpired = currentDate > tokenDate;
+            if (tokenExpired) {
+                setReLoginDialogOpen(true);
+            }
+        }
+
+        console.log("loading: " + loading);
+    }, [select]);
+
+    const closeDialogHandler = () => {
+        setReLoginDialogOpen(false);
+    }
 
     const selectHandler = (n: Component) => {
         setSelect(n);
@@ -31,15 +59,21 @@ const App = () => {
     const logOutHandler = () => {
         localStorage.removeItem(REFRESH_TOKEN_NAME);
         localStorage.removeItem(REFRESH_TOKEN_EXP_NAME);
-        setOpenSessionWindow(false); // Hide TopMenu
-        setSelect(Component.LOGIN); // Navigate to login screen
+        setOpenSessionWindow(false);
+        setSelect(Component.LOGIN);
     };
 
     return (
         <div className="App">
-            {openSessionWindow && <TopMenu selectHandler={selectHandler} onLogout={logOutHandler}/>}
-            <ComponentMapper selectHandler={selectHandler} currentComponent={select}
-                             setOpenSessionWindow={setOpenSessionWindow}/>
+            {loading ?
+                <LoadingPageProgress label={"Please wait while we load your page..."}/> :
+                <>
+                    <PasswordDialog onClose={closeDialogHandler} open={reLoginDialogOpen}
+                                    setOpenSessionWindow={open => setOpenSessionWindow(open)}/>
+                    {openSessionWindow && <TopMenu selectHandler={selectHandler} onLogout={logOutHandler}/>}
+                    <ComponentMapper selectHandler={selectHandler} currentComponent={select}
+                                     setOpenSessionWindow={setOpenSessionWindow}/>
+                </>}
         </div>
     );
 }

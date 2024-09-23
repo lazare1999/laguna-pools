@@ -57,7 +57,7 @@ const ClientsTable: React.FC = () => {
         setOpenDialog(false);
     };
 
-    const handleAddUser = (newUser: MockClient) => {
+    const handleAddClient = (newUser: MockClient) => {
         setUsers([...users, newUser]);
     };
 
@@ -100,17 +100,19 @@ const ClientsTable: React.FC = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
+                            <TableCell>Age</TableCell>
+                            <TableCell>Cost</TableCell>
+                            <TableCell>Phone Number</TableCell>
+                            <TableCell>ID Status</TableCell>
                             <TableCell>Expiration Date</TableCell>
-                            <TableCell>Attendance</TableCell>
-                            <TableCell>Plan</TableCell>
-                            <TableCell>Sessions</TableCell>
+                            <TableCell>Doctor Check Status</TableCell>
                             <TableCell>Notes</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
-                            <ClientRow onDelete={handleDelete} key={index} user={user}/>
+                            <ClientRow onDelete={handleDelete} key={index} client={user}/>
                         ))}
                     </TableBody>
                 </Table>
@@ -124,7 +126,7 @@ const ClientsTable: React.FC = () => {
                 onPageChange={handlePageChange}
                 onRowsPerPageChange={handleRowsPerPageChange}
             />
-            <AddClientDialog open={openDialog} onClose={handleCloseDialog} onAddUser={handleAddUser}/>
+            <AddClientDialog open={openDialog} onClose={handleCloseDialog} onAddClient={handleAddClient}/>
         </Paper>
     );
 };

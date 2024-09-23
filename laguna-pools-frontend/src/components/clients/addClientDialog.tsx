@@ -2,39 +2,43 @@ import React, {useState} from "react";
 import {Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, TextField,} from "@mui/material";
 import {MockClient} from "../../utils/mockClients";
 
-interface AddUserDialogProps {
+interface AddClientDialogProps {
     open: boolean;
     onClose: () => void;
-    onAddUser: (user: MockClient) => void;
+    onAddClient: (client: MockClient) => void;
 }
 
-const AddClientDialog: React.FC<AddUserDialogProps> = ({open, onClose, onAddUser}) => {
-    const [newUser, setNewUser] = useState<MockClient>({
+const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddClient}) => {
+    const [newClient, setNewClient] = useState<MockClient>({
         firstName: "",
         lastName: "",
-        expirationDate: "",
-        attended: false,
-        plan: "",
-        sessions: 0,
+        age: "",
+        cost: 0,
+        phoneNumber: "",
+        idStatus: "",
+        expDate: "",
+        doctorCheckStatus: false,
         notes: "",
     });
 
-    const handleInputChange = (field: string, value: string | boolean | number) => {
-        setNewUser({
-            ...newUser,
+    const handleInputChange = (field: keyof MockClient, value: string | boolean | number) => {
+        setNewClient({
+            ...newClient,
             [field]: value,
         });
     };
 
-    const handleAddUser = () => {
-        onAddUser(newUser);
-        setNewUser({
+    const handleAddClient = () => {
+        onAddClient(newClient);
+        setNewClient({
             firstName: "",
             lastName: "",
-            expirationDate: "",
-            attended: false,
-            plan: "",
-            sessions: 0,
+            age: "",
+            cost: 0,
+            phoneNumber: "",
+            idStatus: "",
+            expDate: "",
+            doctorCheckStatus: false,
             notes: "",
         });
         onClose();
@@ -42,14 +46,14 @@ const AddClientDialog: React.FC<AddUserDialogProps> = ({open, onClose, onAddUser
 
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Add New User</DialogTitle>
+            <DialogTitle>Add New Client</DialogTitle>
             <DialogContent>
                 <TextField
                     label="First Name"
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={newUser.firstName}
+                    value={newClient.firstName}
                     onChange={(e) => handleInputChange("firstName", e.target.value)}
                 />
                 <TextField
@@ -57,8 +61,41 @@ const AddClientDialog: React.FC<AddUserDialogProps> = ({open, onClose, onAddUser
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={newUser.lastName}
+                    value={newClient.lastName}
                     onChange={(e) => handleInputChange("lastName", e.target.value)}
+                />
+                <TextField
+                    label="Age"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={newClient.age}
+                    onChange={(e) => handleInputChange("age", e.target.value)}
+                />
+                <TextField
+                    label="Cost"
+                    type="number"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={newClient.cost}
+                    onChange={(e) => handleInputChange("cost", +e.target.value)}
+                />
+                <TextField
+                    label="Phone Number"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={newClient.phoneNumber}
+                    onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+                />
+                <TextField
+                    label="ID Status"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={newClient.idStatus}
+                    onChange={(e) => handleInputChange("idStatus", e.target.value)}
                 />
                 <TextField
                     label="Expiration Date"
@@ -66,48 +103,29 @@ const AddClientDialog: React.FC<AddUserDialogProps> = ({open, onClose, onAddUser
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={newUser.expirationDate}
-                    onChange={(e) => handleInputChange("expirationDate", e.target.value)}
-                    slotProps={{
-                        inputLabel: {
-                            shrink: true,
-                        }
+                    value={newClient.expDate}
+                    onChange={(e) => handleInputChange("expDate", e.target.value)}
+                    InputLabelProps={{
+                        shrink: true,
                     }}
                 />
-                <TextField
-                    label="Plan"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={newUser.plan}
-                    onChange={(e) => handleInputChange("plan", e.target.value)}
+                <Checkbox
+                    checked={newClient.doctorCheckStatus}
+                    onChange={(e) => handleInputChange("doctorCheckStatus", e.target.checked)}
                 />
-                <TextField
-                    label="Sessions"
-                    type="number"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={newUser.sessions}
-                    onChange={(e) => handleInputChange("sessions", +e.target.value)}
-                />
+                <label>Doctor Check Status</label>
                 <TextField
                     label="Notes"
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    value={newUser.notes}
+                    value={newClient.notes}
                     onChange={(e) => handleInputChange("notes", e.target.value)}
                 />
-                <Checkbox
-                    checked={newUser.attended}
-                    onChange={(e) => handleInputChange("attended", e.target.checked)}
-                />
-                <label>Attended</label>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button onClick={handleAddUser} color="primary">Add</Button>
+                <Button onClick={handleAddClient} color="primary">Add</Button>
             </DialogActions>
         </Dialog>
     );

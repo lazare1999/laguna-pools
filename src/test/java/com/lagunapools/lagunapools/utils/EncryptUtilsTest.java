@@ -21,8 +21,8 @@ public class EncryptUtilsTest {
 
     @Test
     public void testEncrypt() {
-        String passwordToHash = "123";
-        String expectedHash = "40700b4f6fe3475335e59af7930b8ae78efc1910762bf8c3d777d13df2882e9fcf88f030e061b02c236d6e7492ce905312bb796bb0a10c7f4329c280a9694fde";
+        String passwordToHash = "AAaaa11_";
+        String expectedHash = "1e56417be93117b4144e561abd7aef8717f97efe4e367d03e9cd5ae4776877e60c2bd9a3d1f6688f5cc6d2d09a70fac89b44f2f25ffd9997a6808d1d9d2cae41";
 
         // Act
         String actualHash = EncryptUtils.encrypt(SALT, passwordToHash);
@@ -30,4 +30,5 @@ public class EncryptUtilsTest {
         // Assert
         assertEquals(expectedHash, actualHash);
     }
+
 }
