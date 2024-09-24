@@ -26,22 +26,13 @@ const ActiveUserRow: React.FC<UserRowProps> = ({user, rowIndex, onLock, onDelete
     const [toastOpen, setToastOpen] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<string>("");
 
-    // useEffect(() => {
-    //     console.log(`username: ${user.username}`);
-    //     roles.forEach((item: { targetId: number; targetName: string; targetDescription: string }) => {
-    //         console.log(`ID: ${item.targetId}, Name: ${item.targetName}, Description: ${item.targetDescription}`);
-    //     });
-    // })
-
-
     const handleEditClick = () => {
         setDialogOpen(true);
     };
 
     const handleLockUserClick = async () => {
         const action = user.isLocked ? 'unlock' : 'lock';
-        if (window.confirm(`
-    }Are you sure you want to ${action} ${user.username}?`)) {
+        if (window.confirm(`Are you sure you want to ${action} ${user.username}?`)) {
             try {
                 const response = await authClient.request(`admin/unlock_or_lock_user?userId=${user.userId}`, HttpMethod.POST);
                 if (response.status === 200) {
@@ -107,9 +98,9 @@ const ActiveUserRow: React.FC<UserRowProps> = ({user, rowIndex, onLock, onDelete
                 message={alertMessage}
                 onClose={() => setAlertOpen(false)}
             />
-            <TableRow style={{cursor: 'pointer'}}>
+            <TableRow onDoubleClick={handleEditClick} style={{cursor: 'pointer'}}>
                 <TableCell>{rowIndex}</TableCell>
-                <TableCell onClick={handleEditClick}>{user.username}</TableCell>
+                <TableCell>{user.username}</TableCell>
                 <TableCell>{formattedLastAuthDate}</TableCell>
                 <TableCell>
                     {user.roles.map((role, index) => (
