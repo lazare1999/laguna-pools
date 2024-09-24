@@ -14,4 +14,5 @@ public class GroupDTO {
     private String groupName;
     private String dates;
     private String notes;
+    private Integer maxAllowedNumberOfPeople;
 }

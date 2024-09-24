@@ -3,9 +3,9 @@ package com.lagunapools.lagunapools.app.main.controller;
 import com.lagunapools.lagunapools.app.main.models.AuthenticationRequest;
 import com.lagunapools.lagunapools.app.main.models.UserRolesResponse;
 import com.lagunapools.lagunapools.app.main.service.MainService;
+import com.lagunapools.lagunapools.common.interefaces.PreAuthorizeLagunaRoles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -24,26 +24,26 @@ public class MainController {
 
     private final MainService mainService;
 
-    @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA')")
+    @PreAuthorizeLagunaRoles
     @GetMapping(value = "/get_current_user_id")
     public ResponseEntity<Integer> getCurrentUserId() {
         return okResponse(getCurrentApplicationUserId());
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA')")
+    @PreAuthorizeLagunaRoles
     @GetMapping(value = "/get_user_name")
     public ResponseEntity<String> getUserName(@RequestHeader("Authorization") String token) {
         return mainService.getUserName(token);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA')")
+    @PreAuthorizeLagunaRoles
     @GetMapping(value = "/get_user_roles")
     public UserRolesResponse getUserRoles(@RequestHeader("Authorization") String token) {
         return mainService.getUserRoles(token);
     }
 
 
-    @PreAuthorize("hasAnyRole('ROLE_LAGUNA_ADMIN', 'ROLE_LAGUNA')")
+    @PreAuthorizeLagunaRoles
     @PostMapping(value = "/logout_from_system")
     public ResponseEntity<Boolean> logout(@RequestHeader("Authorization") String token) {
         return mainService.logout(token);

@@ -178,6 +178,7 @@ const RegisterForm: React.FC = () => {
                                         key={role.targetId}
                                         control={
                                             <Checkbox
+                                                id={`register-page-roles-${role.targetId}`}
                                                 checked={selectedRoles.includes(role.targetId)}
                                                 onChange={() => handleRoleChange(role.targetId)}
                                             />

@@ -10,6 +10,7 @@ interface AddClientDialogProps {
 
 const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddClient}) => {
     const [newClient, setNewClient] = useState<MockClient>({
+        clientId: 0,
         firstName: "",
         lastName: "",
         age: "",
@@ -31,6 +32,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
     const handleAddClient = () => {
         onAddClient(newClient);
         setNewClient({
+            clientId: 0,
             firstName: "",
             lastName: "",
             age: "",
@@ -105,8 +107,10 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
                     margin="normal"
                     value={newClient.expDate}
                     onChange={(e) => handleInputChange("expDate", e.target.value)}
-                    InputLabelProps={{
-                        shrink: true,
+                    slotProps={{
+                        inputLabel: {
+                            shrink: true,
+                        }
                     }}
                 />
                 <Checkbox

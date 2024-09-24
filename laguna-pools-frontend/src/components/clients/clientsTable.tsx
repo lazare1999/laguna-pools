@@ -65,6 +65,8 @@ const ClientsTable: React.FC = () => {
         <Paper>
             <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between", padding: 2}}>
                 <TextField
+                    id={"clients-table-search-id"}
+                    name={"clients-table-search-name"}
                     label="Filter by name"
                     variant="outlined"
                     value={filterText}
@@ -81,6 +83,8 @@ const ClientsTable: React.FC = () => {
                     sx={{flexGrow: 1}}
                 />
                 <Button
+                    id={"clients-table-add-client-id"}
+                    name={"clients-table-add-client-name"}
                     variant="contained"
                     color="primary"
                     onClick={handleOpenDialog}
@@ -119,6 +123,10 @@ const ClientsTable: React.FC = () => {
             </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
+                SelectProps={{
+                    id: 'rows-per-page-select',
+                    name: 'rowsPerPage',
+                }}
                 component="div"
                 count={users.length}
                 rowsPerPage={rowsPerPage}

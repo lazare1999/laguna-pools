@@ -153,6 +153,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
                                     key={role.targetId}
                                     control={
                                         <Checkbox
+                                            id={`edit-user-page-roles-${role.targetId}`}
                                             checked={selectedRoles.includes(role.targetId)}
                                             onChange={() => handleRoleChange(role.targetId)}
                                         />

@@ -240,7 +240,9 @@ const ActiveUsersTable: React.FC = () => {
                         multiple
                         value={selectedRoles}
                         onChange={handleRoleChange}
-                        input={<OutlinedInput label="როლები"/>}
+                        input={<OutlinedInput
+                            id={"roles-select-label-input"}
+                            label="როლები"/>}
                         renderValue={(selected) => selected.join(', ')}
                         MenuProps={MenuProps}
                     >
@@ -334,6 +336,10 @@ const ActiveUsersTable: React.FC = () => {
             </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
+                SelectProps={{
+                    id: 'rows-per-page-select-active-users',
+                    name: 'rowsPerPageActiveUsers',
+                }}
                 component="div"
                 count={count}
                 rowsPerPage={rowsPerPage}
