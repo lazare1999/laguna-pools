@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Button,
     Checkbox,
@@ -36,7 +36,16 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
 
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
-    const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
+    const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+
+
+    const updateUserRoles = () => {
+        setSelectedRoles(user.roles);
+    };
+
+    useEffect(() => {
+        updateUserRoles();
+    }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -46,7 +55,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
         }));
     };
 
-    const handleRoleChange = (roleId: number) => {
+    const handleRoleChange = (roleId: string) => {
         setSelectedRoles(prevRoles =>
             prevRoles.includes(roleId)
                 ? prevRoles.filter(id => id !== roleId)
@@ -120,12 +129,16 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
                     margin="dense"
                 />
                 <PasswordField
+                    id={'edit_user_password_field_id'}
+                    name={'edit_user_password_field_text'}
                     helperText={passwordError}
                     onChange={handlePasswordChange}
                     label={'Password'}
                     password={password}
                 />
                 <PasswordField
+                    id={'edit_user_confirm_password_field_id'}
+                    name={'edit_user_confirm_password_field_text'}
                     label="Confirm Password"
                     password={repeatPassword}
                     onChange={handleRepeatPasswordChange}
@@ -140,8 +153,8 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
                                     key={role.targetId}
                                     control={
                                         <Checkbox
-                                            checked={selectedRoles.includes(role.targetId)}
-                                            onChange={() => handleRoleChange(role.targetId)}
+                                            checked={selectedRoles.includes(role.targetDescription)}
+                                            onChange={() => handleRoleChange(role.targetDescription)}
                                         />
                                     }
                                     label={role.targetDescription}

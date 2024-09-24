@@ -240,7 +240,7 @@ const ActiveUsersTable: React.FC = () => {
                         multiple
                         value={selectedRoles}
                         onChange={handleRoleChange}
-                        input={<OutlinedInput label="Roles"/>}
+                        input={<OutlinedInput label="როლები"/>}
                         renderValue={(selected) => selected.join(', ')}
                         MenuProps={MenuProps}
                     >

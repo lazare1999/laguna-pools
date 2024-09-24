@@ -152,12 +152,16 @@ const RegisterForm: React.FC = () => {
                         }}
                     />
                     <PasswordField
+                        id={'register_user_password_field_id'}
+                        name={'register_user_password_field_text'}
                         label="Password"
                         password={password}
                         onChange={handlePasswordChange}
                         helperText={passwordError}
                     />
                     <PasswordField
+                        id={'register_user_confirm_password_field_id'}
+                        name={'register_user_confirm_password_field_text'}
                         label="Confirm Password"
                         password={confirmPassword}
                         onChange={handleConfirmPasswordChange}

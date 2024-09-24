@@ -67,6 +67,8 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
                         }}
                     />
                     <PasswordField
+                        id={'login_password_field_id'}
+                        name={'login_password_field_text'}
                         label={'Password'}
                         password={password}
                         onChange={handlePasswordChange}
