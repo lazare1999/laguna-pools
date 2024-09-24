@@ -20,10 +20,12 @@ public class GroupEntity {
     private Long id;
 
     private String groupName;
-    private String dates;
-    private String notes;
     private Integer maxAllowedNumberOfPeople;
+    private String notes;
+
     @OneToMany(cascade = CascadeType.DETACH)
     private List<ClientEntity> clients;
 
+    @OneToMany(cascade = CascadeType.DETACH)
+    private List<DateEntity> dates;
 }
