@@ -37,15 +37,12 @@ const App = () => {
             const tokenDate = new Date(Number(token));
             const currentDate = new Date();
 
-            console.log(`current: ${currentDate}\ntoken: ${tokenDate}\nres: ${currentDate > tokenDate}`);
-
             const tokenExpired = currentDate > tokenDate;
             if (tokenExpired) {
                 setReLoginDialogOpen(true);
             }
         }
 
-        console.log("loading: " + loading);
     }, [select]);
 
     const closeDialogHandler = () => {

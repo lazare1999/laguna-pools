@@ -6,7 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.joda.time.DateTime;
+
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -21,7 +22,7 @@ public class ClientDTO {
     private double cost;
     private String phoneNumber;
     private String idStatus;
-    private DateTime expDate;
+    private LocalDateTime expDate;
     private String doctorCheckStatus;
     private String notes;
     private Long groupId;

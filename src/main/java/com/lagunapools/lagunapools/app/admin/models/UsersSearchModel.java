@@ -1,12 +1,14 @@
 package com.lagunapools.lagunapools.app.admin.models;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by Lazo on 9/17/24
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UsersSearchModel implements Serializable {
     private Integer pageKey;
     private Integer pageSize;
@@ -31,6 +34,8 @@ public class UsersSearchModel implements Serializable {
     private LocalDateTime addDateTo;
     private LocalDateTime lastAuthDateFrom;
     private LocalDateTime lastAuthDateTo;
+    private Integer inActiveUsers;
+    private List<String> roles;
 
     @Override
     public String toString() {

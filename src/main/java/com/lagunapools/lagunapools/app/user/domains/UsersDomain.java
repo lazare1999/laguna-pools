@@ -61,12 +61,12 @@ public class UsersDomain implements Serializable {
     @Column(name = "last_auth_date")
     private LocalDateTime lastAuthDate;
 
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JoinTable(
             schema = "users",
-            name = "user_roles", // the join table name
-            joinColumns = @JoinColumn(name = "user_id"), // foreign key for User
-            inverseJoinColumns = @JoinColumn(name = "target_id") // foreign key for TargetViewDomain
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "target_id")
     )
     private List<TargetDomain> targetDomains;
 

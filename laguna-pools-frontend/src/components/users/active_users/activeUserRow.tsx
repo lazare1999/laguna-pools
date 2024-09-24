@@ -6,6 +6,7 @@ import EditUserDialog from "./editUserDialog";
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonRemoveAlt1OutlinedIcon from '@mui/icons-material/PersonRemoveAlt1Outlined';
+import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import {format} from "date-fns";
 import authClient from "../../../api/api";
 import {HttpMethod} from "../../../utils/httpMethodEnum";
@@ -17,22 +18,23 @@ interface UserRowProps {
     onDelete: (userToDelete: User) => void;
     onSaveEdit: (updatedUser: User) => void;
     roles: Array<{ targetId: number; targetName: string; targetDescription: string }>;
+    inActiveUsers: boolean;
 }
 
-const ActiveUserRow: React.FC<UserRowProps> = ({user, rowIndex, onLock, onDelete, onSaveEdit, roles}) => {
+const ActiveUserRow: React.FC<UserRowProps> = ({
+                                                   user,
+                                                   rowIndex,
+                                                   onLock,
+                                                   onDelete,
+                                                   onSaveEdit,
+                                                   roles,
+                                                   inActiveUsers
+                                               }) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
     const [toastOpen, setToastOpen] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<string>("");
-
-    // useEffect(() => {
-    //     console.log(`username: ${user.username}`);
-    //     roles.forEach((item: { targetId: number; targetName: string; targetDescription: string }) => {
-    //         console.log(`ID: ${item.targetId}, Name: ${item.targetName}, Description: ${item.targetDescription}`);
-    //     });
-    // })
-
 
     const handleEditClick = () => {
         setDialogOpen(true);
@@ -40,8 +42,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({user, rowIndex, onLock, onDelete
 
     const handleLockUserClick = async () => {
         const action = user.isLocked ? 'unlock' : 'lock';
-        if (window.confirm(`
-    }Are you sure you want to ${action} ${user.username}?`)) {
+        if (window.confirm(`Are you sure you want to ${action} ${user.username}?`)) {
             try {
                 const response = await authClient.request(`admin/unlock_or_lock_user?userId=${user.userId}`, HttpMethod.POST);
                 if (response.status === 200) {
@@ -63,7 +64,9 @@ const ActiveUserRow: React.FC<UserRowProps> = ({user, rowIndex, onLock, onDelete
     };
 
     const handleDeleteClick = async () => {
-        if (window.confirm(`Are you sure you want to delete ${user.username}?`)) {
+
+        let text = inActiveUsers ? `Are you sure you want to activate ${user.username}?` : `Are you sure you want to delete ${user.username}?`;
+        if (window.confirm(text)) {
             try {
                 const response = await authClient.request(`admin/disable_or_enable_user?userId=${user.userId}`, HttpMethod.POST);
                 if (response.status === 200) {
@@ -107,9 +110,9 @@ const ActiveUserRow: React.FC<UserRowProps> = ({user, rowIndex, onLock, onDelete
                 message={alertMessage}
                 onClose={() => setAlertOpen(false)}
             />
-            <TableRow style={{cursor: 'pointer'}}>
+            <TableRow onDoubleClick={handleEditClick} style={{cursor: 'pointer'}}>
                 <TableCell>{rowIndex}</TableCell>
-                <TableCell onClick={handleEditClick}>{user.username}</TableCell>
+                <TableCell>{user.username}</TableCell>
                 <TableCell>{formattedLastAuthDate}</TableCell>
                 <TableCell>
                     {user.roles.map((role, index) => (
@@ -121,7 +124,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({user, rowIndex, onLock, onDelete
                         {user.isLocked ? <LockOutlinedIcon color="warning"/> : <LockOpenOutlinedIcon/>}
                     </IconButton>
                     <IconButton onClick={handleDeleteClick} color="error">
-                        <PersonRemoveAlt1OutlinedIcon/>
+                        {inActiveUsers ? <PersonAddAlt1OutlinedIcon color="success"/> : <PersonRemoveAlt1OutlinedIcon/>}
                     </IconButton>
                 </TableCell>
             </TableRow>

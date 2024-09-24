@@ -42,7 +42,7 @@ public class LazoUtils {
         return (ApplicationUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public static Integer getCurrentApplicationUserId() {
+    public static Long getCurrentApplicationUserId() {
         return ((ApplicationUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
     }
 

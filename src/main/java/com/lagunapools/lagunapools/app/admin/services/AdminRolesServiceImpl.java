@@ -43,7 +43,7 @@ public class AdminRolesServiceImpl implements AdminRolesService {
         if (!userDetailsService.checkIfRoleExists(rm.getRoleId()))
             return badRequestResponse(false);
 
-        if (userDetailsService.roleIsAlreadyDefined(rm.getRoleId(), rm.getRoleId()))
+        if (userDetailsService.roleIsAlreadyDefined(rm.getUserId(), rm.getRoleId()))
             return okResponse("Role already exists");
 
         if (!userDetailsService.addRole(rm.getUserId(), rm.getRoleId()))
@@ -62,7 +62,7 @@ public class AdminRolesServiceImpl implements AdminRolesService {
         if (!userDetailsService.checkIfRoleExists(rm.getRoleId()))
             return badRequestResponse(false);
 
-        var ans = userDetailsService.removeRoleByUserIdAndRoleId(rm.getRoleId(), rm.getRoleId());
+        var ans = userDetailsService.removeRoleByUserIdAndRoleId(rm.getUserId(), rm.getRoleId());
         return okResponse(ans);
     }
 

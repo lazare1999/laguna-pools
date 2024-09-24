@@ -93,7 +93,7 @@ class AuthenticateUtils {
         username: string,
         password: string
     ) => {
-        if (!username || !password) return false;
+        if (!username || !password) return "Username and password is required";
 
         try {
             await authClientForUtils.post(
@@ -104,10 +104,17 @@ class AuthenticateUtils {
                     this.updateRefreshTokenLocal(res.data);
                 }
             });
-        } catch (e) {
-            return false;
+        } catch (e: any) {
+
+            if (e.response.status === 423) {
+                return "User is locked. \n Contact administrator";
+            } else if (e.response.status === 403) {
+                return "Enter correct username and password";
+            }
+
+            return `Error: ${e}`;
         }
-        return true;
+        return "Successfully authenticated";
     };
 
 

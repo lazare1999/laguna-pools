@@ -3,6 +3,7 @@ import {Checkbox, IconButton, TableCell, TableRow, TextField} from "@mui/materia
 import {Delete, Edit, Save} from "@mui/icons-material";
 
 export interface Client {
+    clientId: number;
     firstName: string;
     lastName: string;
     age: string;
@@ -100,6 +101,8 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete}) => {
                     </TableCell>
                     <TableCell>
                         <Checkbox
+                            id={"doctor-check-status-edit-mode-id"}
+                            name={"doctor-check-status-edit-mode-name"}
                             checked={editableClient.doctorCheckStatus}
                             onChange={(e) => handleInputChange("doctorCheckStatus", e.target.checked)}
                         />
@@ -126,7 +129,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete}) => {
                     <TableCell>{client.idStatus}</TableCell>
                     <TableCell>{client.expDate}</TableCell>
                     <TableCell>
-                        <Checkbox checked={client.doctorCheckStatus} disabled/>
+                        <Checkbox
+                            id={`doctor-check-status-id-${client.clientId}`}
+                            name={`doctor-check-status-name-${client.clientId}`}
+                            checked={client.doctorCheckStatus} disabled/>
                     </TableCell>
                     <TableCell>{client.notes}</TableCell>
                     <TableCell>

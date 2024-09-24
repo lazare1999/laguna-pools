@@ -39,7 +39,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping(value = "/all_users")
 //    @Cacheable(value = "allUsersCache")
-    public List<UsersDomain> listAllUsers(@ModelAttribute UsersSearchModel model) {
+    public UsersResponseModel listAllUsers(@ModelAttribute UsersSearchModel model) {
         return adminSearchService.listAllUsers(model);
     }
 

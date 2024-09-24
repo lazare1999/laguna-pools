@@ -6,7 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.joda.time.DateTime;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,7 +16,10 @@ import org.joda.time.DateTime;
 @AllArgsConstructor
 @Table(schema = "clients", name = "clients")
 public class ClientEntity {
+
     @Id
+    @SequenceGenerator(name = "clients_id_seq", sequenceName = "clients.clients_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "clients_id_seq")
     private Long id;
 
     private String firstName;
@@ -24,7 +28,7 @@ public class ClientEntity {
     private double cost;
     private String phoneNumber;
     private String idStatus;
-    private DateTime expDate;
+    private LocalDateTime expDate;
     private String doctorCheckStatus;
     private String notes;
 

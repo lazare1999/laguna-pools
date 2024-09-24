@@ -31,6 +31,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import LoadingPage from "../../common/loadingPage";
+import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -52,6 +53,7 @@ const ActiveUsersTable: React.FC = () => {
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [filterText, setFilterText] = useState<string>("");
     const [isLocked, setIsLocked] = useState<boolean>(false);
+    const [inActiveUsers, setInActiveUsers] = useState<boolean>(false);
     const [lastAuthDateFrom, setLastAuthDateFrom] = useState<string>("");
     const [lastAuthDateTo, setLastAuthDateTo] = useState<string>("");
     const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
@@ -79,8 +81,13 @@ const ActiveUsersTable: React.FC = () => {
                 params.lastAuthDateTo = lastAuthDateTo;
             }
 
+            let url = `admin/active_users?`;
+            if (inActiveUsers) {
+                params.inActiveUsers = inActiveUsers ? 1 : 0;
+                url = `admin/all_users?`;
+            }
             const queryString = new URLSearchParams(params).toString();
-            const response = await authClient.request(`admin/active_users?${queryString}`, HttpMethod.GET);
+            const response = await authClient.request(url + queryString, HttpMethod.GET);
 
             if (Array.isArray(response.data.content)) {
                 setUsers(response.data.content);
@@ -120,7 +127,7 @@ const ActiveUsersTable: React.FC = () => {
 
     useEffect(() => {
         fetchUsers().then(r => r);
-    }, [page, rowsPerPage, filterText, isLocked, lastAuthDateFrom, lastAuthDateTo, selectedRoles]);
+    }, [page, rowsPerPage, filterText, isLocked, inActiveUsers, lastAuthDateFrom, lastAuthDateTo, selectedRoles]);
 
     const handleLock = (lockUser: User) => {
         setUsers(users.map(user => (user.userId === lockUser.userId ? lockUser : user)));
@@ -164,6 +171,10 @@ const ActiveUsersTable: React.FC = () => {
         setIsLocked(prev => !prev);
     };
 
+    const handleToggleInActiveUsers = () => {
+        setInActiveUsers(prev => !prev);
+    };
+
     const handleRefresh = () => {
         fetchUsers().then(r => r);
     };
@@ -180,6 +191,7 @@ const ActiveUsersTable: React.FC = () => {
     const handleClearAll = () => {
         setFilterText("");
         setIsLocked(false);
+        setInActiveUsers(false);
         setLastAuthDateFrom("");
         setLastAuthDateTo("");
         setSelectedRoles([]);
@@ -240,7 +252,9 @@ const ActiveUsersTable: React.FC = () => {
                         multiple
                         value={selectedRoles}
                         onChange={handleRoleChange}
-                        input={<OutlinedInput label="Roles"/>}
+                        input={<OutlinedInput
+                            id={"roles-select-label-input"}
+                            label="როლები"/>}
                         renderValue={(selected) => selected.join(', ')}
                         MenuProps={MenuProps}
                     >
@@ -265,6 +279,20 @@ const ActiveUsersTable: React.FC = () => {
                     }}
                 >
                     {isLocked ? <LockOutlinedIcon color="warning"/> : <LockOpenOutlinedIcon/>}
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={handleToggleInActiveUsers}
+                    sx={{
+                        paddingLeft: 3,
+                        paddingRight: 3,
+                        ml: 2,
+                        height: "50px",
+                        display: "flex",
+                        alignItems: "center",
+                    }}
+                >
+                    {inActiveUsers ? <PersonRemoveAlt1OutlinedIcon color="error"/> : <PersonRemoveAlt1OutlinedIcon/>}
                 </Button>
                 <Button
                     variant="outlined"
@@ -318,6 +346,7 @@ const ActiveUsersTable: React.FC = () => {
                                 const rowNumber = page * rowsPerPage + index + 1;
                                 return (
                                     <ActiveUserRow
+                                        inActiveUsers={inActiveUsers}
                                         key={user.userId}
                                         user={user}
                                         onLock={handleLock}
@@ -334,6 +363,10 @@ const ActiveUsersTable: React.FC = () => {
             </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
+                SelectProps={{
+                    id: 'rows-per-page-select-active-users',
+                    name: 'rowsPerPageActiveUsers',
+                }}
                 component="div"
                 count={count}
                 rowsPerPage={rowsPerPage}
