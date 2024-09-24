@@ -4,12 +4,12 @@ package com.lagunapools.lagunapools.app.admin.services;
 import com.lagunapools.lagunapools.app.admin.models.ActiveUsersResponseModel;
 import com.lagunapools.lagunapools.app.admin.models.ActiveUsersSearchModel;
 import com.lagunapools.lagunapools.app.admin.models.UsersSearchModel;
+import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.utils.LazoUtils;
 import io.micrometer.common.util.StringUtils;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -71,13 +71,19 @@ public class AdminSearchServiceImpl implements AdminSearchService {
             }
 
             if (activeUsersSearchModel.getRoles() != null && !activeUsersSearchModel.getRoles().isEmpty()) {
-                CriteriaBuilder.In<String> rolesPredicate = builder.in(root.get("targetDomains").get("targetDescription"));
+                List<String> roles = activeUsersSearchModel.getRoles();
 
-                for (String role : activeUsersSearchModel.getRoles()) {
-                    rolesPredicate.value(role);
-                }
+                var subquery = query.subquery(Long.class);
+                var subRoot = subquery.from(AppUser.class);
 
-                predicate = builder.and(predicate, rolesPredicate);
+                subquery.select(builder.countDistinct(subRoot.get("targetDomains").get("targetDescription")))
+                        .where(builder.equal(subRoot, root),
+                                subRoot.get("targetDomains").get("targetDescription").in(roles));
+
+                predicate = builder.and(
+                        predicate,
+                        builder.equal(subquery, (long) roles.size())
+                );
             }
 
             return predicate;
