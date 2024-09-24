@@ -26,7 +26,7 @@ public class MainController {
 
     @PreAuthorizeLagunaRoles
     @GetMapping(value = "/get_current_user_id")
-    public ResponseEntity<Integer> getCurrentUserId() {
+    public ResponseEntity<Long> getCurrentUserId() {
         return okResponse(getCurrentApplicationUserId());
     }
 

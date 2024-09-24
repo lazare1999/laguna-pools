@@ -111,6 +111,7 @@ public class AdminServiceImpl implements AdminService {
         var user = user0.get();
         var currentLockState = user.getIsLocked();
         user.setIsLocked(!currentLockState);
+        user.setLoginAttempts(0);
         user.setUpdatedBy(currentUser.getUsername());
         usersRepository.save(user);
 

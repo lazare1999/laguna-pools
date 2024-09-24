@@ -2,10 +2,9 @@ package com.lagunapools.lagunapools.security;
 
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
 import com.lagunapools.lagunapools.filters.JwtRequestFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,13 +12,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.sql.DataSource;
 
 /**
  * Created by Lazo on 9/11/24
@@ -29,26 +25,13 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    final DataSource dataSource;
-
     private final JwtRequestFilter jwtRequestFilter;
     private final MyUserDetailsService myUserDetailsService;
-    private final UserDetailsService userDetailsService;
 
     public SecurityConfig(MyUserDetailsService myUserDetailsService,
-                          JwtRequestFilter jwtRequestFilter,
-                          @Qualifier("dataSource") DataSource dataSource,
-                          UserDetailsService userDetailsService) {
+                          JwtRequestFilter jwtRequestFilter) {
         this.jwtRequestFilter = jwtRequestFilter;
         this.myUserDetailsService = myUserDetailsService;
-        this.dataSource = dataSource;
-        this.userDetailsService = userDetailsService;
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService);
-        myUserDetailsService.setDataSource(this.dataSource);
     }
 
     @Bean
@@ -65,11 +48,11 @@ public class SecurityConfig {
 
         return http.build();
     }
-    
+
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder auth = http.getSharedObject(AuthenticationManagerBuilder.class);
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder());
         return auth.build();
     }
 
@@ -78,5 +61,9 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public OpenEntityManagerInViewFilter openEntityManagerInViewFilter() {
+        return new OpenEntityManagerInViewFilter();
+    }
 
 }
