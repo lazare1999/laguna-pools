@@ -6,4 +6,5 @@ export interface User {
     lastAuthDate: string;
     isLocked: boolean;
     roles: Array<string>;
+    rolesIds: Array<number>;
 }

@@ -21,6 +21,7 @@ public class ActiveUserResponseModel {
     private LocalDateTime lastAuthDate;
     private Boolean isLocked;
     private List<String> Roles;
+    private List<Long> RolesIds;
 
     public ActiveUserResponseModel(AppUser appUser) {
         this.userId = appUser.getUserId();
@@ -29,5 +30,7 @@ public class ActiveUserResponseModel {
         this.isLocked = appUser.getIsLocked();
         this.Roles = appUser.getTargetDomains().stream()
                 .map(TargetDomain::getTargetDescription).toList();
+        this.RolesIds = appUser.getTargetDomains().stream()
+                .map(TargetDomain::getTargetId).toList();
     }
 }

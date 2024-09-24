@@ -1,6 +1,7 @@
 package com.lagunapools.lagunapools.app.admin.models;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,8 +13,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class AddRemoveRoleModel {
-    private Integer roleId;
+    private Long roleId;
     private Long userId;
 
     @Override

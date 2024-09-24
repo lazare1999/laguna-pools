@@ -110,7 +110,7 @@ public class MyUserDetailsService implements UserDetailsService {
         return ans;
     }
 
-    public Boolean checkIfRoleExists(Integer roleId) {
+    public Boolean checkIfRoleExists(Long roleId) {
         if (roleId == null)
             return false;
 
@@ -119,7 +119,7 @@ public class MyUserDetailsService implements UserDetailsService {
         return !ans.isEmpty();
     }
 
-    public Boolean roleIsAlreadyDefined(Integer userId, Integer roleId) {
+    public Boolean roleIsAlreadyDefined(Long userId, Long roleId) {
         if (userId == null || roleId == null)
             return false;
 
@@ -128,7 +128,7 @@ public class MyUserDetailsService implements UserDetailsService {
         return !ans.isEmpty();
     }
 
-    public Boolean removeRoleByUserIdAndRoleId(Integer userId, Integer roleId) {
+    public Boolean removeRoleByUserIdAndRoleId(Long userId, Long roleId) {
 
         List<Integer> ans = getJdbcTemplate().query(getRoleIdQuery, (rs, rowNum) -> rs.getInt(1), userId, roleId);
 
@@ -140,7 +140,7 @@ public class MyUserDetailsService implements UserDetailsService {
         return rowsAffected > 0;
     }
 
-    public Boolean addRole(Long userId, Integer roleId) {
+    public Boolean addRole(Long userId, Long roleId) {
         if (userId == null || roleId == null)
             return false;
 

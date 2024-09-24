@@ -36,11 +36,11 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
 
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
-    const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+    const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
 
 
     const updateUserRoles = () => {
-        setSelectedRoles(user.roles);
+        setSelectedRoles(user.rolesIds);
     };
 
     useEffect(() => {
@@ -55,7 +55,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
         }));
     };
 
-    const handleRoleChange = (roleId: string) => {
+    const handleRoleChange = (roleId: number) => {
         setSelectedRoles(prevRoles =>
             prevRoles.includes(roleId)
                 ? prevRoles.filter(id => id !== roleId)
@@ -153,8 +153,8 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
                                     key={role.targetId}
                                     control={
                                         <Checkbox
-                                            checked={selectedRoles.includes(role.targetDescription)}
-                                            onChange={() => handleRoleChange(role.targetDescription)}
+                                            checked={selectedRoles.includes(role.targetId)}
+                                            onChange={() => handleRoleChange(role.targetId)}
                                         />
                                     }
                                     label={role.targetDescription}

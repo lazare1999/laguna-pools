@@ -1,6 +1,7 @@
 package com.lagunapools.lagunapools.app.admin.services;
 
 
+import com.lagunapools.lagunapools.app.admin.models.AddRemoveRoleModel;
 import com.lagunapools.lagunapools.app.admin.models.AddUserModel;
 import com.lagunapools.lagunapools.app.admin.models.EditUserModel;
 import com.lagunapools.lagunapools.app.admin.models.EditUsersListModel;
@@ -34,6 +35,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final UsersRepository usersRepository;
     private final UserRolesRepository userRolesRepository;
+    private final AdminRolesService adminRolesService;
 
     @Value("${salt}")
     private String SALT;
@@ -154,10 +156,19 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public ResponseEntity<?> changeUserDetails(EditUserModel changeModel) {
-        var cUser = usersRepository.findByUserId(changeModel.getUserId());
+        UsersDomain cUser = usersRepository.findByUserId(changeModel.getUserId());
         if (StringUtils.isNotEmpty(changeModel.getNewPassword())) {
             cUser.setUserPassword(encrypt(SALT, changeModel.getNewPassword()));
         }
+
+        cUser.getTargetDomains().stream()
+                .filter(domain -> !changeModel.getNewRoles().contains(domain.getTargetId()))
+                .forEach(domain -> adminRolesService.removeRole(new AddRemoveRoleModel(domain.getTargetId(), cUser.getUserId())));
+
+        changeModel.getNewRoles().stream()
+                .filter(newRole -> cUser.getTargetDomains().stream()
+                        .noneMatch(domain -> domain.getTargetId().equals(newRole)))
+                .forEach(newRole -> adminRolesService.addRole(new AddRemoveRoleModel(newRole, cUser.getUserId())));
 
         cUser.setUserName(changeModel.getNewUsername());
         cUser.setUpdatedBy(getCurrentApplicationUser().getUsername());
