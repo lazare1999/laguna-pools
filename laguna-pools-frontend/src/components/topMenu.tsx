@@ -11,10 +11,6 @@ interface TopMenuProps {
     onLogout: () => void;
 }
 
-interface UserRolesResponse {
-    roles: string[];
-}
-
 const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [roles, setRoles] = useState<string[]>([]);
