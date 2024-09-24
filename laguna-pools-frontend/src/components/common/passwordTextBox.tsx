@@ -8,9 +8,11 @@ interface PasswordFieldProps {
     helperText: string;
     label: string;
     onChange: any;
+    id: string;
+    name: string;
 }
 
-const PasswordField: React.FC<PasswordFieldProps> = ({password, helperText, onChange, label}) => {
+const PasswordField: React.FC<PasswordFieldProps> = ({password, helperText, onChange, label, id, name}) => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const togglePasswordVisibility = () => {
@@ -19,6 +21,8 @@ const PasswordField: React.FC<PasswordFieldProps> = ({password, helperText, onCh
 
     return (
         <TextField
+            id={id}
+            name={name}
             margin="normal"
             required
             fullWidth

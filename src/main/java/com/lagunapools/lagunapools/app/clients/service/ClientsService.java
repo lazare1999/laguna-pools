@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 
 public interface ClientsService {
 
+    AllClientsResponseDTO getAllClients(AllClientsRequestDTO request);
+
     ResponseEntity<?> addClient(ClientDTO client);
 
-    AllClientsResponseDTO getAllClients(AllClientsRequestDTO request);
+    ResponseEntity<?> getClient(Long clientId);
+
 }

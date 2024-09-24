@@ -33,7 +33,7 @@ class LazoUtilsTest {
 
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         Mockito.when(authentication.getPrincipal()).thenReturn(applicationUser);
-        Mockito.when(applicationUser.getUserId()).thenReturn(1);
+        Mockito.when(applicationUser.getUserId()).thenReturn(1L);
 
         SecurityContextHolder.setContext(securityContext);
     }
@@ -64,7 +64,7 @@ class LazoUtilsTest {
 
     @Test
     void testGetCurrentApplicationUserId() {
-        Integer userId = LazoUtils.getCurrentApplicationUserId();
+        var userId = LazoUtils.getCurrentApplicationUserId();
         assertEquals(1, userId);
     }
 

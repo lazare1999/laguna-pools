@@ -16,6 +16,7 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
     const [password, setPassword] = useState<string>('');
 
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
+    const [alertMessage, setAlertMessage] = useState<string>('');
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -23,13 +24,15 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
         try {
             let ans = await authenticateUtils.authenticate(username, password);
 
-            if (ans) {
-                setOpenSessionWindow(true); // Update session window state
+            if (ans === "Successfully authenticated") {
+                setOpenSessionWindow(true);
                 selectHandler(Component.CLIENTS_TABLE);
             } else {
+                setAlertMessage(ans);
                 setAlertOpen(true);
             }
-        } catch (error) {
+        } catch (error: any) {
+            setAlertMessage(error);
             setAlertOpen(true);
         }
     };
@@ -67,6 +70,8 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
                         }}
                     />
                     <PasswordField
+                        id={'login_password_field_id'}
+                        name={'login_password_field_text'}
                         label={'Password'}
                         password={password}
                         onChange={handlePasswordChange}
@@ -83,7 +88,7 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
                     <AlertDialog
                         open={alertOpen}
                         title='Error'
-                        message='Enter the correct data'
+                        message={alertMessage}
                         onClose={() => setAlertOpen(false)}
                     />
                 </Box>

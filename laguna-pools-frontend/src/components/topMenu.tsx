@@ -11,10 +11,6 @@ interface TopMenuProps {
     onLogout: () => void;
 }
 
-interface UserRolesResponse {
-    roles: string[];
-}
-
 const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [roles, setRoles] = useState<string[]>([]);
@@ -22,11 +18,10 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
 
     useEffect(() => {
         UserApiService.getRoles().then(r => {
-            console.log("roles: " + r.data.roles);
             setRoles(r.data.roles);
         }).catch(err => console.error(err));
 
-    })
+    }, []);
 
     const hasRole = (role: string) => {
         return roles.includes(role);
@@ -67,7 +62,7 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
                         </MenuItem>
                         <MenuItem onClick={handleClose}>
                             <Button color="inherit" startIcon={<PeopleIcon/>}
-                                    onClick={() => selectHandler(Component.ACTIVE_USERS_TABLE)}>Active Users
+                                    onClick={() => selectHandler(Component.ACTIVE_USERS_TABLE)}>Users
                                 List</Button>
                         </MenuItem>
                     </Menu>

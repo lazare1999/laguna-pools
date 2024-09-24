@@ -13,11 +13,11 @@ import java.util.Collection;
 
 @Getter
 @Setter
-public class ApplicationUser extends User  {
+public class ApplicationUser extends User {
 
-    private final Integer userId;
+    private final Long userId;
 
-    public ApplicationUser(Integer userId, String username, String password, boolean enabled,
+    public ApplicationUser(Long userId, String username, String password, boolean enabled,
                            boolean accountNonExpired, boolean credentialsNonExpired,
                            boolean accountNonLocked,
                            Collection<GrantedAuthority> authorities) {

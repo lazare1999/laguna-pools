@@ -1,4 +1,5 @@
 export interface MockClient {
+    clientId: number;
     firstName: string;
     lastName: string;
     age: string;
@@ -10,9 +11,9 @@ export interface MockClient {
     notes: string;
 }
 
-
 export const initialClients: MockClient[] = [
     {
+        clientId: 1,
         firstName: "თეა",
         lastName: "კობიაშვილი",
         age: "29",
@@ -24,6 +25,7 @@ export const initialClients: MockClient[] = [
         notes: "No issues",
     },
     {
+        clientId: 2,
         firstName: "ლაშა",
         lastName: "ბერიძე",
         age: "35",
@@ -35,6 +37,7 @@ export const initialClients: MockClient[] = [
         notes: "Overdue payment",
     },
     {
+        clientId: 3,
         firstName: "ნანა",
         lastName: "გრიგალაშვილი",
         age: "40",
@@ -46,6 +49,7 @@ export const initialClients: MockClient[] = [
         notes: "Requires extra sessions",
     },
     {
+        clientId: 4,
         firstName: "ირაკლი",
         lastName: "მაჭავარიანი",
         age: "32",
@@ -57,6 +61,7 @@ export const initialClients: MockClient[] = [
         notes: "Outstanding performance",
     },
     {
+        clientId: 5,
         firstName: "ლევან",
         lastName: "ქობულაძე",
         age: "28",
@@ -68,6 +73,7 @@ export const initialClients: MockClient[] = [
         notes: "Needs to reschedule",
     },
     {
+        clientId: 6,
         firstName: "ეკატერინე",
         lastName: "მანგლაძე",
         age: "45",
@@ -79,6 +85,7 @@ export const initialClients: MockClient[] = [
         notes: "Long-term client",
     },
     {
+        clientId: 7,
         firstName: "ნიკოლოზ",
         lastName: "ზალდასტანიშვილი",
         age: "37",
@@ -90,6 +97,7 @@ export const initialClients: MockClient[] = [
         notes: "Rescheduled next session",
     },
     {
+        clientId: 8,
         firstName: "მაია",
         lastName: "ჩიქოვანი",
         age: "30",
@@ -101,6 +109,7 @@ export const initialClients: MockClient[] = [
         notes: "New client",
     },
     {
+        clientId: 9,
         firstName: "გიორგი",
         lastName: "ჩხეიძე",
         age: "33",
@@ -112,6 +121,7 @@ export const initialClients: MockClient[] = [
         notes: "Pending renewal",
     },
     {
+        clientId: 10,
         firstName: "ნინო",
         lastName: "სარალიძე",
         age: "39",
@@ -123,6 +133,7 @@ export const initialClients: MockClient[] = [
         notes: "Requested feedback",
     },
     {
+        clientId: 11,
         firstName: "ვახტანგ",
         lastName: "ალავიძე",
         age: "29",
@@ -134,6 +145,7 @@ export const initialClients: MockClient[] = [
         notes: "Vacation leave",
     },
     {
+        clientId: 12,
         firstName: "ხათუნა",
         lastName: "მაჩაიძე",
         age: "42",
@@ -145,6 +157,7 @@ export const initialClients: MockClient[] = [
         notes: "Will renew soon",
     },
     {
+        clientId: 13,
         firstName: "დავით",
         lastName: "ხაბეიშვილი",
         age: "34",
@@ -156,6 +169,7 @@ export const initialClients: MockClient[] = [
         notes: "Missed last session",
     },
     {
+        clientId: 14,
         firstName: "თამარ",
         lastName: "ბასილაძე",
         age: "38",
@@ -167,6 +181,7 @@ export const initialClients: MockClient[] = [
         notes: "Recommended for advanced sessions",
     },
     {
+        clientId: 15,
         firstName: "ალექსანდრე",
         lastName: "წერეთელი",
         age: "41",
