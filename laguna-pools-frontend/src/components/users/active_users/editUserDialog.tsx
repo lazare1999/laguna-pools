@@ -89,11 +89,11 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
             });
 
             if (response.status === 200) {
-                const updatedUser = {
-                    ...editedUser,
-                    password: password || editedUser.password,
-                };
-                onSave(updatedUser);
+                editedUser.roles = roles
+                    .filter(role => selectedRoles.includes(role.targetId))
+                    .map(role => role.targetDescription);
+
+                onSave(editedUser);
                 onClose();
             } else {
                 setAlertMessage('Failed to change user info. Please try again.');

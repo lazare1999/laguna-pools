@@ -3,6 +3,7 @@ package com.lagunapools.lagunapools.app.admin.services;
 
 import com.lagunapools.lagunapools.app.admin.models.ActiveUsersResponseModel;
 import com.lagunapools.lagunapools.app.admin.models.ActiveUsersSearchModel;
+import com.lagunapools.lagunapools.app.admin.models.UsersResponseModel;
 import com.lagunapools.lagunapools.app.admin.models.UsersSearchModel;
 import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -94,16 +94,17 @@ public class AdminSearchServiceImpl implements AdminSearchService {
 
     @Override
 //    @Cacheable(value = "allUsersCache")
-    public List<UsersDomain> listAllUsers(UsersSearchModel usersSearchModel) {
+    public UsersResponseModel listAllUsers(UsersSearchModel usersSearchModel) {
 
         if (Objects.isNull(usersSearchModel)
                 || usersSearchModel.getPageKey() == null
                 || usersSearchModel.getPageSize() == null) {
-            return new ArrayList<>();
+            return new UsersResponseModel();
         }
 
         var page = usersRepository.findAll((root, query, builder) -> {
             Predicate predicate = builder.conjunction();
+            Objects.requireNonNull(query).distinct(true);
 
             if (usersSearchModel.getUserId() != null) {
                 predicate = builder.and(predicate, builder.equal(root.get("userId"), usersSearchModel.getUserId()));
@@ -126,6 +127,10 @@ public class AdminSearchServiceImpl implements AdminSearchService {
 
             if (usersSearchModel.getIsLocked() != null) {
                 predicate = builder.and(predicate, builder.equal(root.get("isLocked"), usersSearchModel.getIsLocked()));
+            }
+
+            if (usersSearchModel.getInActiveUsers() != null) {
+                predicate = builder.and(predicate, builder.equal(root.get("statusId"), usersSearchModel.getInActiveUsers()));
             }
 
             if (usersSearchModel.getCreatedBy() != null) {
@@ -154,10 +159,26 @@ public class AdminSearchServiceImpl implements AdminSearchService {
                                 usersSearchModel.getLastAuthDateTo()));
             }
 
+            if (usersSearchModel.getRoles() != null && !usersSearchModel.getRoles().isEmpty()) {
+
+                var subquery = query.subquery(Long.class);
+                var subRoot = subquery.from(AppUser.class);
+                var roles = usersSearchModel.getRoles();
+
+                subquery.select(builder.countDistinct(subRoot.get("targetDomains").get("targetDescription")))
+                        .where(builder.equal(subRoot, root), subRoot.get("targetDomains").get("targetDescription").in(roles));
+
+                predicate = builder.and(
+                        predicate,
+                        builder.equal(subquery, (long) roles.size())
+                );
+            }
+
             return predicate;
         }, PageRequest.of(usersSearchModel.getPageKey(), usersSearchModel.getPageSize(), LazoUtils.getSortAsc("userId")));
 
-        return page.toList();
+
+        return new UsersResponseModel(page.getTotalElements(), page.toList());
     }
 
     @Override

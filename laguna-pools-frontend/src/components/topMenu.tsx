@@ -62,7 +62,7 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
                         </MenuItem>
                         <MenuItem onClick={handleClose}>
                             <Button color="inherit" startIcon={<PeopleIcon/>}
-                                    onClick={() => selectHandler(Component.ACTIVE_USERS_TABLE)}>Active Users
+                                    onClick={() => selectHandler(Component.ACTIVE_USERS_TABLE)}>Users
                                 List</Button>
                         </MenuItem>
                     </Menu>
