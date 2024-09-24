@@ -1,9 +1,7 @@
 package com.lagunapools.lagunapools.app.clients.repository;
 
 import com.lagunapools.lagunapools.app.clients.models.ClientDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +28,11 @@ public class ClientEntity {
     private String doctorCheckStatus;
     private String notes;
 
+    @ManyToOne(cascade = CascadeType.DETACH)
+    private GroupEntity group;
+
     public ClientEntity(ClientDTO client) {
+        this.id = client.getId();
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.age = client.getAge();
