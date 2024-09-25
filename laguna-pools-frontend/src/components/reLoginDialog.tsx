@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from '@mui/material';
 import {Box} from '@mui/system';
-import authenticateUtils from "../../api/authenticateUtils";
-import {AlertDialog} from "../../utils/alertsUtils";
-import {USERNAME} from "../../utils/constants";
+import authenticateUtils from "../api/authenticateUtils";
+import {AlertDialog} from "../utils/alertsUtils";
+import {USERNAME} from "../utils/constants";
 
 interface PasswordDialogProps {
     open: boolean;
