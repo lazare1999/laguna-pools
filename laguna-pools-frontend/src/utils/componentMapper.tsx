@@ -1,9 +1,9 @@
 import Login from "../components/login";
-import RegisterForm from "../components/users/register";
+import RegisterForm from "../components/register";
 import ClientsTable from "../components/clients/clientsTable";
 import React from "react";
 import {Component} from "./componentsEnum";
-import ActiveUsersTable from "../components/users/active_users/activeUsersTable";
+import ActiveUsersTable from "../components/users/activeUsersTable";
 
 interface ComponentMapperProps {
     currentComponent: Component

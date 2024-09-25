@@ -2,5 +2,7 @@ export enum Component {
     LOGIN,
     REGISTER,
     CLIENTS_TABLE,
+    GROUPS,
+    DAYS,
     ACTIVE_USERS_TABLE
 }

@@ -5,7 +5,7 @@ import {Component} from "./utils/componentsEnum";
 import {REFRESH_TOKEN_EXP_NAME, REFRESH_TOKEN_NAME} from "./utils/constants";
 import TopMenu from "./components/topMenu";
 import AuthenticateUtils from "./api/authenticateUtils";
-import PasswordDialog from "./components/users/reLoginDialog";
+import PasswordDialog from "./components/reLoginDialog";
 import LoadingPageProgress from "./components/common/loadingPage";
 
 const App = () => {
