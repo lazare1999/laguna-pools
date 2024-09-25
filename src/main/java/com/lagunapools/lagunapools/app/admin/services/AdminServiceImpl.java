@@ -52,7 +52,8 @@ public class AdminServiceImpl implements AdminService {
 
         var userName = getCurrentApplicationUser().getUsername();
 
-        if (!Objects.equals(usersRepository.findByUserName(u.getUsername()), null))
+        var user = usersRepository.findByUserName(u.getUsername());
+        if (user.isPresent())
             return badRequestResponse("User already exists");
 
         var usersDomain = new UsersDomain(
