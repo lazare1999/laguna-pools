@@ -1,9 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
+    Alert,
     Box,
     Button,
     IconButton,
     Paper,
+    Snackbar,
     Table,
     TableBody,
     TableCell,
@@ -16,31 +18,80 @@ import {
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import {FilterList} from "@mui/icons-material";
 import ClientRow from "./clientRow";
-import {initialClients, MockClient} from "../../utils/mockClients";
 import AddClientDialog from "./addClientDialog";
+import authClient from "../../api/api";
+import {HttpMethod} from "../../utils/httpMethodEnum";
+import {Client} from "../models/clientsModel";
+import LoadingPage from "../common/loadingPage";
 
 const ClientsTable: React.FC = () => {
     const [filterText, setFilterText] = useState<string>("");
-    const [users, setUsers] = useState<MockClient[]>(initialClients);
+    const [clients, setClients] = useState<Client[]>([]);
+    const [count, setCount] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
 
-    const handleDelete = (userToDelete: MockClient) => {
-        setUsers(users.filter(user => user !== userToDelete));
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const [alertMessage, setAlertMessage] = useState<string | null>(null);
+    const [alertOpen, setAlertOpen] = useState<boolean>(false);
+
+    const fetchClients = async () => {
+        setLoading(true)
+        try {
+            const params: Record<string, any> = {
+                pageKey: page,
+                pageSize: rowsPerPage,
+                clientName: filterText,
+            };
+
+            const queryString = new URLSearchParams(params).toString();
+            const response = await authClient.request(`clients/all?${queryString}`, HttpMethod.GET);
+
+            if (Array.isArray(response.data.content)) {
+                setClients(response.data.content);
+                setCount(response.data.total);
+            } else {
+                setAlertMessage(`Fetched clients are not an array: ${response.data}`);
+                setAlertOpen(true);
+                setClients([]);
+            }
+            setLoading(false)
+        } catch (error) {
+            setAlertMessage(`Error fetching clients: ${error}`);
+            setAlertOpen(true);
+        }
+    };
+
+
+    useEffect(() => {
+        fetchClients().then(r => r);
+    }, [page, rowsPerPage, filterText]);
+
+    const handleCloseAlert = () => {
+        setAlertOpen(false);
+    };
+
+    const handleDelete = (userToDelete: Client) => {
+        setClients(clients.filter(client => client !== userToDelete));
+    };
+
+    const handleUpdate = (updatedClient: Client) => {
+        setClients(clients.map(client => (client.id === updatedClient.id ? updatedClient : client)));
     };
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.toLowerCase();
         setFilterText(value);
 
-        const filtered = initialClients.filter((user) =>
-            `${user.firstName} ${user.lastName}`.toLowerCase().includes(value)
+        const filtered = clients.filter((client) =>
+            `${client.firstName} ${client.lastName}`.toLowerCase().includes(value)
         );
-        setUsers(filtered);
+        setClients(filtered);
     };
 
-    const handlePageChange = (event: unknown, newPage: number) => {
+    const handlePageChange = (_: unknown, newPage: number) => {
         setPage(newPage);
     };
 
@@ -57,8 +108,8 @@ const ClientsTable: React.FC = () => {
         setOpenDialog(false);
     };
 
-    const handleAddClient = (newUser: MockClient) => {
-        setUsers([...users, newUser]);
+    const handleAddClient = (newUser: Client) => {
+        setClients([...clients, newUser]);
     };
 
     return (
@@ -80,7 +131,7 @@ const ClientsTable: React.FC = () => {
                             </IconButton>
                         ),
                     }}
-                    sx={{flexGrow: 1}}
+                    sx={{flexGrow: 1, height: 64}}
                 />
                 <Button
                     id={"clients-table-add-client-id"}
@@ -88,7 +139,6 @@ const ClientsTable: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={handleOpenDialog}
-                    startIcon={<PersonAddAltIcon/>}
                     sx={{
                         ml: 2,
                         height: "50px",
@@ -96,45 +146,70 @@ const ClientsTable: React.FC = () => {
                         alignItems: "center",
                     }}
                 >
-                    New Client
+                    <PersonAddAltIcon/>
                 </Button>
             </Box>
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Age</TableCell>
+                            <TableCell>#</TableCell>
+                            <TableCell>Client</TableCell>
+                            <TableCell>Dates</TableCell>
+                            <TableCell>Statuses</TableCell>
+                            <TableCell>Groups</TableCell>
                             <TableCell>Cost</TableCell>
-                            <TableCell>Phone Number</TableCell>
-                            <TableCell>ID Status</TableCell>
-                            <TableCell>Expiration Date</TableCell>
-                            <TableCell>Doctor Check Status</TableCell>
                             <TableCell>Notes</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
-                            <ClientRow onDelete={handleDelete} key={index} client={user}/>
-                        ))}
+                        {loading ? (
+                            <TableRow>
+                                <TableCell colSpan={5} align="center">
+                                    <LoadingPage label="Loading Data..."/>
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            clients.map((client, index) => {
+                                const rowNumber = page * rowsPerPage + index + 1;
+                                return (
+                                    <ClientRow
+                                        onUpdate={handleUpdate}
+                                        key={client.id}
+                                        client={client}
+                                        onDelete={handleDelete}
+                                        rowIndex={rowNumber}
+                                    />
+                                );
+                            })
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 SelectProps={{
-                    id: 'rows-per-page-select',
-                    name: 'rowsPerPage',
+                    id: 'rows-per-clients-page-select',
+                    name: 'rowsClientsPerPage',
                 }}
                 component="div"
-                count={users.length}
+                count={count}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handlePageChange}
                 onRowsPerPageChange={handleRowsPerPageChange}
             />
             <AddClientDialog open={openDialog} onClose={handleCloseDialog} onAddClient={handleAddClient}/>
+            <Snackbar
+                open={alertOpen}
+                autoHideDuration={6000}
+                onClose={handleCloseAlert}
+            >
+                <Alert onClose={handleCloseAlert} severity="error">
+                    {alertMessage}
+                </Alert>
+            </Snackbar>
         </Paper>
     );
 };

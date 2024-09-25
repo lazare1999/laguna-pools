@@ -11,11 +11,11 @@ import {
     FormLabel,
     TextField
 } from '@mui/material';
-import authClient from '../../api/api'
-import {AlertDialog, Toast} from "../../utils/alertsUtils";
-import {HttpMethod} from "../../utils/httpMethodEnum";
-import PasswordField from "../common/passwordTextBox";
-import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../../utils/constants";
+import authClient from '../api/api'
+import {AlertDialog, Toast} from "../utils/alertsUtils";
+import {HttpMethod} from "../utils/httpMethodEnum";
+import PasswordField from "./common/passwordTextBox";
+import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../utils/constants";
 
 const RegisterForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');

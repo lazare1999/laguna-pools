@@ -18,7 +18,7 @@ public class ClientsController {
 
     @PreAuthorizeLagunaRoles
     @GetMapping("/all")
-    public AllClientsResponseDTO getClients(@RequestBody AllClientsRequestDTO request) {
+    public AllClientsResponseDTO getClients(@ModelAttribute AllClientsRequestDTO request) {
         return clientsService.getAllClients(request);
     }
 

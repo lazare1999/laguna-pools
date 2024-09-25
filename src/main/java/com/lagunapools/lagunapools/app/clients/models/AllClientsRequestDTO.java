@@ -14,4 +14,5 @@ import java.io.Serializable;
 public class AllClientsRequestDTO implements Serializable {
     private Integer pageKey;
     private Integer pageSize;
+    private String clientName;
 }

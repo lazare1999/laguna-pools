@@ -1,10 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {AppBar, Box, Button, Menu, MenuItem, Toolbar} from '@mui/material';
-import {ExitToApp, PersonAddAlt, TableChart} from '@mui/icons-material';
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import {ExitToApp, PersonAddAlt} from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import {Component} from '../utils/componentsEnum';
 import {UserApiService} from "../api/userApiService";
+import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
+import PoolOutlinedIcon from '@mui/icons-material/PoolOutlined';
 
 interface TopMenuProps {
     selectHandler: (value: number) => void;
@@ -44,9 +47,9 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
                         aria-haspopup="true"
                         onClick={handleClick}
                         color="inherit"
-                        startIcon={<PeopleAltIcon/>}
+                        startIcon={<SupportAgentOutlinedIcon/>}
                     >
-                        Users
+                        Operators
                     </Button>
                     <Menu
                         id="users-menu"
@@ -57,21 +60,32 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
                         <MenuItem onClick={handleClose}>
                             <Button color="inherit" startIcon={<PersonAddAlt/>}
                                     onClick={() => selectHandler(Component.REGISTER)}>
-                                New User
+                                New Operator
                             </Button>
                         </MenuItem>
                         <MenuItem onClick={handleClose}>
                             <Button color="inherit" startIcon={<PeopleIcon/>}
-                                    onClick={() => selectHandler(Component.ACTIVE_USERS_TABLE)}>Users
-                                List</Button>
+                                    onClick={() => selectHandler(Component.ACTIVE_USERS_TABLE)}>Operators</Button>
                         </MenuItem>
                     </Menu>
                 </>
                 }
-                <Button color="inherit" startIcon={<TableChart/>}
+
+                <Button color="inherit" startIcon={<PoolOutlinedIcon/>}
                         onClick={() => selectHandler(Component.CLIENTS_TABLE)}>
-                    Tables
+                    Clients
                 </Button>
+
+                <Button color="inherit" startIcon={<Diversity3OutlinedIcon/>}
+                        onClick={() => selectHandler(Component.GROUPS)}>
+                    Groups
+                </Button>
+                <Button color="inherit" startIcon={<CalendarMonthOutlinedIcon/>}
+                        onClick={() => selectHandler(Component.DAYS)}>
+                    Days
+                </Button>
+
+
                 <Box sx={{flexGrow: 1}}/>
                 <Button
                     color="inherit"
