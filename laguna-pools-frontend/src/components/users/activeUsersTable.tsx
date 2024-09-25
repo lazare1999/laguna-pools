@@ -24,13 +24,13 @@ import {
 } from "@mui/material";
 import {Refresh} from "@mui/icons-material";
 import ActiveUserRow from "./activeUserRow";
-import {User} from "../../models/usersModel";
-import {HttpMethod} from "../../../utils/httpMethodEnum";
-import authClient from "../../../api/api";
+import {User} from "../models/usersModel";
+import {HttpMethod} from "../../utils/httpMethodEnum";
+import authClient from "../../api/api";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import ClearAllIcon from '@mui/icons-material/ClearAll';
-import LoadingPage from "../../common/loadingPage";
+import LoadingPage from "../common/loadingPage";
 import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
 
 const ITEM_HEIGHT = 48;
