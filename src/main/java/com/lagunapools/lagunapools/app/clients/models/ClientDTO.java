@@ -1,13 +1,14 @@
 package com.lagunapools.lagunapools.app.clients.models;
 
 
-import com.lagunapools.lagunapools.app.clients.repository.ClientEntity;
+import com.lagunapools.lagunapools.app.clients.repository.ClientsEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 
 
 @Getter
@@ -18,26 +19,30 @@ public class ClientDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private String age;
-    private double cost;
+    private LocalDate age;
+    private Double cost;
+    private LocalDate expDate;
+    private LocalDate doctorCheckTill;
     private String phoneNumber;
-    private String idStatus;
-    private LocalDateTime expDate;
-    private String doctorCheckStatus;
+    private Boolean idStatus;
+    private Boolean contractStatus;
     private String notes;
-    private Long groupId;
+    private String parent;
+    private List<GroupDTO> groups;
 
-    public ClientDTO(ClientEntity client) {
+    public ClientDTO(ClientsEntity client) {
         this.id = client.getId();
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.age = client.getAge();
         this.cost = client.getCost();
+        this.expDate = client.getExpDate();
+        this.doctorCheckTill = client.getDoctorCheckTill();
         this.phoneNumber = client.getPhoneNumber();
         this.idStatus = client.getIdStatus();
-        this.expDate = client.getExpDate();
-        this.doctorCheckStatus = client.getDoctorCheckStatus();
+        this.contractStatus = client.getContractStatus();
         this.notes = client.getNotes();
-        this.groupId = client.getGroup().getId();
+        this.parent = client.getParent();
+        this.groups = GroupMapper.toDTO(client.getGroups());
     }
 }
