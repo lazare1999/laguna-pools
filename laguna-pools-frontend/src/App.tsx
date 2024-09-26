@@ -29,23 +29,31 @@ const App = () => {
                 setOpenSessionWindow(p);
             }
             setLoading(false);
-        })
+        });
     }, []);
 
     useEffect(() => {
-        const token = localStorage.getItem(REFRESH_TOKEN_EXP_NAME);
+        const interval = setInterval(() => {
+            const tokenExpTime = localStorage.getItem(REFRESH_TOKEN_EXP_NAME);
 
-        if (token !== null && select !== Component.LOGIN) {
-            const tokenDate = new Date(Number(token));
-            const currentDate = new Date();
+            setSelect(prevSelect => {
+                if (tokenExpTime !== null && prevSelect !== Component.LOGIN) {
+                    const currentDate = new Date();
+                    const tokenDate = new Date(Number(tokenExpTime));
+                    console.log("Now: " + currentDate + "\nSav: " + tokenDate);
 
-            const tokenExpired = currentDate > tokenDate;
-            if (tokenExpired) {
-                setReLoginDialogOpen(true);
-            }
-        }
+                    const tokenExpired = currentDate > tokenDate;
+                    if (tokenExpired) {
+                        console.log("HERE!");
+                        setReLoginDialogOpen(true);
+                    }
+                }
+                return prevSelect; // Return the current value of select
+            });
+        }, 1500);
 
-    }, [select]);
+        return () => clearInterval(interval);
+    }, []);
 
     const closeDialogHandler = () => {
         setReLoginDialogOpen(false);

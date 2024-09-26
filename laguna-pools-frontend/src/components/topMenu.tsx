@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {AppBar, Box, Button, Menu, MenuItem, Toolbar} from '@mui/material';
-import {ExitToApp, PersonAddAlt} from '@mui/icons-material';
-import PeopleIcon from '@mui/icons-material/People';
+import {AppBar, Box, Button, Toolbar} from '@mui/material';
+import {ExitToApp} from '@mui/icons-material';
 import {Component} from '../utils/componentsEnum';
 import {UserApiService} from "../api/userApiService";
 import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
@@ -30,8 +29,8 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
         return roles.includes(role);
     };
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
+    const handleClick = () => {
+        selectHandler(Component.CONTROL_PANEL);
     };
 
     const handleClose = () => {
@@ -51,23 +50,23 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
                     >
                         Admin Panel
                     </Button>
-                    <Menu
-                        id="users-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                    >
-                        <MenuItem onClick={handleClose}>
-                            <Button color="inherit" startIcon={<PersonAddAlt/>}
-                                    onClick={() => selectHandler(Component.REGISTER)}>
-                                New Operator
-                            </Button>
-                        </MenuItem>
-                        <MenuItem onClick={handleClose}>
-                            <Button color="inherit" startIcon={<PeopleIcon/>}
-                                    onClick={() => selectHandler(Component.ACTIVE_USERS_TABLE)}>Operators</Button>
-                        </MenuItem>
-                    </Menu>
+                    {/*<Menu*/}
+                    {/*    id="users-menu"*/}
+                    {/*    anchorEl={anchorEl}*/}
+                    {/*    open={open}*/}
+                    {/*    onClose={handleClose}*/}
+                    {/*>*/}
+                    {/*    <MenuItem onClick={handleClose}>*/}
+                    {/*        <Button color="inherit" startIcon={<PersonAddAlt/>}*/}
+                    {/*                onClick={() => selectHandler(Component.REGISTER)}>*/}
+                    {/*            New Operator*/}
+                    {/*        </Button>*/}
+                    {/*    </MenuItem>*/}
+                    {/*    <MenuItem onClick={handleClose}>*/}
+                    {/*        <Button color="inherit" startIcon={<PeopleIcon/>}*/}
+                    {/*                onClick={() => selectHandler(Component.ACTIVE_USERS_TABLE)}>Operators</Button>*/}
+                    {/*    </MenuItem>*/}
+                    {/*</Menu>*/}
                 </>
                 }
 
