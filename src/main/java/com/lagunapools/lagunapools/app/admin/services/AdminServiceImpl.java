@@ -5,6 +5,8 @@ import com.lagunapools.lagunapools.app.admin.models.AddRemoveRoleModel;
 import com.lagunapools.lagunapools.app.admin.models.AddUserModel;
 import com.lagunapools.lagunapools.app.admin.models.EditUserModel;
 import com.lagunapools.lagunapools.app.admin.models.EditUsersListModel;
+import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
+import com.lagunapools.lagunapools.app.branches.repository.BranchRepository;
 import com.lagunapools.lagunapools.app.user.domains.UserRolesDomain;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.app.user.repository.UserRolesRepository;
@@ -37,6 +39,8 @@ public class AdminServiceImpl implements AdminService {
     private final UserRolesRepository userRolesRepository;
     private final AdminRolesService adminRolesService;
 
+    private final BranchRepository branchRepository;
+
     @Value("${salt}")
     private String SALT;
 
@@ -62,6 +66,10 @@ public class AdminServiceImpl implements AdminService {
                 userName,
                 userName
         );
+
+        BranchEntity branch = branchRepository.getBranchEntitiesByBranchName(u.getBranchName());
+        usersDomain.setBranch(branch);
+
         var newUserId = usersRepository.saveAndFlush(usersDomain).getUserId();
 
         u.getRoles().forEach(r -> userRolesRepository.save(new UserRolesDomain(newUserId, r)));

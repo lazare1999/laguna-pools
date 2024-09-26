@@ -19,6 +19,7 @@ public class AddUserModel implements Serializable {
     private String username;
     private String password;
     private List<Integer> roles;
+    private String branchName;
 
     @Override
     public String toString() {

@@ -24,6 +24,7 @@ const RegisterForm: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [roles, setRoles] = useState<Array<{ targetId: number; targetName: string; targetDescription: string }>>([]);
     const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
+    const [branchName, setBranchName] = useState('');
     const [loading, setLoading] = useState<boolean>(false);
     const [submitLoading, setSubmitLoading] = useState<boolean>(false);
 
@@ -77,7 +78,8 @@ const RegisterForm: React.FC = () => {
             const result = await authClient.request('admin/add_user', HttpMethod.POST, {
                 username,
                 password,
-                roles: selectedRoles
+                roles: selectedRoles,
+                branchName
             });
 
             setToastMessage(`User added with id: ${result.data}`);
@@ -167,6 +169,22 @@ const RegisterForm: React.FC = () => {
                         onChange={handleConfirmPasswordChange}
                         helperText={""}
                     />
+
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        label="Branch"
+                        autoFocus
+                        value={branchName}
+                        onChange={(e) => setBranchName(e.target.value)}
+                        slotProps={{
+                            inputLabel: {
+                                shrink: true,
+                            }
+                        }}
+                    />
+
                     <FormControl component="fieldset" margin="normal">
                         <FormLabel component="legend">Select Roles</FormLabel>
                         <FormGroup>
