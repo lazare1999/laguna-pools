@@ -171,7 +171,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
                 <Grid container spacing={1}>
                     <Grid item xs={4}>
                         <TextField
-                            label="Age"
+                            label="Birthday"
                             type="date"
                             variant="outlined"
                             fullWidth

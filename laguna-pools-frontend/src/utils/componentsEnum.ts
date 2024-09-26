@@ -4,5 +4,6 @@ export enum Component {
     CLIENTS_TABLE,
     GROUPS,
     DAYS,
-    ACTIVE_USERS_TABLE
+    ACTIVE_USERS_TABLE,
+    CONTROL_PANEL
 }

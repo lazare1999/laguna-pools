@@ -4,10 +4,11 @@ import ClientsTable from "../components/clients/clientsTable";
 import React from "react";
 import {Component} from "./componentsEnum";
 import ActiveUsersTable from "../components/users/activeUsersTable";
+import ControlPanel from "../components/admin/controlPanel";
 
 interface ComponentMapperProps {
     currentComponent: Component
-    selectHandler: (selectHandler: Component) => void;
+    selectHandler: (select: Component) => void;
     setOpenSessionWindow: (open: boolean) => void;
 }
 
@@ -21,6 +22,8 @@ const ComponentMapper: React.FC<ComponentMapperProps> = ({currentComponent, sele
             return <ClientsTable/>;
         case Component.ACTIVE_USERS_TABLE:
             return <ActiveUsersTable/>
+        case Component.CONTROL_PANEL:
+            return <ControlPanel selectHandler={selectHandler}/>
         default:
             return null;
     }
