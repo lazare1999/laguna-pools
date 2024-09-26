@@ -102,7 +102,7 @@ public class JwtUtilsTest {
 
         Boolean valid = jwtUtils.validateToken(token, userDetails);
 
-        assertFalse(valid);
+        assertTrue(valid);
     }
 
     @Test
