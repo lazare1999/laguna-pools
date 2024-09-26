@@ -33,6 +33,7 @@ services:
       - postgres
       - redis
   certbot:
+    restart: 'always'
     image: certbot/certbot
     container_name: laguna-pools-certbot-1
     volumes:
@@ -62,6 +63,7 @@ services:
     networks:
       - laguna-network
   frontend:
+    restart: 'always'
     build:
       context: react-frontend
       dockerfile: Dockerfile
