@@ -17,12 +17,13 @@ public class RedisService {
 
     private StringRedisTemplate redisTemplate;
 
-    private final static Long EXPIRES_IN_SECONDS = 300L;
-    public static Long REFRESH_EXPIRES_IN_SECONDS = 60 * 60L;
+    public static Long EXPIRES_IN_MILLIS = 300_000L;
+    public static Long REFRESH_EXPIRES_IN_MILLIS = 60000 * 60L;
 
     public void storeToken(String username, String token, boolean isAccessToken) {
         String key = buildRedisKey(username, isAccessToken);
-        redisTemplate.opsForValue().set(key, token, isAccessToken ? EXPIRES_IN_SECONDS : REFRESH_EXPIRES_IN_SECONDS, TimeUnit.SECONDS);
+        Long expires = isAccessToken ? EXPIRES_IN_MILLIS : REFRESH_EXPIRES_IN_MILLIS;
+        redisTemplate.opsForValue().set(key, token, System.currentTimeMillis() + expires, TimeUnit.MILLISECONDS);
     }
 
     public String getToken(String username, boolean isAccessToken) {

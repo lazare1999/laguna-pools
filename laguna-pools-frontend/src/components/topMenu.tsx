@@ -6,8 +6,8 @@ import {Component} from '../utils/componentsEnum';
 import {UserApiService} from "../api/userApiService";
 import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 import PoolOutlinedIcon from '@mui/icons-material/PoolOutlined';
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 
 interface TopMenuProps {
     selectHandler: (value: number) => void;
@@ -47,9 +47,9 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
                         aria-haspopup="true"
                         onClick={handleClick}
                         color="inherit"
-                        startIcon={<SupportAgentOutlinedIcon/>}
+                        startIcon={<ManageAccountsOutlinedIcon/>}
                     >
-                        Operators
+                        Admin Panel
                     </Button>
                     <Menu
                         id="users-menu"

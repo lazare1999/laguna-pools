@@ -1,5 +1,6 @@
 package com.lagunapools.lagunapools.app.clients.repository;
 
+import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
 import com.lagunapools.lagunapools.app.clients.models.ClientDTO;
 import com.lagunapools.lagunapools.app.clients.models.GroupMapper;
 import jakarta.persistence.*;
@@ -38,6 +39,9 @@ public class ClientsEntity {
     private String createdBy;
     private String updatedBy;
 
+    @Column(name = "branch_id", insertable = false, updatable = false)
+    private Integer branchId;
+
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JoinTable(
             schema = "clients",
@@ -46,6 +50,10 @@ public class ClientsEntity {
             inverseJoinColumns = @JoinColumn(name = "group_id")
     )
     private List<GroupEntity> groups;
+
+    @ManyToOne
+    @JoinColumn(name = "branch_id", referencedColumnName = "id")
+    private BranchEntity branch;
 
     public ClientsEntity(ClientDTO client, String username) {
         this.firstName = client.getFirstName();

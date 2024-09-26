@@ -27,6 +27,7 @@ public class ActiveUsersSearchModel implements Serializable {
     private LocalDateTime lastAuthDateTo;
     private Boolean isLocked;
     private List<String> roles;
+    private List<String> branches;
 
     @Override
     public String toString() {
