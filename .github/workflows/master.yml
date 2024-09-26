@@ -114,6 +114,11 @@ jobs:
           scp -i ~/.ssh/id_rsa docker/react-frontend/Dockerfile ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/react-frontend/Dockerfile
           scp -i ~/.ssh/id_rsa docker/spring-backend/Dockerfile ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/spring-backend/Dockerfile
 
+      - name: Update and upgrade server
+        working-directory: ${{ github.workspace }}
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@54.224.11.73 "sudo apt update && sudo apt upgrade -y"
+
       - name: Restart Docker services
         working-directory: ${{ github.workspace }}
         run: |
