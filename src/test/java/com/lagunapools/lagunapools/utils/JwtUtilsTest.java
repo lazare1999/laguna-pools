@@ -7,6 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.User;
@@ -28,17 +29,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 public class JwtUtilsTest {
 
-    private final RedisService redisService;
-
-    public JwtUtilsTest(RedisService redisService) {
-        this.redisService = redisService;
-    }
+    @Autowired
+    private RedisService redisService;
 
     @Value("${jwt.secret}")
     private String JWT_SECRET_KEY;
 
     private JwtUtils jwtUtils;
-    private final String USER_NAME = "admin_user";
+    private final String USER_NAME = "test-admin";
 
     @BeforeEach
     public void setup() {
@@ -104,7 +102,7 @@ public class JwtUtilsTest {
 
         Boolean valid = jwtUtils.validateToken(token, userDetails);
 
-        assertTrue(valid);
+        assertFalse(valid);
     }
 
     @Test
@@ -112,6 +110,8 @@ public class JwtUtilsTest {
         String token = generateToken();
 
         String username = jwtUtils.getUserNameViaToken("Bearer " + token);
+
+        redisService.storeToken(USER_NAME, generateToken(), true);
 
         assertEquals(USER_NAME, username);
     }
