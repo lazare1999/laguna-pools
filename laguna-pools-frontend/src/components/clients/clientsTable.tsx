@@ -166,7 +166,7 @@ const ClientsTable: React.FC = () => {
                     <TableBody>
                         {loading ? (
                             <TableRow>
-                                <TableCell colSpan={5} align="center">
+                                <TableCell colSpan={8} align="center">
                                     <LoadingPage label="Loading Data..."/>
                                 </TableCell>
                             </TableRow>
