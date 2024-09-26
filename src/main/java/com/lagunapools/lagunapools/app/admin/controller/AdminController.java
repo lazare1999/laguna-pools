@@ -2,9 +2,11 @@ package com.lagunapools.lagunapools.app.admin.controller;
 
 
 import com.lagunapools.lagunapools.app.admin.models.*;
+import com.lagunapools.lagunapools.app.admin.services.AdminBranchesService;
 import com.lagunapools.lagunapools.app.admin.services.AdminRolesService;
 import com.lagunapools.lagunapools.app.admin.services.AdminSearchService;
 import com.lagunapools.lagunapools.app.admin.services.AdminService;
+import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
 import com.lagunapools.lagunapools.app.user.domains.TargetViewDomain;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
@@ -28,6 +30,7 @@ public class AdminController {
     private final AdminService adminService;
     private final AdminSearchService adminSearchService;
     private final AdminRolesService adminRolesService;
+    private final AdminBranchesService adminBranchesService;
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping(value = "/active_users")
@@ -96,6 +99,25 @@ public class AdminController {
     @Cacheable(value = "rolesList")
     public List<TargetViewDomain> listRoles() {
         return adminRolesService.listRoles();
+    }
+
+    @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
+    @GetMapping({"/list_branches"})
+    @Cacheable(value = "branchesList")
+    public List<BranchEntity> listBranches() {
+        return adminBranchesService.listBranches();
+    }
+
+    @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
+    @GetMapping({"/add_branch"})
+    public ResponseEntity<?> addBranch(@RequestParam String branchName) {
+        return adminBranchesService.addBranch(branchName);
+    }
+
+    @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
+    @GetMapping({"/remove_branch"})
+    public ResponseEntity<?> removeBranch(@RequestParam Long branchId) {
+        return adminBranchesService.removeBranch(branchId);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")

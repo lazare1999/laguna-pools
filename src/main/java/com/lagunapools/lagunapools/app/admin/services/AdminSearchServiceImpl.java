@@ -86,6 +86,12 @@ public class AdminSearchServiceImpl implements AdminSearchService {
                 );
             }
 
+            if (activeUsersSearchModel.getBranches() != null && !activeUsersSearchModel.getBranches().isEmpty()) {
+
+                predicate = builder.and(predicate, builder.in(root.get("branch").get("branchName")).value(activeUsersSearchModel.getBranches()));
+
+            }
+
             return predicate;
         }, PageRequest.of(activeUsersSearchModel.getPageKey(), activeUsersSearchModel.getPageSize(), LazoUtils.getSortAsc("userId")));
 

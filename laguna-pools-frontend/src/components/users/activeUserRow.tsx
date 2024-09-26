@@ -119,6 +119,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({
                         <Chip key={index} label={role} style={{margin: '5px'}}/>
                     ))}
                 </TableCell>
+                <TableCell>{user.branch.branchName}</TableCell>
                 <TableCell>
                     <IconButton onClick={handleLockUserClick} color="info">
                         {user.isLocked ? <LockOutlinedIcon color="warning"/> : <LockOpenOutlinedIcon/>}

@@ -1,6 +1,7 @@
 package com.lagunapools.lagunapools.app.admin.models;
 
 
+import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
 import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.domains.TargetDomain;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class ActiveUserResponseModel {
     private Boolean isLocked;
     private List<String> Roles;
     private List<Long> RolesIds;
+    private BranchEntity branch;
 
     public ActiveUserResponseModel(AppUser appUser) {
         this.userId = appUser.getUserId();
@@ -32,5 +34,6 @@ public class ActiveUserResponseModel {
                 .map(TargetDomain::getTargetDescription).toList();
         this.RolesIds = appUser.getTargetDomains().stream()
                 .map(TargetDomain::getTargetId).toList();
+        this.branch = appUser.getBranch();
     }
 }

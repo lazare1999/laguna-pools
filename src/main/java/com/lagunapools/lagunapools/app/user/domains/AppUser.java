@@ -1,5 +1,6 @@
 package com.lagunapools.lagunapools.app.user.domains;
 
+import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,6 +41,9 @@ public class AppUser implements Serializable {
     @Column(name = "is_locked")
     private Boolean isLocked;
 
+    @Column(name = "branch_id", insertable = false, updatable = false)
+    private Integer branchId;
+
     @ManyToMany(cascade = CascadeType.DETACH)
     @JoinTable(
             schema = "users",
@@ -48,6 +52,10 @@ public class AppUser implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "target_id") // foreign key for TargetViewDomain
     )
     private List<TargetDomain> targetDomains;
+
+    @ManyToOne
+    @JoinColumn(name = "branch_id", referencedColumnName = "id")
+    private BranchEntity branch;
 
 
 }

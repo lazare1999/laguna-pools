@@ -57,8 +57,10 @@ const ActiveUsersTable: React.FC = () => {
     const [lastAuthDateFrom, setLastAuthDateFrom] = useState<string>("");
     const [lastAuthDateTo, setLastAuthDateTo] = useState<string>("");
     const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+    const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
 
     const [roles, setRoles] = useState<Array<{ targetId: number; targetName: string; targetDescription: string }>>([]);
+    const [branches, setBranches] = useState<Array<{ id: number; branchName: string }>>([]);
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -72,6 +74,7 @@ const ActiveUsersTable: React.FC = () => {
                 userName: filterText,
                 isLocked: isLocked,
                 roles: selectedRoles.join(','),
+                branches: selectedBranches.join(','),
             };
 
             if (lastAuthDateFrom) {
@@ -121,13 +124,31 @@ const ActiveUsersTable: React.FC = () => {
         }
     };
 
+    const fetchBranchesList = async () => {
+        try {
+            const branches = await authClient.request('admin/list_branches', HttpMethod.GET);
+
+            if (Array.isArray(branches.data)) {
+                setBranches(branches.data);
+            } else {
+                setAlertMessage(`Fetched branches are not an array: ${branches.data}`);
+                setAlertOpen(true);
+                setBranches([]);
+            }
+        } catch (err) {
+            setAlertMessage(`Failed to fetch branches: ${err}`);
+            setAlertOpen(true);
+        }
+    };
+
     useEffect(() => {
         fetchRolesList().then(r => r);
+        fetchBranchesList().then(r => r);
     }, []);
 
     useEffect(() => {
         fetchUsers().then(r => r);
-    }, [page, rowsPerPage, filterText, isLocked, inActiveUsers, lastAuthDateFrom, lastAuthDateTo, selectedRoles]);
+    }, [page, rowsPerPage, filterText, isLocked, inActiveUsers, lastAuthDateFrom, lastAuthDateTo, selectedRoles, selectedBranches]);
 
     const handleLock = (lockUser: User) => {
         setUsers(users.map(user => (user.userId === lockUser.userId ? lockUser : user)));
@@ -188,6 +209,15 @@ const ActiveUsersTable: React.FC = () => {
         );
     };
 
+    const handleBranchChange = (event: SelectChangeEvent<typeof selectedBranches>) => {
+        const {
+            target: {value},
+        } = event;
+        setSelectedBranches(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
     const handleClearAll = () => {
         setFilterText("");
         setIsLocked(false);
@@ -195,6 +225,7 @@ const ActiveUsersTable: React.FC = () => {
         setLastAuthDateFrom("");
         setLastAuthDateTo("");
         setSelectedRoles([]);
+        setSelectedBranches([]);
     };
 
 
@@ -205,16 +236,16 @@ const ActiveUsersTable: React.FC = () => {
                 alignItems: "center",
                 justifyContent: "space-between",
                 padding: 2,
-                marginLeft: 2
+                gap: 1,
+                flexWrap: 'wrap'
             }}>
                 <TextField
                     label="Filter by username"
                     variant="outlined"
                     value={filterText}
                     onChange={handleFilterChange}
-                    fullWidth
                     margin="normal"
-                    sx={{flexGrow: 1, height: 64}}
+                    sx={{flexGrow: 5, height: 64}}
                 />
                 <TextField
                     label="Last Auth Date From"
@@ -223,7 +254,7 @@ const ActiveUsersTable: React.FC = () => {
                     value={lastAuthDateFrom}
                     onChange={handleDateFromChange}
                     margin="normal"
-                    sx={{minWidth: 190, marginLeft: 2, height: 64}}
+                    sx={{flexGrow: 1, height: 64}}
                     slotProps={{
                         inputLabel: {
                             shrink: true,
@@ -237,14 +268,14 @@ const ActiveUsersTable: React.FC = () => {
                     value={lastAuthDateTo}
                     onChange={handleDateToChange}
                     margin="normal"
-                    sx={{minWidth: 190, marginLeft: 2, height: 64}}
+                    sx={{flexGrow: 1, height: 64}}
                     slotProps={{
                         inputLabel: {
                             shrink: true,
                         }
                     }}
                 />
-                <FormControl sx={{minWidth: 300, marginLeft: 2}}>
+                <FormControl sx={{flexGrow: 20}}>
                     <InputLabel id="roles-select-label">Roles</InputLabel>
                     <Select
                         labelId="roles-select-label"
@@ -252,9 +283,7 @@ const ActiveUsersTable: React.FC = () => {
                         multiple
                         value={selectedRoles}
                         onChange={handleRoleChange}
-                        input={<OutlinedInput
-                            id={"roles-select-label-input"}
-                            label="როლები"/>}
+                        input={<OutlinedInput id={"roles-select-label-input"} label="Roles"/>}
                         renderValue={(selected) => selected.join(', ')}
                         MenuProps={MenuProps}
                     >
@@ -266,16 +295,34 @@ const ActiveUsersTable: React.FC = () => {
                         ))}
                     </Select>
                 </FormControl>
+                <FormControl sx={{flexGrow: 20}}>
+                    <InputLabel id="branches-select-label">Branches</InputLabel>
+                    <Select
+                        labelId="branches-select-label"
+                        id="branches-select"
+                        multiple
+                        value={selectedBranches}
+                        onChange={handleBranchChange}
+                        input={<OutlinedInput id={"branches-select-label-input"} label="Branches"/>}
+                        renderValue={(selected) => selected.join(', \n')}
+                        MenuProps={MenuProps}
+                    >
+                        {branches.map((branch) => (
+                            <MenuItem key={branch.id} value={branch.branchName}>
+                                <Checkbox checked={selectedBranches.includes(branch.branchName)}/>
+                                <ListItemText primary={branch.branchName}/>
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
                 <Button
                     variant="outlined"
                     onClick={handleToggleIsLocked}
                     sx={{
-                        paddingLeft: 3,
-                        paddingRight: 3,
-                        ml: 2,
-                        height: "50px",
+                        flexGrow: 0,
                         display: "flex",
                         alignItems: "center",
+                        height: "50px"
                     }}
                 >
                     {isLocked ? <LockOutlinedIcon color="warning"/> : <LockOpenOutlinedIcon/>}
@@ -284,12 +331,10 @@ const ActiveUsersTable: React.FC = () => {
                     variant="outlined"
                     onClick={handleToggleInActiveUsers}
                     sx={{
-                        paddingLeft: 3,
-                        paddingRight: 3,
-                        ml: 2,
-                        height: "50px",
+                        flexGrow: 0,
                         display: "flex",
                         alignItems: "center",
+                        height: "50px"
                     }}
                 >
                     {inActiveUsers ? <PersonRemoveAlt1OutlinedIcon color="error"/> : <PersonRemoveAlt1OutlinedIcon/>}
@@ -298,31 +343,28 @@ const ActiveUsersTable: React.FC = () => {
                     variant="outlined"
                     onClick={handleRefresh}
                     sx={{
-                        paddingLeft: 3,
-                        paddingRight: 3,
-                        ml: 2,
-                        height: "50px",
+                        flexGrow: 0,
                         display: "flex",
                         alignItems: "center",
+                        height: "50px"
                     }}
-                > <Refresh/>
+                >
+                    <Refresh/>
                 </Button>
                 <Button
                     variant="outlined"
                     onClick={handleClearAll}
                     sx={{
-                        paddingLeft: 3,
-                        paddingRight: 3,
-                        ml: 2,
-                        height: "50px",
+                        flexGrow: 0,
                         display: "flex",
                         alignItems: "center",
+                        height: "50px"
                     }}
                 >
                     <ClearAllIcon/>
                 </Button>
-
             </Box>
+
             <TableContainer>
                 <Table>
                     <TableHead>
@@ -331,6 +373,7 @@ const ActiveUsersTable: React.FC = () => {
                             <TableCell>Username</TableCell>
                             <TableCell>Last auth date</TableCell>
                             <TableCell>roles</TableCell>
+                            <TableCell>branch</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>

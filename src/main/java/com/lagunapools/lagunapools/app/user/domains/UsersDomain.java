@@ -1,5 +1,6 @@
 package com.lagunapools.lagunapools.app.user.domains;
 
+import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -61,6 +62,9 @@ public class UsersDomain implements Serializable {
     @Column(name = "last_auth_date")
     private LocalDateTime lastAuthDate;
 
+    @Column(name = "branch_id", insertable = false, updatable = false)
+    private Integer branchId;
+
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JoinTable(
             schema = "users",
@@ -69,6 +73,10 @@ public class UsersDomain implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "target_id")
     )
     private List<TargetDomain> targetDomains;
+
+    @ManyToOne
+    @JoinColumn(name = "branch_id", referencedColumnName = "id")
+    private BranchEntity branch;
 
     public UsersDomain(String userName, String userPassword, String createdBy, String updatedBy) {
         this.userName = userName;

@@ -1,4 +1,6 @@
 // types.ts
+import {BranchModel} from "./branchModel";
+
 export interface User {
     userId: number;
     username: string;
@@ -7,4 +9,5 @@ export interface User {
     isLocked: boolean;
     roles: Array<string>;
     rolesIds: Array<number>;
+    branch: BranchModel;
 }
