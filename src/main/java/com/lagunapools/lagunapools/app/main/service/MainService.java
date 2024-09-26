@@ -14,7 +14,7 @@ public interface MainService {
 
     UserRolesResponse getUserRoles(String token);
 
-    ResponseEntity<Boolean> logout(String token);
+    ResponseEntity<Boolean> logout();
 
     ResponseEntity<?> createAuthenticationToken(AuthenticationRequest autRequest) throws Exception;
 

@@ -7,6 +7,8 @@ import TopMenu from "./components/topMenu";
 import AuthenticateUtils from "./api/authenticateUtils";
 import PasswordDialog from "./components/reLoginDialog";
 import LoadingPageProgress from "./components/common/loadingPage";
+import authClient from "./api/api";
+import {HttpMethod} from "./utils/httpMethodEnum";
 
 const App = () => {
     const [select, setSelect] = useState<Component>(Component.LOGIN);
@@ -53,11 +55,19 @@ const App = () => {
         setSelect(n);
     };
 
-    const logOutHandler = () => {
-        localStorage.removeItem(REFRESH_TOKEN_NAME);
-        localStorage.removeItem(REFRESH_TOKEN_EXP_NAME);
-        setOpenSessionWindow(false);
-        setSelect(Component.LOGIN);
+    const logOutHandler = async () => {
+        try {
+            await authClient.request('logout_from_system', HttpMethod.POST).then(r => {
+                if (r.status === 200) {
+                    localStorage.removeItem(REFRESH_TOKEN_NAME);
+                    localStorage.removeItem(REFRESH_TOKEN_EXP_NAME);
+                    setOpenSessionWindow(false);
+                    setSelect(Component.LOGIN);
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
     };
 
     return (

@@ -8,6 +8,7 @@ import com.lagunapools.lagunapools.app.user.domains.TargetDomain;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
+import com.lagunapools.lagunapools.services.RedisService;
 import com.lagunapools.lagunapools.utils.JwtUtils;
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.lagunapools.lagunapools.utils.EncryptUtils.encrypt;
+import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUser;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.*;
 
 /**
@@ -46,6 +48,7 @@ public class MainServiceImpl implements MainService {
     private final JwtUtils jwtTokenUtils;
 
     private final MyUserDetailsService userDetailsService;
+    private final RedisService redisService;
 
     @Value("${salt}")
     private String SALT;
@@ -71,11 +74,13 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public ResponseEntity<Boolean> logout(String token) {
-        var userName = jwtTokenUtils.getUserNameViaToken(token);
+    public ResponseEntity<Boolean> logout() {
+        var username = getCurrentApplicationUser().getUsername();
 
-        if (StringUtils.isEmpty(userName))
-            return badRequestResponse(false);
+        if (username != null) {
+            redisService.removeToken(username, true);
+            redisService.removeToken(username, false);
+        }
 
         return okResponse(true);
     }

@@ -42,11 +42,10 @@ public class MainController {
         return mainService.getUserRoles(token);
     }
 
-
     @PreAuthorizeLagunaRoles
     @PostMapping(value = "/logout_from_system")
-    public ResponseEntity<Boolean> logout(@RequestHeader("Authorization") String token) {
-        return mainService.logout(token);
+    public ResponseEntity<Boolean> logout() {
+        return mainService.logout();
     }
 
     @PostMapping(value = "/authenticate")

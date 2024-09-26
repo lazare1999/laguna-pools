@@ -1,6 +1,7 @@
 package com.lagunapools.lagunapools.utils;
 
 import com.lagunapools.lagunapools.app.main.models.AuthenticationResponse;
+import com.lagunapools.lagunapools.services.RedisService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -27,6 +28,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 public class JwtUtilsTest {
 
+    private final RedisService redisService;
+
+    public JwtUtilsTest(RedisService redisService) {
+        this.redisService = redisService;
+    }
+
     @Value("${jwt.secret}")
     private String JWT_SECRET_KEY;
 
@@ -38,7 +45,7 @@ public class JwtUtilsTest {
         if (JWT_SECRET_KEY == null || JWT_SECRET_KEY.isEmpty()) {
             throw new IllegalStateException("JWT_SECRET_KEY must not be null or empty");
         }
-        jwtUtils = new JwtUtils(JWT_SECRET_KEY);
+        jwtUtils = new JwtUtils(redisService, JWT_SECRET_KEY);
     }
 
     @Test

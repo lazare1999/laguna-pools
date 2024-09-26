@@ -2,6 +2,7 @@ package com.lagunapools.lagunapools.utils;
 
 
 import com.lagunapools.lagunapools.app.main.models.AuthenticationResponse;
+import com.lagunapools.lagunapools.services.RedisService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -23,13 +24,16 @@ import java.util.function.Function;
 @Service
 public class JwtUtils {
 
+    private final RedisService redisService;
+
     @Value("${jwt.secret}")
     private String JWT_SECRET_KEY;
 
     public static Long EXPIRES_IN_MILLIS = 300_000L;
     public static Long REFRESH_EXPIRES_IN_MILLIS = 60000 * 60L;
 
-    public JwtUtils(@Value("${jwt.secret}") String jwtSecretKey) {
+    public JwtUtils(RedisService redisService, @Value("${jwt.secret}") String jwtSecretKey) {
+        this.redisService = redisService;
         this.JWT_SECRET_KEY = jwtSecretKey;
     }
 
@@ -70,7 +74,13 @@ public class JwtUtils {
         Map<String, Object> refreshTokenClaims = new HashMap<>();
         refreshTokenClaims.put("access_token", false);
 
-        return new AuthenticationResponse(createToken(accessTokenClaims, userDetails.getUsername()), System.currentTimeMillis() + EXPIRES_IN_MILLIS, createRefreshToken(refreshTokenClaims, userDetails.getUsername()), System.currentTimeMillis() + REFRESH_EXPIRES_IN_MILLIS);
+        String accessToken = createToken(accessTokenClaims, userDetails.getUsername());
+        String refreshToken = createRefreshToken(refreshTokenClaims, userDetails.getUsername());
+
+        redisService.storeToken(userDetails.getUsername(), accessToken, true);
+        redisService.storeToken(userDetails.getUsername(), refreshToken, false);
+
+        return new AuthenticationResponse(accessToken, System.currentTimeMillis() + EXPIRES_IN_MILLIS, refreshToken, System.currentTimeMillis() + REFRESH_EXPIRES_IN_MILLIS);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
@@ -97,9 +107,12 @@ public class JwtUtils {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        if (userDetails == null)
+        String username = extractUsername(token);
+
+        String redisToken = redisService.getToken(username, extractAccessTokenStatus(token));
+        if (redisToken == null || !redisToken.equals(token))
             return false;
-        final String username = extractUsername(token);
+
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
