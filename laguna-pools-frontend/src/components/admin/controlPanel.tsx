@@ -2,11 +2,9 @@ import React from 'react';
 import {Box} from '@mui/material';
 import CardComponent from "./card";
 import {Component} from "../../utils/componentsEnum";
-
-// URLs for card backgrounds
-const operatorImage = 'https://via.placeholder.com/300?text=Add+Operator';
-const listImage = 'https://via.placeholder.com/300?text=List+Operators';
-const manageImage = 'https://via.placeholder.com/300?text=Manage+Branches';
+import op from "../../assets/op.webp"
+import listImage from "../../assets/op.webp"
+import manageImage from "../../assets/op.webp"
 
 interface ControlPanelProps {
     selectHandler: (select: Component) => void;
@@ -22,7 +20,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({selectHandler}) => {
     };
 
     const handleManageBranches = () => {
-        console.log('Manage Branches');
+        selectHandler(Component.MANAGE_BRANCHES);
     };
 
     return (
@@ -32,13 +30,12 @@ const ControlPanel: React.FC<ControlPanelProps> = ({selectHandler}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '100vh',
-                backgroundColor: '#f0f0f0',
             }}
         >
             <CardComponent
                 title="Add New Operator"
                 buttonText="Go to Form"
-                backgroundImage={operatorImage}
+                backgroundImage={op}
                 onButtonClick={handleAddOperator}
             />
             <CardComponent

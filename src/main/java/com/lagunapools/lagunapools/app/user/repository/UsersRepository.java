@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,10 +18,8 @@ import java.util.Optional;
 @Repository
 public interface UsersRepository extends JpaRepository<UsersDomain, Long>, JpaSpecificationExecutor<UsersDomain> {
 
-    //    @Cacheable(value = "usersByUsername", key = "#userName")
     Optional<UsersDomain> findByUserName(String userName);
 
-    //    @Cacheable(value = "usersById", key = "#userId")
     UsersDomain findByUserId(Long userId);
 
     boolean existsByTargetDomains_TargetId(Long roleId);
@@ -28,11 +27,13 @@ public interface UsersRepository extends JpaRepository<UsersDomain, Long>, JpaSp
     boolean existsByUserIdAndTargetDomains_TargetId(Long userId, Long roleId);
 
     @Modifying
+    @Transactional
     @Query("DELETE FROM UserRolesDomain ur WHERE ur.userId = :userId AND ur.targetId = :roleId")
     int removeRoleByUserIdAndRoleId(@Param("userId") Long userId, @Param("roleId") Long roleId);
 
-//    @Modifying
-//    @Query("UPDATE UsersDomain u SET u.branchId = 0 WHERE u.branchId = ?1")
-//    void updateBranchIdToZero(Long branchId);
+    @Modifying
+    @Transactional
+    @Query("UPDATE users u SET u.branchId = 0 WHERE u.branchId = ?1")
+    void updateBranchIdToZero(Long branchId);
 
 }

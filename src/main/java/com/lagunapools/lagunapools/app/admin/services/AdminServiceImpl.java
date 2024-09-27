@@ -5,6 +5,8 @@ import com.lagunapools.lagunapools.app.admin.models.AddRemoveRoleModel;
 import com.lagunapools.lagunapools.app.admin.models.AddUserModel;
 import com.lagunapools.lagunapools.app.admin.models.EditUserModel;
 import com.lagunapools.lagunapools.app.admin.models.EditUsersListModel;
+import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
+import com.lagunapools.lagunapools.app.branches.repository.BranchRepository;
 import com.lagunapools.lagunapools.app.user.domains.UserRolesDomain;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.app.user.repository.UserRolesRepository;
@@ -14,6 +16,7 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,8 @@ public class AdminServiceImpl implements AdminService {
     private final UsersRepository usersRepository;
     private final UserRolesRepository userRolesRepository;
     private final AdminRolesService adminRolesService;
+
+    private final BranchRepository branchRepository;
 
     @Value("${salt}")
     private String SALT;
@@ -62,6 +67,10 @@ public class AdminServiceImpl implements AdminService {
                 userName,
                 userName
         );
+
+        BranchEntity branch = branchRepository.getBranchEntitiesByBranchName(u.getBranchName());
+        usersDomain.setBranch(branch);
+
         var newUserId = usersRepository.saveAndFlush(usersDomain).getUserId();
 
         u.getRoles().forEach(r -> userRolesRepository.save(new UserRolesDomain(newUserId, r)));
@@ -157,11 +166,21 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "branchesList", allEntries = true)
     public ResponseEntity<?> changeUserDetails(EditUserModel changeModel) {
         UsersDomain cUser = usersRepository.findByUserId(changeModel.getUserId());
         if (StringUtils.isNotEmpty(changeModel.getNewPassword())) {
             cUser.setUserPassword(encrypt(SALT, changeModel.getNewPassword()));
         }
+
+        if (changeModel.getNewBranch() == null)
+            return badRequestResponse("New branch is null");
+
+        BranchEntity branch = branchRepository.getBranchEntitiesByBranchName(changeModel.getNewBranch());
+        if (Objects.isNull(branch))
+            return badRequestResponse("Branch not found");
+
+        cUser.setBranch(branch);
 
         cUser.getTargetDomains().stream()
                 .filter(domain -> !changeModel.getNewRoles().contains(domain.getTargetId()))

@@ -24,14 +24,16 @@ import {
 } from "@mui/material";
 import {Refresh} from "@mui/icons-material";
 import ActiveUserRow from "./activeUserRow";
-import {User} from "../models/usersModel";
-import {HttpMethod} from "../../utils/httpMethodEnum";
-import authClient from "../../api/api";
+import {User} from "../../models/usersModel";
+import {HttpMethod} from "../../../utils/httpMethodEnum";
+import authClient from "../../../api/api";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import ClearAllIcon from '@mui/icons-material/ClearAll';
-import LoadingPage from "../common/loadingPage";
+import LoadingPage from "../../common/loadingPage";
 import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
+import {TargetView} from "../../models/targetViewModel";
+import {BranchModel} from "../../models/branchModel";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -59,8 +61,8 @@ const ActiveUsersTable: React.FC = () => {
     const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
     const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
 
-    const [roles, setRoles] = useState<Array<{ targetId: number; targetName: string; targetDescription: string }>>([]);
-    const [branches, setBranches] = useState<Array<{ id: number; branchName: string }>>([]);
+    const [roles, setRoles] = useState<Array<TargetView>>([]);
+    const [branches, setBranches] = useState<Array<BranchModel>>([]);
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -84,10 +86,10 @@ const ActiveUsersTable: React.FC = () => {
                 params.lastAuthDateTo = lastAuthDateTo;
             }
 
-            let url = `admin/active_users?`;
+            let url = `admin/search/active_users?`;
             if (inActiveUsers) {
                 params.inActiveUsers = inActiveUsers ? 1 : 0;
-                url = `admin/all_users?`;
+                url = `admin/search/all_users?`;
             }
             const queryString = new URLSearchParams(params).toString();
             const response = await authClient.request(url + queryString, HttpMethod.GET);
@@ -109,7 +111,7 @@ const ActiveUsersTable: React.FC = () => {
 
     const fetchRolesList = async () => {
         try {
-            const rolesData = await authClient.request('admin/list_roles', HttpMethod.GET);
+            const rolesData = await authClient.request('admin/roles/list_roles', HttpMethod.GET);
 
             if (Array.isArray(rolesData.data)) {
                 setRoles(rolesData.data);
@@ -126,7 +128,7 @@ const ActiveUsersTable: React.FC = () => {
 
     const fetchBranchesList = async () => {
         try {
-            const branches = await authClient.request('admin/list_branches', HttpMethod.GET);
+            const branches = await authClient.request('admin/branches/list_branches', HttpMethod.GET);
 
             if (Array.isArray(branches.data)) {
                 setBranches(branches.data);
@@ -397,6 +399,7 @@ const ActiveUsersTable: React.FC = () => {
                                         onSaveEdit={handleSaveEdit}
                                         rowIndex={rowNumber}
                                         roles={roles}
+                                        branches={branches}
                                     />
                                 );
                             })

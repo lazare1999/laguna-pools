@@ -22,7 +22,7 @@ import java.io.Serializable;
 public class BranchEntity implements Serializable {
 
     @Id
-    @SequenceGenerator(name = "branches_id_seq", sequenceName = "clients.branches_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "branches_id_seq", sequenceName = "branches.branches_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "branches_id_seq")
     private Long id;
 

@@ -15,4 +15,5 @@ public class EditUserModel {
     private String newUsername;
     private String newPassword;
     private List<Long> newRoles;
+    private String newBranch;
 }

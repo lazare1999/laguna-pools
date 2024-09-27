@@ -1,10 +1,11 @@
 import Login from "../components/login";
-import RegisterForm from "../components/register";
+import RegisterForm from "../components/admin/register";
 import ClientsTable from "../components/clients/clientsTable";
 import React from "react";
 import {Component} from "./componentsEnum";
-import ActiveUsersTable from "../components/users/activeUsersTable";
+import ActiveUsersTable from "../components/admin/users/activeUsersTable";
 import ControlPanel from "../components/admin/controlPanel";
+import BranchesControlPage from "../components/admin/branches/branchesControlPage";
 
 interface ComponentMapperProps {
     currentComponent: Component
@@ -24,6 +25,8 @@ const ComponentMapper: React.FC<ComponentMapperProps> = ({currentComponent, sele
             return <ActiveUsersTable/>
         case Component.CONTROL_PANEL:
             return <ControlPanel selectHandler={selectHandler}/>
+        case Component.MANAGE_BRANCHES:
+            return <BranchesControlPage/>
         default:
             return null;
     }

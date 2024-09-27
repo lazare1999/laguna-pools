@@ -9,21 +9,28 @@ import {
     FormControlLabel,
     FormGroup,
     FormLabel,
+    InputLabel,
+    MenuItem,
+    Select,
     TextField
 } from '@mui/material';
-import authClient from '../api/api'
-import {AlertDialog, Toast} from "../utils/alertsUtils";
-import {HttpMethod} from "../utils/httpMethodEnum";
-import PasswordField from "./common/passwordTextBox";
-import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../utils/constants";
+import authClient from '../../api/api'
+import {AlertDialog, Toast} from "../../utils/alertsUtils";
+import {HttpMethod} from "../../utils/httpMethodEnum";
+import PasswordField from "../common/passwordTextBox";
+import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../../utils/constants";
+import {BranchModel} from "../models/branchModel";
+import {TargetView} from "../models/targetViewModel";
 
 const RegisterForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordError, setPasswordError] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>('');
-    const [roles, setRoles] = useState<Array<{ targetId: number; targetName: string; targetDescription: string }>>([]);
+    const [roles, setRoles] = useState<Array<TargetView>>([]);
+    const [branches, setBranches] = useState<Array<BranchModel>>([]);
     const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
+    const [branchName, setBranchName] = useState('');
     const [loading, setLoading] = useState<boolean>(false);
     const [submitLoading, setSubmitLoading] = useState<boolean>(false);
 
@@ -32,26 +39,48 @@ const RegisterForm: React.FC = () => {
     const [toastOpen, setToastOpen] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<string>("");
 
-    useEffect(() => {
-        const fetchRolesList = async () => {
-            setLoading(true);
-            try {
-                const rolesData = await authClient.request('admin/list_roles', HttpMethod.GET);
-                if (Array.isArray(rolesData.data)) {
-                    setRoles(rolesData.data);
-                } else {
-                    setAlertMessage(`Fetched roles are not an array: ${rolesData.data}`);
-                    setAlertOpen(true);
-                    setRoles([]);
-                }
-            } catch (err) {
-                setAlertMessage(`Failed to fetch roles: ${err}`);
+
+    const fetchRolesList = async () => {
+        setLoading(true);
+        try {
+            const rolesData = await authClient.request('admin/roles/list_roles', HttpMethod.GET);
+            if (Array.isArray(rolesData.data)) {
+                setRoles(rolesData.data);
+            } else {
+                setAlertMessage(`Fetched roles are not an array: ${rolesData.data}`);
                 setAlertOpen(true);
-            } finally {
-                setLoading(false);
+                setRoles([]);
             }
-        };
+        } catch (err) {
+            setAlertMessage(`Failed to fetch roles: ${err}`);
+            setAlertOpen(true);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchBranchesList = async () => {
+        setLoading(true);
+        try {
+            const branchesData = await authClient.request('admin/branches/list_branches', HttpMethod.GET);
+            if (Array.isArray(branchesData.data)) {
+                setBranches(branchesData.data);
+            } else {
+                setAlertMessage(`Fetched branches are not an array: ${branchesData.data}`);
+                setAlertOpen(true);
+                setBranches([]);
+            }
+        } catch (err) {
+            setAlertMessage(`Failed to fetch branches: ${err}`);
+            setAlertOpen(true);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchRolesList().then(r => r);
+        fetchBranchesList().then(r => r);
     }, []);
 
     const handleRoleChange = (roleId: number) => {
@@ -74,10 +103,11 @@ const RegisterForm: React.FC = () => {
         }
 
         try {
-            const result = await authClient.request('admin/add_user', HttpMethod.POST, {
+            const result = await authClient.request('admin/user/add_user', HttpMethod.POST, {
                 username,
                 password,
-                roles: selectedRoles
+                roles: selectedRoles,
+                branchName
             });
 
             setToastMessage(`User added with id: ${result.data}`);
@@ -167,6 +197,27 @@ const RegisterForm: React.FC = () => {
                         onChange={handleConfirmPasswordChange}
                         helperText={""}
                     />
+
+                    <FormControl fullWidth margin="normal" required>
+                        <InputLabel shrink id="branch-label">Branch</InputLabel>
+                        <Select
+                            labelId="branch-label"
+                            value={branchName}
+                            onChange={(e) => setBranchName(e.target.value)}
+                            autoFocus
+                        >
+                            {loading ? (
+                                <CircularProgress/>
+                            ) : (
+                                branches.map(b => (
+                                    <MenuItem id={`add-user-branch-id-${b.id}`} key={b.id} value={b.branchName}>
+                                        {b.branchName}
+                                    </MenuItem>
+                                ))
+                            )}
+                        </Select>
+                    </FormControl>
+
                     <FormControl component="fieldset" margin="normal">
                         <FormLabel component="legend">Select Roles</FormLabel>
                         <FormGroup>

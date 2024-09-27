@@ -1,15 +1,17 @@
 import React, {useState} from "react";
 import {Chip, IconButton, TableCell, TableRow} from "@mui/material";
-import {User} from "../models/usersModel";
-import {AlertDialog, Toast} from "../../utils/alertsUtils";
+import {User} from "../../models/usersModel";
+import {AlertDialog, Toast} from "../../../utils/alertsUtils";
 import EditUserDialog from "./editUserDialog";
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonRemoveAlt1OutlinedIcon from '@mui/icons-material/PersonRemoveAlt1Outlined';
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import {format} from "date-fns";
-import authClient from "../../api/api";
-import {HttpMethod} from "../../utils/httpMethodEnum";
+import authClient from "../../../api/api";
+import {HttpMethod} from "../../../utils/httpMethodEnum";
+import {TargetView} from "../../models/targetViewModel";
+import {BranchModel} from "../../models/branchModel";
 
 interface UserRowProps {
     user: User;
@@ -17,7 +19,8 @@ interface UserRowProps {
     onLock: (userLock: User) => void;
     onDelete: (userToDelete: User) => void;
     onSaveEdit: (updatedUser: User) => void;
-    roles: Array<{ targetId: number; targetName: string; targetDescription: string }>;
+    roles: Array<TargetView>;
+    branches: Array<BranchModel>;
     inActiveUsers: boolean;
 }
 
@@ -28,6 +31,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({
                                                    onDelete,
                                                    onSaveEdit,
                                                    roles,
+                                                   branches,
                                                    inActiveUsers
                                                }) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -44,7 +48,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({
         const action = user.isLocked ? 'unlock' : 'lock';
         if (window.confirm(`Are you sure you want to ${action} ${user.username}?`)) {
             try {
-                const response = await authClient.request(`admin/unlock_or_lock_user?userId=${user.userId}`, HttpMethod.POST);
+                const response = await authClient.request(`admin/user/unlock_or_lock_user?userId=${user.userId}`, HttpMethod.POST);
                 if (response.status === 200) {
                     const wasLocked = user.isLocked;
                     setToastMessage(`User ${user.username} has been ${wasLocked ? 'unlocked' : 'locked'}!`);
@@ -68,7 +72,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({
         let text = inActiveUsers ? `Are you sure you want to activate ${user.username}?` : `Are you sure you want to delete ${user.username}?`;
         if (window.confirm(text)) {
             try {
-                const response = await authClient.request(`admin/disable_or_enable_user?userId=${user.userId}`, HttpMethod.POST);
+                const response = await authClient.request(`admin/user/disable_or_enable_user?userId=${user.userId}`, HttpMethod.POST);
                 if (response.status === 200) {
                     const wasLocked = user.isLocked;
                     user.isLocked = !wasLocked;
@@ -135,6 +139,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({
                 onClose={handleDialogClose}
                 onSave={handleSaveEdit}
                 roles={roles}
+                branches={branches}
             />
         </>
     );

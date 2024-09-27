@@ -38,7 +38,6 @@ public class AdminSearchServiceImpl implements AdminSearchService {
 
     @Override
     @Transactional
-//    @Cacheable(value = "activeUsersCache", key = "#activeUsersSearchModel.toString()")
     public ActiveUsersResponseModel listActiveUsers(ActiveUsersSearchModel activeUsersSearchModel) {
         if (Objects.isNull(activeUsersSearchModel)
                 || activeUsersSearchModel.getPageKey() == null
@@ -99,7 +98,6 @@ public class AdminSearchServiceImpl implements AdminSearchService {
     }
 
     @Override
-//    @Cacheable(value = "allUsersCache")
     public UsersResponseModel listAllUsers(UsersSearchModel usersSearchModel) {
 
         if (Objects.isNull(usersSearchModel)
