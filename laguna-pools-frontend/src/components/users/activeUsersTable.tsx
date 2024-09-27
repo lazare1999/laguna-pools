@@ -32,6 +32,8 @@ import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import LoadingPage from "../common/loadingPage";
 import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
+import {TargetView} from "../models/targetViewModel";
+import {BranchModel} from "../models/branchModel";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -59,8 +61,8 @@ const ActiveUsersTable: React.FC = () => {
     const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
     const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
 
-    const [roles, setRoles] = useState<Array<{ targetId: number; targetName: string; targetDescription: string }>>([]);
-    const [branches, setBranches] = useState<Array<{ id: number; branchName: string }>>([]);
+    const [roles, setRoles] = useState<Array<TargetView>>([]);
+    const [branches, setBranches] = useState<Array<BranchModel>>([]);
 
     const [loading, setLoading] = useState<boolean>(false);
 

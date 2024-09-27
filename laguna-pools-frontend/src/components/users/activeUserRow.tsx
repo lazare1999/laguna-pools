@@ -10,6 +10,7 @@ import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined
 import {format} from "date-fns";
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/httpMethodEnum";
+import {TargetView} from "../models/targetViewModel";
 
 interface UserRowProps {
     user: User;
@@ -17,7 +18,7 @@ interface UserRowProps {
     onLock: (userLock: User) => void;
     onDelete: (userToDelete: User) => void;
     onSaveEdit: (updatedUser: User) => void;
-    roles: Array<{ targetId: number; targetName: string; targetDescription: string }>;
+    roles: Array<TargetView>;
     inActiveUsers: boolean;
 }
 

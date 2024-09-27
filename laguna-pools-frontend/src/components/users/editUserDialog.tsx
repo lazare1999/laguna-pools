@@ -18,13 +18,14 @@ import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../../utils/constants"
 import PasswordField from "../common/passwordTextBox";
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/httpMethodEnum";
+import {TargetView} from "../models/targetViewModel";
 
 interface EditUserDialogProps {
     open: boolean;
     user: User;
     onClose: () => void;
     onSave: (updatedUser: User) => void;
-    roles: Array<{ targetId: number; targetName: string; targetDescription: string }>;
+    roles: Array<TargetView>;
 }
 
 const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onSave, roles}) => {
