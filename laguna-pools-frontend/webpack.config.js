@@ -36,6 +36,19 @@ module.exports = {
                     },
                 },
             },
+            {
+                test: /\.(png|jpg|jpeg|gif|webp|svg)$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192,
+                            name: '[path][name].[ext]',
+                            outputPath: 'assets/images/',
+                        },
+                    },
+                ],
+            }
         ],
     },
     resolve: {
