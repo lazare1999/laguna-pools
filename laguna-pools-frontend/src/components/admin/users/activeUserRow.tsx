@@ -48,7 +48,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({
         const action = user.isLocked ? 'unlock' : 'lock';
         if (window.confirm(`Are you sure you want to ${action} ${user.username}?`)) {
             try {
-                const response = await authClient.request(`admin/unlock_or_lock_user?userId=${user.userId}`, HttpMethod.POST);
+                const response = await authClient.request(`admin/user/unlock_or_lock_user?userId=${user.userId}`, HttpMethod.POST);
                 if (response.status === 200) {
                     const wasLocked = user.isLocked;
                     setToastMessage(`User ${user.username} has been ${wasLocked ? 'unlocked' : 'locked'}!`);
@@ -72,7 +72,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({
         let text = inActiveUsers ? `Are you sure you want to activate ${user.username}?` : `Are you sure you want to delete ${user.username}?`;
         if (window.confirm(text)) {
             try {
-                const response = await authClient.request(`admin/disable_or_enable_user?userId=${user.userId}`, HttpMethod.POST);
+                const response = await authClient.request(`admin/user/disable_or_enable_user?userId=${user.userId}`, HttpMethod.POST);
                 if (response.status === 200) {
                     const wasLocked = user.isLocked;
                     user.isLocked = !wasLocked;

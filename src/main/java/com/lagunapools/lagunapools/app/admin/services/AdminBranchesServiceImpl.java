@@ -64,6 +64,9 @@ public class AdminBranchesServiceImpl implements AdminBranchesService {
         if (branchId == null)
             return okResponse("Branch id cannot be null");
 
+        if (branchId == 0)
+            return okResponse("Cannot remove a branch with a id of zero");
+
         usersRepository.updateBranchIdToZero(branchId);
         clientsRepository.updateBranchIdToZero(branchId);
 

@@ -16,6 +16,7 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -165,6 +166,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "branchesList", allEntries = true)
     public ResponseEntity<?> changeUserDetails(EditUserModel changeModel) {
         UsersDomain cUser = usersRepository.findByUserId(changeModel.getUserId());
         if (StringUtils.isNotEmpty(changeModel.getNewPassword())) {

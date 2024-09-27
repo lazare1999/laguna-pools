@@ -43,7 +43,7 @@ const RegisterForm: React.FC = () => {
     const fetchRolesList = async () => {
         setLoading(true);
         try {
-            const rolesData = await authClient.request('admin/list_roles', HttpMethod.GET);
+            const rolesData = await authClient.request('admin/roles/list_roles', HttpMethod.GET);
             if (Array.isArray(rolesData.data)) {
                 setRoles(rolesData.data);
             } else {
@@ -62,7 +62,7 @@ const RegisterForm: React.FC = () => {
     const fetchBranchesList = async () => {
         setLoading(true);
         try {
-            const branchesData = await authClient.request('admin/list_branches', HttpMethod.GET);
+            const branchesData = await authClient.request('admin/branches/list_branches', HttpMethod.GET);
             if (Array.isArray(branchesData.data)) {
                 setBranches(branchesData.data);
             } else {
@@ -103,7 +103,7 @@ const RegisterForm: React.FC = () => {
         }
 
         try {
-            const result = await authClient.request('admin/add_user', HttpMethod.POST, {
+            const result = await authClient.request('admin/user/add_user', HttpMethod.POST, {
                 username,
                 password,
                 roles: selectedRoles,

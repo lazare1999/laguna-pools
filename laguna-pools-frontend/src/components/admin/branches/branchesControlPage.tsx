@@ -1,10 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Box, Button, List, ListItem, ListItemText, Snackbar, TextField, Typography} from '@mui/material';
-import {BranchModel} from "../../models/branchModel";
-import authClient from "../../../api/api";
-import {HttpMethod} from "../../../utils/httpMethodEnum";
+import {
+    Alert,
+    Box,
+    Button,
+    Divider,
+    List,
+    ListItem,
+    ListItemText,
+    Snackbar,
+    TextField,
+    Typography
+} from '@mui/material';
 import AddBusinessOutlinedIcon from '@mui/icons-material/AddBusinessOutlined';
-import Divider from "@mui/material/Divider";
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import {Refresh} from "@mui/icons-material";
+import authClient from '../../../api/api';
+import {HttpMethod} from '../../../utils/httpMethodEnum';
+import {BranchModel} from "../../models/branchModel";
 
 const BranchesControlPage: React.FC = () => {
     const [branches, setBranches] = useState<Array<BranchModel>>([]);
@@ -15,26 +27,42 @@ const BranchesControlPage: React.FC = () => {
 
     const fetchBranches = async () => {
         try {
-            const response = await authClient.request('admin/list_branches', HttpMethod.GET);
-            console.log(response)
+            const response = await authClient.request('admin/branches/list_branches', HttpMethod.GET);
             setBranches(response.data);
         } catch (error) {
             console.error('Error fetching branches:', error);
         }
     };
 
-    // Handle adding a new branch
     const handleAddBranch = async () => {
         try {
-            const response = await authClient.request(`admin/add_branch?branchName=${branchName}`, HttpMethod.POST);
+            const response = await authClient.request(`admin/branches/add_branch?branchName=${branchName}`, HttpMethod.POST);
             setAlertMessage(response.data);
             setAlertOpen(true);
             setSeverity("success");
             setBranchName('');
-            fetchBranches().then(r => r);
+            await fetchBranches();
         } catch (error) {
             console.error('Error adding branch:', error);
-            setBranchName('Failed to add branch');
+            setAlertMessage('Failed to add branch');
+            setSeverity("error");
+            setAlertOpen(true);
+        }
+    };
+
+    const handleRemoveBranch = async (branchId: number, branchName: string) => {
+        if (!window.confirm(`Are you sure you want to delete the branch: ${branchName}?`))
+            return;
+
+        try {
+            const response = await authClient.request(`admin/branches/remove_branch?branchId=${branchId}`, HttpMethod.GET);
+            setAlertMessage(response.data);
+            setAlertOpen(true);
+            setSeverity("success");
+            await fetchBranches();
+        } catch (error) {
+            console.error('Error removing branch:', error);
+            setAlertMessage('Failed to remove branch');
             setSeverity("error");
             setAlertOpen(true);
         }
@@ -48,9 +76,20 @@ const BranchesControlPage: React.FC = () => {
         setAlertOpen(false);
     };
 
+    const handleRefresh = () => {
+        fetchBranches().then(r => r);
+    };
+
     return (
         <div>
-            <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between", padding: 2}}>
+            <Box sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: 2,
+                gap: 1,
+                flexWrap: 'wrap'
+            }}>
                 <TextField
                     label="New Branch Name"
                     value={branchName}
@@ -64,13 +103,25 @@ const BranchesControlPage: React.FC = () => {
                     color="primary"
                     onClick={handleAddBranch}
                     sx={{
-                        ml: 2,
-                        height: "50px",
+                        flexGrow: 0,
                         display: "flex",
                         alignItems: "center",
+                        height: "50px"
                     }}
                 >
                     <AddBusinessOutlinedIcon/>
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={handleRefresh}
+                    sx={{
+                        flexGrow: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        height: "50px"
+                    }}
+                >
+                    <Refresh/>
                 </Button>
             </Box>
 
@@ -100,6 +151,14 @@ const BranchesControlPage: React.FC = () => {
                             primary={branch.branchName}
                             secondary={`Users: ${branch.usersCount}, Clients: ${branch.clientsCount}`}
                         />
+                        <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => handleRemoveBranch(branch.id, branch.branchName)}
+                            sx={{marginLeft: 2}}
+                        >
+                            <DeleteForeverOutlinedIcon/>
+                        </Button>
                     </ListItem>
                 ))}
             </List>

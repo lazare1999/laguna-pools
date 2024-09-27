@@ -86,10 +86,10 @@ const ActiveUsersTable: React.FC = () => {
                 params.lastAuthDateTo = lastAuthDateTo;
             }
 
-            let url = `admin/active_users?`;
+            let url = `admin/search/active_users?`;
             if (inActiveUsers) {
                 params.inActiveUsers = inActiveUsers ? 1 : 0;
-                url = `admin/all_users?`;
+                url = `admin/search/all_users?`;
             }
             const queryString = new URLSearchParams(params).toString();
             const response = await authClient.request(url + queryString, HttpMethod.GET);
@@ -111,7 +111,7 @@ const ActiveUsersTable: React.FC = () => {
 
     const fetchRolesList = async () => {
         try {
-            const rolesData = await authClient.request('admin/list_roles', HttpMethod.GET);
+            const rolesData = await authClient.request('admin/roles/list_roles', HttpMethod.GET);
 
             if (Array.isArray(rolesData.data)) {
                 setRoles(rolesData.data);
@@ -128,7 +128,7 @@ const ActiveUsersTable: React.FC = () => {
 
     const fetchBranchesList = async () => {
         try {
-            const branches = await authClient.request('admin/list_branches', HttpMethod.GET);
+            const branches = await authClient.request('admin/branches/list_branches', HttpMethod.GET);
 
             if (Array.isArray(branches.data)) {
                 setBranches(branches.data);
