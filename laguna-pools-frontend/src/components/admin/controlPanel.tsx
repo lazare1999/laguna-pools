@@ -2,9 +2,9 @@ import React from 'react';
 import {Box} from '@mui/material';
 import CardComponent from "./card";
 import {Component} from "../../utils/componentsEnum";
-import op from "../../assets/op.webp"
-import listImage from "../../assets/op.webp"
-import manageImage from "../../assets/op.webp"
+import op from "../../assets/images/op.webp"
+import listImage from "../../assets/images/op.webp"
+import manageImage from "../../assets/images/op.webp"
 
 interface ControlPanelProps {
     selectHandler: (select: Component) => void;
