@@ -24,6 +24,8 @@ import {HttpMethod} from "../../utils/httpMethodEnum";
 import {Client} from "../models/clientsModel";
 import LoadingPage from "../common/loadingPage";
 
+const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Cost", "Notes", "Actions"];
+
 const ClientsTable: React.FC = () => {
     const [filterText, setFilterText] = useState<string>("");
     const [clients, setClients] = useState<Client[]>([]);
@@ -153,20 +155,15 @@ const ClientsTable: React.FC = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>#</TableCell>
-                            <TableCell>Client</TableCell>
-                            <TableCell>Dates</TableCell>
-                            <TableCell>Statuses</TableCell>
-                            <TableCell>Groups</TableCell>
-                            <TableCell>Cost</TableCell>
-                            <TableCell>Notes</TableCell>
-                            <TableCell>Actions</TableCell>
+                            {COLUMNS.map((column) => (
+                                <TableCell>{column}</TableCell>
+                            ))}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {loading ? (
                             <TableRow>
-                                <TableCell colSpan={8} align="center">
+                                <TableCell colSpan={COLUMNS.length} align="center">
                                     <LoadingPage label="Loading Data..."/>
                                 </TableCell>
                             </TableRow>
