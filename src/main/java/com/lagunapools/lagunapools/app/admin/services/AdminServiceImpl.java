@@ -171,6 +171,15 @@ public class AdminServiceImpl implements AdminService {
             cUser.setUserPassword(encrypt(SALT, changeModel.getNewPassword()));
         }
 
+        if (changeModel.getNewBranch() == null)
+            return badRequestResponse("New branch is null");
+
+        BranchEntity branch = branchRepository.getBranchEntitiesByBranchName(changeModel.getNewBranch());
+        if (Objects.isNull(branch))
+            return badRequestResponse("Branch not found");
+
+        cUser.setBranch(branch);
+
         cUser.getTargetDomains().stream()
                 .filter(domain -> !changeModel.getNewRoles().contains(domain.getTargetId()))
                 .forEach(domain -> adminRolesService.removeRole(new AddRemoveRoleModel(domain.getTargetId(), cUser.getUserId())));

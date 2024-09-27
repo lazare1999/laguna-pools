@@ -63,7 +63,7 @@ public class UsersDomain implements Serializable {
     private LocalDateTime lastAuthDate;
 
     @Column(name = "branch_id", insertable = false, updatable = false)
-    private Integer branchId;
+    private Long branchId;
 
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JoinTable(

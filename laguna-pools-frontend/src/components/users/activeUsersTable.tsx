@@ -399,6 +399,7 @@ const ActiveUsersTable: React.FC = () => {
                                         onSaveEdit={handleSaveEdit}
                                         rowIndex={rowNumber}
                                         roles={roles}
+                                        branches={branches}
                                     />
                                 );
                             })

@@ -11,6 +11,7 @@ import {format} from "date-fns";
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/httpMethodEnum";
 import {TargetView} from "../models/targetViewModel";
+import {BranchModel} from "../models/branchModel";
 
 interface UserRowProps {
     user: User;
@@ -19,6 +20,7 @@ interface UserRowProps {
     onDelete: (userToDelete: User) => void;
     onSaveEdit: (updatedUser: User) => void;
     roles: Array<TargetView>;
+    branches: Array<BranchModel>;
     inActiveUsers: boolean;
 }
 
@@ -29,6 +31,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({
                                                    onDelete,
                                                    onSaveEdit,
                                                    roles,
+                                                   branches,
                                                    inActiveUsers
                                                }) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -136,6 +139,7 @@ const ActiveUserRow: React.FC<UserRowProps> = ({
                 onClose={handleDialogClose}
                 onSave={handleSaveEdit}
                 roles={roles}
+                branches={branches}
             />
         </>
     );

@@ -10,6 +10,9 @@ import {
     FormControlLabel,
     FormGroup,
     FormLabel,
+    InputLabel,
+    MenuItem,
+    Select,
     TextField
 } from "@mui/material";
 import {User} from "../models/usersModel";
@@ -19,6 +22,7 @@ import PasswordField from "../common/passwordTextBox";
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/httpMethodEnum";
 import {TargetView} from "../models/targetViewModel";
+import {BranchModel} from "../models/branchModel";
 
 interface EditUserDialogProps {
     open: boolean;
@@ -26,11 +30,13 @@ interface EditUserDialogProps {
     onClose: () => void;
     onSave: (updatedUser: User) => void;
     roles: Array<TargetView>;
+    branches: Array<BranchModel>;
 }
 
-const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onSave, roles}) => {
+const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onSave, roles, branches}) => {
     const [editedUser, setEditedUser] = useState<User>(user);
     const [password, setPassword] = useState<string>("");
+    const [branchName, setBranchName] = useState<string>("");
     const [repeatPassword, setRepeatPassword] = useState<string>("");
 
     const [passwordError, setPasswordError] = useState<string>("");
@@ -44,8 +50,13 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
         setSelectedRoles(user.rolesIds);
     };
 
+    const updateUserBranch = () => {
+        setBranchName(user.branch.branchName);
+    };
+
     useEffect(() => {
         updateUserRoles();
+        updateUserBranch();
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,13 +97,16 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
                 userId: editedUser.userId,
                 newUsername: editedUser.username,
                 newPassword: password,
-                newRoles: selectedRoles
+                newRoles: selectedRoles,
+                newBranch: branchName
             });
 
             if (response.status === 200) {
                 editedUser.roles = roles
                     .filter(role => selectedRoles.includes(role.targetId))
                     .map(role => role.targetDescription);
+
+                editedUser.branch.branchName = branchName;
 
                 onSave(editedUser);
                 onClose();
@@ -145,6 +159,21 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
                     onChange={handleRepeatPasswordChange}
                     helperText={""}
                 />
+                <FormControl fullWidth margin="normal">
+                    <InputLabel shrink id="branch-label">Select Branch</InputLabel>
+                    <Select
+                        labelId="branch-label"
+                        value={branchName}
+                        onChange={(e) => setBranchName(e.target.value)}
+                        autoFocus
+                    >
+                        {branches.map(b => (
+                            <MenuItem id={`edit-user-branch-id-${b.id}`} key={b.id} value={b.branchName}>
+                                {b.branchName}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
                 <FormControl component="fieldset" margin="normal">
                     <FormLabel component="legend">Select Roles</FormLabel>
                     <FormGroup>
