@@ -1,0 +1,1 @@
+CREATE INDEX idx_branch_id ON users.users (branch_id);
