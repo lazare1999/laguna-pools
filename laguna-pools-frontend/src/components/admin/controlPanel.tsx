@@ -20,7 +20,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({selectHandler}) => {
     };
 
     const handleManageBranches = () => {
-        console.log('Manage Branches');
+        selectHandler(Component.MANAGE_BRANCHES);
     };
 
     return (

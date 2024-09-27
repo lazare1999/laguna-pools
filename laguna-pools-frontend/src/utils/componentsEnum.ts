@@ -5,5 +5,6 @@ export enum Component {
     GROUPS,
     DAYS,
     ACTIVE_USERS_TABLE,
-    CONTROL_PANEL
+    CONTROL_PANEL,
+    MANAGE_BRANCHES
 }

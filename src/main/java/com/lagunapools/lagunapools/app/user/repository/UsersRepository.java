@@ -17,10 +17,8 @@ import java.util.Optional;
 @Repository
 public interface UsersRepository extends JpaRepository<UsersDomain, Long>, JpaSpecificationExecutor<UsersDomain> {
 
-    //    @Cacheable(value = "usersByUsername", key = "#userName")
     Optional<UsersDomain> findByUserName(String userName);
 
-    //    @Cacheable(value = "usersById", key = "#userId")
     UsersDomain findByUserId(Long userId);
 
     boolean existsByTargetDomains_TargetId(Long roleId);
@@ -31,8 +29,8 @@ public interface UsersRepository extends JpaRepository<UsersDomain, Long>, JpaSp
     @Query("DELETE FROM UserRolesDomain ur WHERE ur.userId = :userId AND ur.targetId = :roleId")
     int removeRoleByUserIdAndRoleId(@Param("userId") Long userId, @Param("roleId") Long roleId);
 
-//    @Modifying
-//    @Query("UPDATE UsersDomain u SET u.branchId = 0 WHERE u.branchId = ?1")
-//    void updateBranchIdToZero(Long branchId);
+    @Modifying
+    @Query("UPDATE users u SET u.branchId = 0 WHERE u.branchId = ?1")
+    void updateBranchIdToZero(Long branchId);
 
 }

@@ -40,11 +40,9 @@ const App = () => {
                 if (tokenExpTime !== null && prevSelect !== Component.LOGIN) {
                     const currentDate = new Date();
                     const tokenDate = new Date(Number(tokenExpTime));
-                    console.log("Now: " + currentDate + "\nSav: " + tokenDate);
 
                     const tokenExpired = currentDate > tokenDate;
                     if (tokenExpired) {
-                        console.log("HERE!");
                         setReLoginDialogOpen(true);
                     }
                 }

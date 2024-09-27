@@ -91,7 +91,6 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
         // Set groups as dayHourPairs for the new client
         newClient.groups = dayHourPairs;
 
-        console.log(newClient);
         onAddClient(newClient);
         setNewClient({} as Client); // Reset the newClient state
         setDayHourPairs([{id: 0, day: DateEnum.SUNDAY, hour: HoursEnum.HOUR_00}]); // Reset day-hour pairs

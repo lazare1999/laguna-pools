@@ -6,7 +6,6 @@ import com.lagunapools.lagunapools.app.admin.services.AdminBranchesService;
 import com.lagunapools.lagunapools.app.admin.services.AdminRolesService;
 import com.lagunapools.lagunapools.app.admin.services.AdminSearchService;
 import com.lagunapools.lagunapools.app.admin.services.AdminService;
-import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
 import com.lagunapools.lagunapools.app.user.domains.TargetViewDomain;
 import com.lagunapools.lagunapools.app.user.domains.UsersDomain;
 import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
@@ -34,14 +33,12 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping(value = "/active_users")
-//    @Cacheable(value = "activeUsersCache", key = "#model.toString()")
     public ActiveUsersResponseModel listActiveUsers(@ModelAttribute ActiveUsersSearchModel model) {
         return adminSearchService.listActiveUsers(model);
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping(value = "/all_users")
-//    @Cacheable(value = "allUsersCache")
     public UsersResponseModel listAllUsers(@ModelAttribute UsersSearchModel model) {
         return adminSearchService.listAllUsers(model);
     }
@@ -104,12 +101,12 @@ public class AdminController {
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
     @GetMapping({"/list_branches"})
     @Cacheable(value = "branchesList")
-    public List<BranchEntity> listBranches() {
+    public List<ListBranchDetailedResponseModel> listBranches() {
         return adminBranchesService.listBranches();
     }
 
     @PreAuthorize("hasRole('ROLE_LAGUNA_ADMIN')")
-    @GetMapping({"/add_branch"})
+    @PostMapping({"/add_branch"})
     public ResponseEntity<?> addBranch(@RequestParam String branchName) {
         return adminBranchesService.addBranch(branchName);
     }
