@@ -35,6 +35,9 @@ const BranchesControlPage: React.FC = () => {
     };
 
     const handleAddBranch = async () => {
+        if (!window.confirm(`Are you sure you want to add the branch: ${branchName}?`))
+            return;
+        
         try {
             const response = await authClient.request(`admin/branches/add_branch?branchName=${branchName}`, HttpMethod.POST);
             setAlertMessage(response.data);
