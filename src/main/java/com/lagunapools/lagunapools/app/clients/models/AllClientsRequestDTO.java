@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,5 +16,21 @@ import java.io.Serializable;
 public class AllClientsRequestDTO implements Serializable {
     private Integer pageKey;
     private Integer pageSize;
-    private String clientName;
+    private Long branchIdFilter;
+    private String name;
+    private String lastName;
+    private String phone;
+    private String parent;
+    private LocalDate birthDayFrom;
+    private LocalDate birthDayTo;
+    private LocalDate expDayFrom;
+    private LocalDate expDayTo;
+    private LocalDate docDayFrom;
+    private LocalDate docDayTo;
+    private Boolean idStatus;
+    private Boolean contractStatus;
+    private Double costFrom;
+    private Double costTo;
+    private List<Long> selectedGroups;
+    private String notes;
 }
