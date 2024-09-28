@@ -66,8 +66,6 @@ class EncryptUtilsTest {
     void testVerifyPasswordWithInvalidHash() {
         String invalidStoredHash = "invalidHashFormat";
 
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
-            EncryptUtils.verifyPassword(password, invalidStoredHash);
-        }, "Invalid hash format should throw ArrayIndexOutOfBoundsException");
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> EncryptUtils.verifyPassword(password, invalidStoredHash), "Invalid hash format should throw ArrayIndexOutOfBoundsException");
     }
 }

@@ -14,7 +14,7 @@ interface TopMenuProps {
 }
 
 const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout, userRoles}) => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [anchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
     const hasRole = (role: string) => {
