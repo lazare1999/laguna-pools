@@ -16,5 +16,7 @@ public interface ClientsService {
 
     ResponseEntity<?> getClient(Long clientId);
 
+    ResponseEntity<?> deleteClient(Long clientId);
+
     List<GroupDTO> listGroups();
 }
