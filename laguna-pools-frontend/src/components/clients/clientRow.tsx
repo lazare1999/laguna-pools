@@ -493,7 +493,8 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                 )}
             </TableRow>
 
-            <ClientAttendancesDialog isModalOpen={isModalOpen} modalCloseHandler={modalCloseHandler}/>
+            <ClientAttendancesDialog client={client}
+                                     isModalOpen={isModalOpen} modalCloseHandler={modalCloseHandler}/>
         </>
     );
 };

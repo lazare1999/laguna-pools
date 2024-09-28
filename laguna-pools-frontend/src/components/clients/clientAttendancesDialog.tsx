@@ -1,24 +1,72 @@
-import React, {useState} from 'react';
-import {Button, Modal, Table, TableBody, TableCell, TableHead, TableRow, TextField} from '@mui/material';
-
-interface Attendance {
-    day: string;
-    time: string;
-    attended: boolean;
-}
+import React, {useEffect, useState} from 'react';
+import {
+    Button,
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    MenuItem,
+    Modal,
+    Select,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TextField
+} from '@mui/material';
+import {HoursEnum} from "../../utils/HoursEnum";
+import {Client} from "../models/clientsModel";
+import {Attendance} from "../models/attnedance";
+import {getAttendancesListById} from "./utils";
 
 interface ClientAttendancesDialogProps {
+    client: Client;
     isModalOpen: boolean;
     modalCloseHandler: () => void;
 }
 
-const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({isModalOpen, modalCloseHandler}) => {
-    const [attendances, setAttendances] = useState<Attendance[]>([
-        {day: '2024-09-25', time: '10:00 AM', attended: true},
-        {day: '2024-09-22', time: '2:00 PM', attended: false},
-    ]);
+const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
+                                                                             client,
+                                                                             isModalOpen,
+                                                                             modalCloseHandler,
+                                                                         }) => {
 
+    const [attendances, setAttendances] = useState<Attendance[]>([]);
     const [newAttendance, setNewAttendance] = useState<Attendance | null>(null);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    useEffect(() => {
+        getAttendancesListById(client.id, page, rowsPerPage).then(result => {
+            setAttendances(result);
+        }).catch(err => console.error(err));
+    }, [isModalOpen]);
+
+    const handleHourChange = (index: number, value: HoursEnum) => {
+        setNewAttendance(prevState => {
+            if (prevState == null) {
+                return {
+                    day: "",
+                    time: value,
+                    attended: false
+                } as Attendance;
+            } else {
+                prevState.time = value;
+                return prevState;
+            }
+        });
+    };
+
+    const handleCheckboxChange = (attended: boolean) => {
+        setNewAttendance(prevState => {
+            if (prevState) {
+                return {...prevState, attended};
+            }
+            return null;
+        });
+    };
 
     const handleCloseModal = () => {
         modalCloseHandler();
@@ -26,7 +74,7 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({isModa
     };
 
     const handleAddNewRow = () => {
-        setNewAttendance({day: '', time: '', attended: false});
+        setNewAttendance({day: '', time: HoursEnum.HOUR_00, attended: false});
     };
 
     const handleSaveAttendance = () => {
@@ -40,11 +88,18 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({isModa
     };
 
     const getRowStyle = (attended: boolean) => {
-        if (attended) {
-            return {backgroundColor: 'green', color: 'white'};
-        } else {
-            return {backgroundColor: 'red', color: 'white'};
-        }
+        return attended ? {backgroundColor: 'green', color: 'white'} : {backgroundColor: 'red', color: 'white'};
+    };
+
+    // Handle pagination change
+    const handleChangePage = (event: unknown, newPage: number) => {
+        setPage(newPage);
+    };
+
+    // Handle rows per page change
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0); // Reset to the first page
     };
 
     return (
@@ -64,30 +119,58 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({isModa
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {attendances.map((attendance, index) => (
-                                <TableRow key={index} style={getRowStyle(attendance.attended)}>
-                                    <TableCell>{attendance.day}</TableCell>
-                                    <TableCell>{attendance.time}</TableCell>
-                                    <TableCell>{attendance.attended ? 'Yes' : 'No'}</TableCell>
-                                </TableRow>
-                            ))}
+                            {attendances
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((attendance, index) => (
+                                    <TableRow key={index} style={getRowStyle(attendance.attended)}>
+                                        <TableCell>{attendance.day}</TableCell>
+                                        <TableCell>{attendance.time}</TableCell>
+                                        <TableCell>{attendance.attended ? 'Yes' : 'No'}</TableCell>
+                                    </TableRow>
+                                ))}
 
                             {newAttendance && (
                                 <TableRow>
                                     <TableCell>
                                         <TextField
+                                            required
                                             label="Day"
                                             type="date"
                                             value={newAttendance.day}
+                                            slotProps={{
+                                                inputLabel: {
+                                                    shrink: true,
+                                                }
+                                            }}
                                             onChange={(e) => setNewAttendance({...newAttendance, day: e.target.value})}
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        <TextField
-                                            label="Time"
-                                            type="time"
-                                            value={newAttendance.time}
-                                            onChange={(e) => setNewAttendance({...newAttendance, time: e.target.value})}
+                                        <FormControl fullWidth>
+                                            <InputLabel id={`hour-select-label-${client.id}`}>Hour</InputLabel>
+                                            <Select
+                                                required
+                                                labelId={`hour-select-label-${client.id}`}
+                                                value={newAttendance.time}
+                                                onChange={(e) => handleHourChange(client.id, e.target.value as HoursEnum)}
+                                            >
+                                                {Object.values(HoursEnum).map((hour) => (
+                                                    <MenuItem key={hour} value={hour}>
+                                                        {hour}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </TableCell>
+                                    <TableCell>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={newAttendance.attended}
+                                                    onChange={(e) => handleCheckboxChange(e.target.checked)}
+                                                />
+                                            }
+                                            label="Attended"
                                         />
                                     </TableCell>
                                     <TableCell>
@@ -99,6 +182,16 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({isModa
                             )}
                         </TableBody>
                     </Table>
+
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={attendances.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
                 </div>
             </Modal>
         </div>
