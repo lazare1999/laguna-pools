@@ -19,7 +19,6 @@ import {
 import {HoursEnum} from "../../utils/HoursEnum";
 import {Client} from "../models/clientsModel";
 import {Attendance} from "../models/attnedance";
-import {getAttendancesListById} from "./utils";
 
 interface ClientAttendancesDialogProps {
     client: Client;
@@ -39,9 +38,9 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     useEffect(() => {
-        getAttendancesListById(client.id, page, rowsPerPage).then(result => {
-            setAttendances(result);
-        }).catch(err => console.error(err));
+        // getAttendancesListById(client.id, page, rowsPerPage).then(result => {
+        //     setAttendances(result);
+        // }).catch(err => console.error(err));
     }, [isModalOpen]);
 
     const handleHourChange = (index: number, value: HoursEnum) => {

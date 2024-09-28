@@ -9,18 +9,12 @@ import PasswordDialog from "./components/reLoginDialog";
 import LoadingPageProgress from "./components/common/loadingPage";
 import authClient from "./api/api";
 import {HttpMethod} from "./utils/httpMethodEnum";
-import {UserApiService} from "./api/userApiService";
-import {TargetView} from "./components/models/targetViewModel";
-import {BranchModel} from "./components/models/branchModel";
 
 const App = () => {
     const [select, setSelect] = useState<Component>(Component.LOGIN);
     const [openSessionWindow, setOpenSessionWindow] = useState(false);
     const [reLoginDialogOpen, setReLoginDialogOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [userRoles, setUserRoles] = useState<string[]>([]);
-    const [roles, setRoles] = useState<Array<TargetView>>([]);
-    const [branches, setBranches] = useState<Array<BranchModel>>([]);
 
     const checkLoginStatus = async () => {
         const token = await AuthenticateUtils.getJwtViaRefreshTokenFromLocalStorage();
@@ -82,40 +76,6 @@ const App = () => {
         }
     };
 
-    const fetchRolesList = async () => {
-        try {
-            const rolesData = await authClient.request('admin/roles/list_roles', HttpMethod.GET);
-            if (Array.isArray(rolesData.data)) {
-                setRoles(rolesData.data);
-            } else {
-                setRoles([]);
-            }
-        } catch (err) {
-            console.error(err)
-        }
-    };
-
-    const fetchBranchesList = async () => {
-        try {
-            const branchesData = await authClient.request('admin/branches/list_branches', HttpMethod.GET);
-            if (Array.isArray(branchesData.data)) {
-                setBranches(branchesData.data);
-            } else {
-                setBranches([])
-            }
-        } catch (err) {
-            console.error(err)
-        }
-    };
-
-    useEffect(() => {
-        UserApiService.getRoles().then(r => {
-            setUserRoles(r.data.roles);
-        }).catch(err => console.error(err));
-        fetchRolesList().then(r => r);
-        fetchBranchesList().then(r => r);
-    }, []);
-
     return (
         <div className="App">
             {loading ?
@@ -124,9 +84,9 @@ const App = () => {
                     <PasswordDialog onClose={closeDialogHandler} open={reLoginDialogOpen}
                                     setOpenSessionWindow={open => setOpenSessionWindow(open)}/>
                     {openSessionWindow &&
-                        <TopMenu userRoles={userRoles} selectHandler={selectHandler} onLogout={logOutHandler}/>}
-                    <ComponentMapper userRoles={userRoles} selectHandler={selectHandler} currentComponent={select}
-                                     setOpenSessionWindow={setOpenSessionWindow} branches={branches} roles={roles}/>
+                        <TopMenu selectHandler={selectHandler} onLogout={logOutHandler}/>}
+                    <ComponentMapper selectHandler={selectHandler} currentComponent={select}
+                                     setOpenSessionWindow={setOpenSessionWindow}/>
                 </>}
         </div>
     );

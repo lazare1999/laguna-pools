@@ -34,6 +34,7 @@ import LoadingPage from "../../common/loadingPage";
 import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
 import {TargetView} from "../../models/targetViewModel";
 import {BranchModel} from "../../models/branchModel";
+import {fetchBranchesList, fetchRolesList} from "../../../utils/utils";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -48,12 +49,7 @@ const MenuProps = {
 
 const COLUMNS = ["#", "Usernames", "Last Auth Dates", "Roles", "Branches", "Actions"]
 
-interface ActiveUsersTableProps {
-    roles: Array<TargetView>;
-    branches: Array<BranchModel>;
-}
-
-const ActiveUsersTable: React.FC<ActiveUsersTableProps> = ({roles, branches}) => {
+const ActiveUsersTable: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [count, setCount] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
@@ -67,6 +63,14 @@ const ActiveUsersTable: React.FC<ActiveUsersTableProps> = ({roles, branches}) =>
     const [lastAuthDateTo, setLastAuthDateTo] = useState<string>("");
     const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
     const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
+
+    const [roles, setRoles] = useState<Array<TargetView>>([]);
+    const [branches, setBranches] = useState<Array<BranchModel>>([]);
+
+    useEffect(() => {
+        fetchRolesList().then(r => setRoles(r));
+        fetchBranchesList().then(r => setBranches(r));
+    }, []);
 
     const [loading, setLoading] = useState<boolean>(false);
 
