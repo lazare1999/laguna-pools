@@ -28,6 +28,8 @@ services:
     entrypoint: [ "/bin/sh", "-c", "while true; do /backup_postgres.sh; sleep 86400; done" ]
     networks:
       - laguna-network
+    depends_on:
+      - postgres
   nginx:
     image: 'nginx:latest'
     container_name: laguna-pools-nginx-1
@@ -47,7 +49,6 @@ services:
       - certbot
       - postgres
       - redis
-      - postgres-backup
   certbot:
     restart: 'always'
     image: certbot/certbot
