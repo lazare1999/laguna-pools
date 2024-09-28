@@ -68,6 +68,10 @@ jobs:
             docker/spring-backend/Dockerfile
             docker/nginx.conf
 
+      - name: Set execute permission for backup script
+        run: |
+          chmod +x docker/backup_postgres.sh
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
