@@ -10,6 +10,11 @@ mkdir -p "$BACKUP_DIR"
 
 export PGPASSWORD="$DB_PASSWORD"
 
+until pg_isready -h laguna-pools-postgres-1 -U "$DB_USER"; do
+  echo "Waiting for PostgreSQL to be ready..."
+  sleep 2
+done
+
 pg_dump -h laguna-pools-postgres-1 -U "$DB_USER" -F c "$DB_NAME" > "$BACKUP_DIR/$DB_NAME$TIMESTAMP.backup"
 
 find "$BACKUP_DIR" -type f -name "*.backup" -mtime +7 -exec rm {} \;
