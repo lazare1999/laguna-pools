@@ -68,10 +68,6 @@ jobs:
             docker/spring-backend/Dockerfile
             docker/nginx.conf
 
-      - name: Set execute permission for backup script
-        run: |
-          chmod +x docker/backup_postgres.sh
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -124,6 +120,11 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@54.224.11.73 "sudo apt update && sudo apt upgrade -y"
+
+      - name: Set execute permission for backup script
+        working-directory: ${{ github.workspace }}
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@54.224.11.73 "cd /opt/pools/docker && chmod +x ./backup_postgres.sh"
 
       - name: Restart Docker services
         working-directory: ${{ github.workspace }}
