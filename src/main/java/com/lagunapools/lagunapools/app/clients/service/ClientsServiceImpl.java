@@ -9,6 +9,7 @@ import com.lagunapools.lagunapools.app.clients.repository.GroupEntity;
 import com.lagunapools.lagunapools.app.clients.repository.GroupRepository;
 import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
+import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
 import com.lagunapools.lagunapools.utils.LazoUtils;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.criteria.Predicate;
@@ -39,6 +40,8 @@ public class ClientsServiceImpl implements ClientsService {
     private final BranchRepository branchRepository;
     private final UserRepository userRepository;
 
+    private final MyUserDetailsService userDetailsService;
+
     @Override
     public AllClientsResponseDTO getAllClients(AllClientsRequestDTO request) {
         if (Objects.isNull(request)
@@ -48,14 +51,10 @@ public class ClientsServiceImpl implements ClientsService {
         }
 
         Long branchId;
-        boolean isAdmin;
+        boolean isAdmin = userDetailsService.userIsAdmin();
         var u = getCurrentApplicationUser();
 
-        boolean hasAdminRole = u.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_LAGUNA_ADMIN"));
-
-        if (!hasAdminRole) {
-            isAdmin = false;
+        if (!isAdmin) {
             Optional<AppUser> currentUserOpt = userRepository.findById(u.getUserId());
             if (currentUserOpt.isPresent()) {
                 AppUser currentUser = currentUserOpt.get();
@@ -65,7 +64,6 @@ public class ClientsServiceImpl implements ClientsService {
             }
         } else {
             branchId = 0L;
-            isAdmin = true;
         }
 
         Page<ClientsEntity> clientPage = clientsRepository.findAll((root, query, builder) -> {
@@ -173,6 +171,10 @@ public class ClientsServiceImpl implements ClientsService {
     @Transactional
     @CacheEvict(value = "groupsList", allEntries = true)
     public ResponseEntity<?> addClient(ClientDTO client) {
+        if (userDetailsService.userIsAdmin()) {
+            return okResponse("Admin not allowed to add client");
+        }
+
         try {
             Optional<AppUser> currentUser0 = userRepository.findById(getCurrentApplicationUser().getUserId());
             if (currentUser0.isEmpty())
