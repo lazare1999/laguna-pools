@@ -1,8 +1,10 @@
 package com.lagunapools.lagunapools.common.utils;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum HoursEnum {
     HOUR_00("00:00"),
     HOUR_01("01:00"),
@@ -30,10 +32,6 @@ public enum HoursEnum {
     HOUR_23("23:00");
 
     private final String value;
-
-    HoursEnum(String value) {
-        this.value = value;
-    }
 
     public static HoursEnum fromValue(String value) {
         for (HoursEnum hour : HoursEnum.values()) {

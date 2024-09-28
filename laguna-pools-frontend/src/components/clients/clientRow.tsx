@@ -17,7 +17,7 @@ import {Delete, Edit, Save} from "@mui/icons-material";
 import {Client} from "../models/clientsModel";
 import UnpublishedOutlinedIcon from '@mui/icons-material/UnpublishedOutlined';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
-import {DateEnum} from "../../utils/DateEnum";
+import {DayEnum} from "../../utils/DayEnum";
 import {HoursEnum} from "../../utils/HoursEnum";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
@@ -51,7 +51,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
     };
 
 
-    const handleDayChange = (index: number, day: DateEnum) => {
+    const handleDayChange = (index: number, day: DayEnum) => {
         const updatedGroups = dayHourPairs.map((group, idx) =>
             idx === index ? {...group, day} : group
         );
@@ -74,10 +74,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
     };
 
     const handleAddPair = () => {
-        setDayHourPairs([...dayHourPairs, {id: 0, day: DateEnum.SUNDAY, hour: HoursEnum.HOUR_00}]);
+        setDayHourPairs([...dayHourPairs, {id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_00}]);
         setEditableClient({
             ...editableClient,
-            groups: [...dayHourPairs, {id: 0, day: DateEnum.SUNDAY, hour: HoursEnum.HOUR_00}]
+            groups: [...dayHourPairs, {id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_00}]
         });
     };
 
@@ -292,9 +292,9 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                     <Select
                                         labelId={`edit-day-select-label-${index}`}
                                         value={group.day || ""}
-                                        onChange={(e) => handleDayChange(index, e.target.value as DateEnum)}
+                                        onChange={(e) => handleDayChange(index, e.target.value as DayEnum)}
                                     >
-                                        {Object.values(DateEnum).map((day) => (
+                                        {Object.values(DayEnum).map((day) => (
                                             <MenuItem key={day} value={day}>
                                                 {day}
                                             </MenuItem>

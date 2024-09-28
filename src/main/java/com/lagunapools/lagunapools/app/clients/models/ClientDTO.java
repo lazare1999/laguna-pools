@@ -43,6 +43,6 @@ public class ClientDTO {
         this.contractStatus = client.getContractStatus();
         this.notes = client.getNotes();
         this.parent = client.getParent();
-        this.groups = GroupMapper.toDTO(client.getGroups());
+        this.groups = GroupMapper.toDTOs(client.getGroups());
     }
 }

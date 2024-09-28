@@ -11,24 +11,22 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorizeLagunaRoles
 @RequestMapping("clients")
 public class ClientsController {
 
     private final ClientsService clientsService;
 
-    @PreAuthorizeLagunaRoles
     @GetMapping("/all")
     public AllClientsResponseDTO getClients(@ModelAttribute AllClientsRequestDTO request) {
         return clientsService.getAllClients(request);
     }
 
-    @PreAuthorizeLagunaRoles
     @PostMapping
     public ResponseEntity<?> addClient(@RequestBody ClientDTO client) {
         return clientsService.addClient(client);
     }
 
-    @PreAuthorizeLagunaRoles
     @GetMapping
     public ResponseEntity<?> getClient(@RequestParam Long clientId) {
         return clientsService.getClient(clientId);

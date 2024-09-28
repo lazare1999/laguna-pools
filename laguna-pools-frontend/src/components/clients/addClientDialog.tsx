@@ -18,7 +18,7 @@ import {
     Typography,
 } from "@mui/material";
 import {Client} from "../models/clientsModel";
-import {DateEnum} from "../../utils/DateEnum";
+import {DayEnum} from "../../utils/DayEnum";
 import {HoursEnum} from "../../utils/HoursEnum";
 import {GroupModel} from "../models/GroupModel";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
@@ -26,6 +26,9 @@ import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import {Box} from "@mui/system";
 import Divider from '@mui/material/Divider';
+import authClient from "../../api/api";
+import {HttpMethod} from "../../utils/httpMethodEnum";
+import {Toast} from "../../utils/alertsUtils";
 
 interface AddClientDialogProps {
     open: boolean;
@@ -37,13 +40,15 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
     const [newClient, setNewClient] = useState<Client>({cost: 0} as Client);
     const [dayHourPairs, setDayHourPairs] = useState<GroupModel[]>([{
         id: 0,
-        day: DateEnum.SUNDAY,
+        day: DayEnum.SUNDAY,
         hour: HoursEnum.HOUR_00
     }]);
 
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [toastOpen, setToastOpen] = useState<boolean>(false);
+    const [toastMessage, setToastMessage] = useState<string>("");
 
 
     const handleInputChange = (field: keyof Client, value: string | boolean | number) => {
@@ -82,23 +87,35 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
         });
     };
 
-    const handleAddClient = () => {
+    const handleAddClient = async () => {
         if (!newClient.firstName || !newClient.lastName) {
             setError("Must not be empty.");
             return;
         }
 
-        // Set groups as dayHourPairs for the new client
         newClient.groups = dayHourPairs;
 
-        onAddClient(newClient);
-        setNewClient({} as Client); // Reset the newClient state
-        setDayHourPairs([{id: 0, day: DateEnum.SUNDAY, hour: HoursEnum.HOUR_00}]); // Reset day-hour pairs
-        onClose();
+        try {
+            const result = await authClient.request('clients', HttpMethod.POST, newClient);
+
+            setToastMessage(result.data);
+            setToastOpen(true);
+
+            onAddClient(newClient);
+            setNewClient({} as Client);
+            setDayHourPairs([{id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_00}]);
+            onClose();
+
+        } catch (err) {
+            // @ts-ignore
+            const errorMessage = err.response?.data || err.message || "An unexpected error occurred.";
+            setAlertMessage(`${errorMessage}`);
+            setAlertOpen(true);
+        }
     };
 
     const handleAddPair = () => {
-        setDayHourPairs([...dayHourPairs, {id: 0, day: DateEnum.SUNDAY, hour: HoursEnum.HOUR_00}]);
+        setDayHourPairs([...dayHourPairs, {id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_00}]);
     };
 
     const handleRemovePair = (index: number) => {
@@ -106,7 +123,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
         setDayHourPairs(newPairs);
     };
 
-    const handleDayChange = (index: number, value: DateEnum) => {
+    const handleDayChange = (index: number, value: DayEnum) => {
         const newPairs = [...dayHourPairs];
         newPairs[index].day = value;
         setDayHourPairs(newPairs);
@@ -285,9 +302,9 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
                             <Select
                                 labelId={`day-select-label-${index}`}
                                 value={pair.day || ""}
-                                onChange={(e) => handleDayChange(index, e.target.value as DateEnum)}
+                                onChange={(e) => handleDayChange(index, e.target.value as DayEnum)}
                             >
-                                {Object.values(DateEnum).map((day) => (
+                                {Object.values(DayEnum).map((day) => (
                                     <MenuItem id={`add-client-menu-item-day-id-${day}`} key={day} value={day}>
                                         {day}
                                     </MenuItem>
@@ -321,6 +338,12 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
                 <Button onClick={onClose}>Cancel</Button>
                 <Button onClick={handleAddClient} color="primary">Add</Button>
             </DialogActions>
+            <Toast
+                open={toastOpen}
+                message={toastMessage}
+                onClose={() => setToastOpen(false)}
+                options={{autoHideDuration: 3000}}
+            />
         </Dialog>
     );
 };

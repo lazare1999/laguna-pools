@@ -1,8 +1,6 @@
 package com.lagunapools.lagunapools.app.clients.repository;
 
 
-import com.lagunapools.lagunapools.common.utils.DateEnum;
-import com.lagunapools.lagunapools.common.utils.HoursEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,14 +21,14 @@ public class GroupEntity {
     @SequenceGenerator(name = "groups_id_seq", sequenceName = "clients.groups_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "groups_id_seq")
     private Long id;
-    private DateEnum day;
-    private HoursEnum hour;
+
+    private String day;
+    private String hour;
 
     @ManyToMany(targetEntity = ClientsEntity.class, cascade = CascadeType.DETACH)
     private List<ClientsEntity> clients;
 
-    public GroupEntity(long id, DateEnum day, HoursEnum hour) {
-        this.id = id;
+    public GroupEntity(String day, String hour) {
         this.day = day;
         this.hour = hour;
     }
