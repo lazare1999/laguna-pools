@@ -18,12 +18,14 @@ services:
     image: postgres:latest
     container_name: laguna-pools-postgres-backup
     restart: 'always'
+    environment:
+      PGUSER: lagunaUser
+      PGPASSWORD: lagunaPassword
+      PGDATABASE: laguna
     volumes:
       - /data/laguna/postgres/backups:/data/laguna/postgres/backups
       - ./backup_postgres.sh:/backup_postgres.sh
     entrypoint: [ "/bin/sh", "-c", "while true; do /backup_postgres.sh; sleep 86400; done" ]
-    environment:
-      - POSTGRES_HOST=laguna-pools-postgres-1
     networks:
       - laguna-network
   nginx:
