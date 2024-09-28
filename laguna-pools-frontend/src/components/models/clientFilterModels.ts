@@ -1,11 +1,13 @@
 export interface ClientFilters {
     name: string;
     lastName: string;
+    branches: string[];
 }
 
 export const defaultClientFilters: ClientFilters = {
     name: '',
-    lastName: ''
+    lastName: '',
+    branches: []
 };
 
 export interface DialogFilters {

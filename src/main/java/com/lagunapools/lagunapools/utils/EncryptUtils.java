@@ -1,35 +1,49 @@
 package com.lagunapools.lagunapools.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 
 /**
  * Created by Lazo on 9/11/24
  */
 
 public class EncryptUtils {
+    private static final int ITERATIONS = 10000;
+    private static final int KEY_LENGTH = 512;
+    private static final int SALT_LENGTH = 16;
 
-    private static final Logger logger = LoggerFactory.getLogger(EncryptUtils.class);
+    public static String generateSalt() {
+        byte[] salt = new byte[SALT_LENGTH];
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
+    }
 
-    public static String encrypt(String salt, String passwordToHash) {
-        String generatedPassword = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.update(salt.getBytes(StandardCharsets.UTF_8));
-            byte[] bytes = md.digest(passwordToHash.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte aByte : bytes) {
-                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
-            }
+    public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), ITERATIONS, KEY_LENGTH);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+        byte[] hashedBytes = keyFactory.generateSecret(spec).getEncoded();
+        return Base64.getEncoder().encodeToString(hashedBytes);
+    }
 
-            generatedPassword = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            logger.error("An error occurred", e);
-        }
-        return generatedPassword;
+    public static boolean verifyPassword(String enteredPassword, String storedSaltedHash)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        String[] parts = storedSaltedHash.split(":");
+        String storedSalt = parts[0];
+        String storedHash = parts[1];
+
+        String hashedEnteredPassword = hashPassword(enteredPassword, storedSalt);
+        return hashedEnteredPassword.equals(storedHash);
+    }
+
+    public static String createSaltedHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        String salt = generateSalt();
+        String hashedPassword = hashPassword(password, salt);
+        return salt + ":" + hashedPassword;
     }
 }

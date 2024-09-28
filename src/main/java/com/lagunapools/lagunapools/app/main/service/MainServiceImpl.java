@@ -15,7 +15,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,7 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
-import static com.lagunapools.lagunapools.utils.EncryptUtils.encrypt;
+import static com.lagunapools.lagunapools.utils.EncryptUtils.verifyPassword;
 import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUser;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.*;
 
@@ -49,9 +48,6 @@ public class MainServiceImpl implements MainService {
 
     private final MyUserDetailsService userDetailsService;
     private final RedisService redisService;
-
-    @Value("${salt}")
-    private String SALT;
 
     @Override
     public ResponseEntity<String> getUserName(String token) {
@@ -102,7 +98,7 @@ public class MainServiceImpl implements MainService {
         }
 
         Integer maxLoginAttempts = 3;
-        Authentication newUser = userDetailsService.authenticateJwt(maxLoginAttempts, u, autRequest.getUsername(), encrypt(SALT, autRequest.getPassword()), Objects.equals(encrypt(SALT, autRequest.getPassword()), user.getPassword()));
+        Authentication newUser = userDetailsService.authenticateJwt(maxLoginAttempts, u, verifyPassword(autRequest.getPassword(), user.getPassword()));
         if (newUser == null)
             return forbiddenResponse("Wrong password.");
 

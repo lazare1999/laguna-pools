@@ -16,7 +16,7 @@ import java.util.List;
 public class AllClientsRequestDTO implements Serializable {
     private Integer pageKey;
     private Integer pageSize;
-    private Long branchIdFilter;
+    private List<Long> branches;
     private String name;
     private String lastName;
     private String phone;
