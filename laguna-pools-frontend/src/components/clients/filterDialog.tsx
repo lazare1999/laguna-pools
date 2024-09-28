@@ -25,7 +25,6 @@ import {DialogFilters} from "../models/clientFilterModels";
 import {GroupModel} from "../models/GroupModel";
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/httpMethodEnum";
-import LoadingPage from "../common/loadingPage";
 
 interface FilterDialogProps {
     open: boolean;
@@ -57,12 +56,9 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                                                        setFilters,
                                                    }) => {
     const [groups, setGroups] = useState<GroupModel[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchGroups = async () => {
-            setLoading(true);
             try {
                 const response = await authClient.request(
                     "clients/list_groups",
@@ -72,7 +68,6 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
             } catch (error) {
                 console.error("Error fetching groups:", error);
             }
-            setLoading(false);
         };
         fetchGroups().then(r => r);
     }, []);
@@ -83,10 +78,15 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                 setFilters({...filters, [key]: event.target.value});
             };
 
-    const handleGroupChange = (event: SelectChangeEvent<typeof selectedGroups>) => {
+    const handleGroupChange = (event: SelectChangeEvent<typeof filters.selectedGroups>) => {
         const {value} = event.target;
-        setSelectedGroups(typeof value === "string" ? value.split(",") : value);
-        setFilters({...filters, selectedGroups});
+
+        const newSelectedGroups = typeof value === "string" ? value.split(",") : value;
+
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            selectedGroups: newSelectedGroups,
+        }));
     };
 
     const handleStatusChange =
@@ -155,21 +155,23 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                                 multiple
                                 value={filters.selectedGroups}
                                 onChange={handleGroupChange}
-                                input={<OutlinedInput label="Groups"/>}
-                                renderValue={(selected) => selected.join(", ")}
+                                input={<OutlinedInput id={"groups-select-label-input"} label="Groups"/>}
+                                renderValue={(selected) => selected.join(', ')}
+                                MenuProps={{
+                                    PaperProps: {
+                                        style: {
+                                            maxHeight: 48 * 4.5 + 8,
+                                            width: 250,
+                                        },
+                                    },
+                                }}
                             >
-                                {loading ? (
-                                    <LoadingPage label="Loading Data..."/>
-                                ) : (
-                                    groups.map((group) => (
-                                        <MenuItem key={group.id} value={group.id.toString()}>
-                                            <Checkbox
-                                                checked={filters.selectedGroups.includes(group.id.toString())}
-                                            />
-                                            <ListItemText primary={`${group.day} - ${group.hour}`}/>
-                                        </MenuItem>
-                                    ))
-                                )}
+                                {groups.map((g) => (
+                                    <MenuItem key={g.id} value={String(g.id)}>
+                                        <Checkbox checked={filters.selectedGroups.includes(String(g.id))}/>
+                                        <ListItemText primary={`${g.day} - ${g.hour}`}/>
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </Grid>
