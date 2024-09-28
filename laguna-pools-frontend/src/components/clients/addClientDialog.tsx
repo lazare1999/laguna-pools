@@ -28,15 +28,22 @@ import {Box} from "@mui/system";
 import Divider from '@mui/material/Divider';
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/httpMethodEnum";
-import {Toast} from "../../utils/alertsUtils";
 
 interface AddClientDialogProps {
     open: boolean;
     onClose: () => void;
     onAddClient: (client: Client) => void;
+    openToastHandler: () => void;
+    toastMessageHandler: (message: string) => void;
 }
 
-const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddClient}) => {
+const AddClientDialog: React.FC<AddClientDialogProps> = ({
+                                                             open,
+                                                             onClose,
+                                                             onAddClient,
+                                                             openToastHandler,
+                                                             toastMessageHandler
+                                                         }) => {
     const [newClient, setNewClient] = useState<Client>({cost: 0} as Client);
     const [dayHourPairs, setDayHourPairs] = useState<GroupModel[]>([{
         id: 0,
@@ -47,8 +54,6 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [toastOpen, setToastOpen] = useState<boolean>(false);
-    const [toastMessage, setToastMessage] = useState<string>("");
 
 
     const handleInputChange = (field: keyof Client, value: string | boolean | number) => {
@@ -98,8 +103,8 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
         try {
             const result = await authClient.request('clients', HttpMethod.POST, newClient);
 
-            setToastMessage(result.data);
-            setToastOpen(true);
+            openToastHandler();
+            toastMessageHandler(result.data);
 
             onAddClient(newClient);
             setNewClient({} as Client);
@@ -338,12 +343,6 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({open, onClose, onAddCl
                 <Button onClick={onClose}>Cancel</Button>
                 <Button onClick={handleAddClient} color="primary">Add</Button>
             </DialogActions>
-            <Toast
-                open={toastOpen}
-                message={toastMessage}
-                onClose={() => setToastOpen(false)}
-                options={{autoHideDuration: 3000}}
-            />
         </Dialog>
     );
 };

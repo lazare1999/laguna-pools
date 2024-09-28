@@ -23,6 +23,7 @@ import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/httpMethodEnum";
 import {Client} from "../models/clientsModel";
 import LoadingPage from "../common/loadingPage";
+import {Toast} from "../../utils/alertsUtils";
 
 const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Cost", "Notes", "Actions"];
 
@@ -38,6 +39,17 @@ const ClientsTable: React.FC = () => {
 
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
+
+    const [toastOpen, setToastOpen] = useState<boolean>(false);
+    const [toastMessage, setToastMessage] = useState<string>("");
+
+    const openToastHandler = () => {
+        setToastOpen(true);
+    }
+
+    const toastMessageHandler = (message: string) => {
+        setToastMessage(message);
+    }
 
     const fetchClients = async () => {
         setLoading(true)
@@ -115,99 +127,108 @@ const ClientsTable: React.FC = () => {
     };
 
     return (
-        <Paper>
-            <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between", padding: 2}}>
-                <TextField
-                    id={"clients-table-search-id"}
-                    name={"clients-table-search-name"}
-                    label="Filter by name"
-                    variant="outlined"
-                    value={filterText}
-                    onChange={handleFilterChange}
-                    fullWidth
-                    margin="normal"
-                    InputProps={{
-                        endAdornment: (
-                            <IconButton>
-                                <FilterList/>
-                            </IconButton>
-                        ),
-                    }}
-                    sx={{flexGrow: 1, height: 64}}
-                />
-                <Button
-                    id={"clients-table-add-client-id"}
-                    name={"clients-table-add-client-name"}
-                    variant="contained"
-                    color="primary"
-                    onClick={handleOpenDialog}
-                    sx={{
-                        ml: 2,
-                        height: "50px",
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                >
-                    <PersonAddAltIcon/>
-                </Button>
-            </Box>
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            {COLUMNS.map((column) => (
-                                <TableCell>{column}</TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {loading ? (
+        <>
+            <Paper>
+                <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between", padding: 2}}>
+                    <TextField
+                        id={"clients-table-search-id"}
+                        name={"clients-table-search-name"}
+                        label="Filter by name"
+                        variant="outlined"
+                        value={filterText}
+                        onChange={handleFilterChange}
+                        fullWidth
+                        margin="normal"
+                        InputProps={{
+                            endAdornment: (
+                                <IconButton>
+                                    <FilterList/>
+                                </IconButton>
+                            ),
+                        }}
+                        sx={{flexGrow: 1, height: 64}}
+                    />
+                    <Button
+                        id={"clients-table-add-client-id"}
+                        name={"clients-table-add-client-name"}
+                        variant="contained"
+                        color="primary"
+                        onClick={handleOpenDialog}
+                        sx={{
+                            ml: 2,
+                            height: "50px",
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
+                        <PersonAddAltIcon/>
+                    </Button>
+                </Box>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
                             <TableRow>
-                                <TableCell colSpan={COLUMNS.length} align="center">
-                                    <LoadingPage label="Loading Data..."/>
-                                </TableCell>
+                                {COLUMNS.map((column) => (
+                                    <TableCell>{column}</TableCell>
+                                ))}
                             </TableRow>
-                        ) : (
-                            clients.map((client, index) => {
-                                const rowNumber = page * rowsPerPage + index + 1;
-                                return (
-                                    <ClientRow
-                                        onUpdate={handleUpdate}
-                                        key={client.id}
-                                        client={client}
-                                        onDelete={handleDelete}
-                                        rowIndex={rowNumber}
-                                    />
-                                );
-                            })
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                SelectProps={{
-                    id: 'rows-per-clients-page-select',
-                    name: 'rowsClientsPerPage',
-                }}
-                component="div"
-                count={count}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handlePageChange}
-                onRowsPerPageChange={handleRowsPerPageChange}
+                        </TableHead>
+                        <TableBody>
+                            {loading ? (
+                                <TableRow>
+                                    <TableCell colSpan={COLUMNS.length} align="center">
+                                        <LoadingPage label="Loading Data..."/>
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                clients.map((client, index) => {
+                                    const rowNumber = page * rowsPerPage + index + 1;
+                                    return (
+                                        <ClientRow
+                                            onUpdate={handleUpdate}
+                                            key={client.id}
+                                            client={client}
+                                            onDelete={handleDelete}
+                                            rowIndex={rowNumber}
+                                        />
+                                    );
+                                })
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    SelectProps={{
+                        id: 'rows-per-clients-page-select',
+                        name: 'rowsClientsPerPage',
+                    }}
+                    component="div"
+                    count={count}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handlePageChange}
+                    onRowsPerPageChange={handleRowsPerPageChange}
+                />
+                <AddClientDialog openToastHandler={openToastHandler} toastMessageHandler={toastMessageHandler}
+                                 open={openDialog} onClose={handleCloseDialog} onAddClient={handleAddClient}/>
+                <Snackbar
+                    open={alertOpen}
+                    autoHideDuration={6000}
+                    onClose={handleCloseAlert}
+                >
+                    <Alert onClose={handleCloseAlert} severity="error">
+                        {alertMessage}
+                    </Alert>
+                </Snackbar>
+            </Paper>
+            <Toast
+                open={toastOpen}
+                message={toastMessage}
+                onClose={() => setToastOpen(false)}
+                options={{autoHideDuration: 3000}}
             />
-            <AddClientDialog open={openDialog} onClose={handleCloseDialog} onAddClient={handleAddClient}/>
-            <Snackbar
-                open={alertOpen}
-                autoHideDuration={6000}
-                onClose={handleCloseAlert}
-            >
-                <Alert onClose={handleCloseAlert} severity="error">
-                    {alertMessage}
-                </Alert>
-            </Snackbar>
-        </Paper>
+        </>
     );
 };
 
