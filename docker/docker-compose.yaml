@@ -49,6 +49,7 @@ services:
       - certbot
       - postgres
       - redis
+      - postgres-backup
   certbot:
     restart: 'always'
     image: certbot/certbot
