@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box,
     Button,
@@ -21,13 +21,9 @@ import PasswordField from "../common/passwordTextBox";
 import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../../utils/constants";
 import {TargetView} from "../models/targetViewModel";
 import {BranchModel} from "../models/branchModel";
+import {fetchBranchesList, fetchRolesList} from "../../utils/utils";
 
-interface RegisterFormProps {
-    roles: Array<TargetView>;
-    branches: Array<BranchModel>;
-}
-
-const RegisterForm: React.FC<RegisterFormProps> = ({roles, branches}) => {
+const RegisterForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordError, setPasswordError] = useState<string>("");
@@ -40,6 +36,14 @@ const RegisterForm: React.FC<RegisterFormProps> = ({roles, branches}) => {
     const [alertMessage, setAlertMessage] = useState<string>("");
     const [toastOpen, setToastOpen] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<string>("");
+
+    const [roles, setRoles] = useState<Array<TargetView>>([]);
+    const [branches, setBranches] = useState<Array<BranchModel>>([]);
+
+    useEffect(() => {
+        fetchRolesList().then(r => setRoles(r));
+        fetchBranchesList().then(r => setBranches(r));
+    }, []);
 
     const handleRoleChange = (roleId: number) => {
         setSelectedRoles(prevRoles =>

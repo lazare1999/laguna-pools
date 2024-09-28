@@ -7,25 +7,17 @@ import ActiveUsersTable from "../components/admin/users/activeUsersTable";
 import AdminControlPanel from "../components/admin/controlPanel";
 import BranchesControlPage from "../components/admin/branches/branchesControlPage";
 import MoveBackWrapper from "../components/admin/moveBack";
-import {TargetView} from "../components/models/targetViewModel";
-import {BranchModel} from "../components/models/branchModel";
 
 interface ComponentMapperProps {
     currentComponent: Component
     selectHandler: (select: Component) => void;
     setOpenSessionWindow: (open: boolean) => void;
-    userRoles: string[];
-    branches: Array<BranchModel>;
-    roles: Array<TargetView>;
 }
 
 const ComponentMapper: React.FC<ComponentMapperProps> = ({
                                                              currentComponent,
                                                              selectHandler,
-                                                             setOpenSessionWindow,
-                                                             userRoles,
-                                                             branches,
-                                                             roles,
+                                                             setOpenSessionWindow
                                                          }) => {
     const moveToControlPanel = () => selectHandler(Component.CONTROL_PANEL);
 
@@ -33,13 +25,11 @@ const ComponentMapper: React.FC<ComponentMapperProps> = ({
         case Component.LOGIN:
             return <Login selectHandler={selectHandler} setOpenSessionWindow={setOpenSessionWindow}/>;
         case Component.REGISTER:
-            return <MoveBackWrapper onBack={moveToControlPanel}><RegisterForm branches={branches}
-                                                                              roles={roles}/></MoveBackWrapper>;
+            return <MoveBackWrapper onBack={moveToControlPanel}><RegisterForm/></MoveBackWrapper>;
         case Component.CLIENTS_TABLE:
-            return <ClientsTable userRoles={userRoles} branches={branches}/>;
+            return <ClientsTable/>;
         case Component.ACTIVE_USERS_TABLE:
-            return <MoveBackWrapper onBack={moveToControlPanel}><ActiveUsersTable branches={branches}
-                                                                                  roles={roles}/></MoveBackWrapper>
+            return <MoveBackWrapper onBack={moveToControlPanel}><ActiveUsersTable/></MoveBackWrapper>
         case Component.CONTROL_PANEL:
             return <AdminControlPanel selectHandler={selectHandler}/>
         case Component.MANAGE_BRANCHES:

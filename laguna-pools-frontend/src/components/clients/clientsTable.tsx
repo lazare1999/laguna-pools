@@ -36,15 +36,12 @@ import {ClientFilters, defaultClientFilters, defaultDialogFilters, DialogFilters
 import LoadingPage from "../common/loadingPage";
 import {Toast} from "../../utils/alertsUtils";
 import {BranchModel} from "../models/branchModel";
+import {fetchBranchesList} from "../../utils/utils";
+import {UserApiService} from "../../api/userApiService";
 
 const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Cost", "Notes", "Actions"];
 
-interface ClientsTableProps {
-    userRoles: string[];
-    branches: Array<BranchModel>;
-}
-
-const ClientsTable: React.FC<ClientsTableProps> = ({userRoles, branches}) => {
+const ClientsTable: React.FC = () => {
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [filters, setFilters] = useState<ClientFilters>(defaultClientFilters);
@@ -60,6 +57,16 @@ const ClientsTable: React.FC<ClientsTableProps> = ({userRoles, branches}) => {
 
     const [toastOpen, setToastOpen] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<string>("");
+
+    const [userRoles, setUserRoles] = useState<string[]>([]);
+    const [branches, setBranches] = useState<Array<BranchModel>>([]);
+
+    useEffect(() => {
+        UserApiService.getRoles().then(r => {
+            setUserRoles(r.data.roles);
+        }).catch(err => console.error(err));
+        fetchBranchesList().then(r => setBranches(r));
+    }, []);
 
     const openToastHandler = () => {
         setToastOpen(true);
