@@ -24,6 +24,7 @@ import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
 
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import ClientAttendancesDialog from "./clientAttendancesDialog";
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 
 interface ClientRowProps {
     client: Client;
@@ -38,6 +39,16 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
     const [dayHourPairs, setDayHourPairs] = useState(editableClient.groups);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [hovered, setHovered] = useState(false);
+
+    const handleMouseEnter = () => {
+        setHovered(true);
+    };
+
+    const handleMouseLeave = () => {
+        setHovered(false);
+    };
 
     const modalCloseHandler = () => {
         setIsModalOpen(false);
@@ -173,7 +184,16 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
 
     return (
         <>
-            <TableRow>
+            <TableRow
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                sx={{
+                    '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                    },
+                    transition: 'background-color 0.1s ease',
+                }}
+            >
                 {editMode ? (
                     <>
                         <TableCell>{rowIndex}</TableCell>
@@ -296,7 +316,12 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                         <TableCell>
                             {dayHourPairs.map((group, index) => (
                                 <div key={index}
-                                     style={{display: 'flex', gap: '1rem', marginBottom: '1rem', marginTop: '1rem'}}>
+                                     style={{
+                                         display: 'flex',
+                                         gap: '1rem',
+                                         marginBottom: '1rem',
+                                         marginTop: '1rem'
+                                     }}>
                                     <FormControl id={`edit-client-day-id-${editableClient.id}`} fullWidth>
                                         <InputLabel id={`edit-day-select-label-${index}`}>Day</InputLabel>
                                         <Select
@@ -433,7 +458,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                             ))}
                         </TableCell>
                         <TableCell>
-                            {new Intl.NumberFormat('ka-GE', {style: 'currency', currency: 'GEL'}).format(client.cost)}
+                            {new Intl.NumberFormat('ka-GE', {
+                                style: 'currency',
+                                currency: 'GEL'
+                            }).format(client.cost)}
                         </TableCell>
                         <TableCell>
                             <Tooltip title={client.notes} placement="top" arrow>
@@ -441,22 +469,25 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
-                                    maxWidth: '150px' // Adjust width as per your layout
+                                    maxWidth: '150px'
                                 }}>
                                     {client.notes}
                                 </div>
                             </Tooltip>
                         </TableCell>
-                        <TableCell>
-                            <IconButton onClick={() => setIsModalOpen(true)}>
-                                <EditCalendarIcon/>
-                            </IconButton>
-                            <IconButton onClick={handleEditClick}>
-                                <Edit/>
-                            </IconButton>
-                            <IconButton onClick={handleDeleteClick} color="error">
-                                <Delete/>
-                            </IconButton>
+                        <TableCell align="center" sx={{width: "160px"}}>
+                            {!hovered ? <ManageAccountsOutlinedIcon/> : <>
+                                <IconButton onClick={() => setIsModalOpen(true)}>
+                                    <EditCalendarIcon/>
+                                </IconButton>
+                                <IconButton onClick={handleEditClick}>
+                                    <Edit/>
+                                </IconButton>
+                                <IconButton onClick={handleDeleteClick} color="error">
+                                    <Delete/>
+                                </IconButton>
+                            </>
+                            }
                         </TableCell>
                     </>
                 )}

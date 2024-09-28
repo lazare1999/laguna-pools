@@ -20,7 +20,8 @@ services:
     restart: 'always'
     volumes:
       - /data/laguna/postgres/backups:/data/laguna/postgres/backups
-    entrypoint: [ "/bin/sh", "-c", "while true; do ./backup_postgres.sh; sleep 86400; done" ]
+      - ./backup_postgres.sh:/backup_postgres.sh
+    entrypoint: [ "/bin/sh", "-c", "while true; do /backup_postgres.sh; sleep 86400; done" ]
     networks:
       - laguna-network
   nginx:
