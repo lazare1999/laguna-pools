@@ -4,8 +4,9 @@ import ClientsTable from "../components/clients/clientsTable";
 import React from "react";
 import {Component} from "./componentsEnum";
 import ActiveUsersTable from "../components/admin/users/activeUsersTable";
-import ControlPanel from "../components/admin/controlPanel";
+import AdminControlPanel from "../components/admin/controlPanel";
 import BranchesControlPage from "../components/admin/branches/branchesControlPage";
+import MoveBackWrapper from "../components/admin/moveBack";
 
 interface ComponentMapperProps {
     currentComponent: Component
@@ -14,19 +15,21 @@ interface ComponentMapperProps {
 }
 
 const ComponentMapper: React.FC<ComponentMapperProps> = ({currentComponent, selectHandler, setOpenSessionWindow}) => {
+    const moveToControlPanel = () => selectHandler(Component.CONTROL_PANEL);
+
     switch (currentComponent) {
         case Component.LOGIN:
             return <Login selectHandler={selectHandler} setOpenSessionWindow={setOpenSessionWindow}/>;
         case Component.REGISTER:
-            return <RegisterForm/>;
+            return <MoveBackWrapper onBack={moveToControlPanel}><RegisterForm/></MoveBackWrapper>;
         case Component.CLIENTS_TABLE:
             return <ClientsTable/>;
         case Component.ACTIVE_USERS_TABLE:
-            return <ActiveUsersTable/>
+            return <MoveBackWrapper onBack={moveToControlPanel}><ActiveUsersTable/></MoveBackWrapper>
         case Component.CONTROL_PANEL:
-            return <ControlPanel selectHandler={selectHandler}/>
+            return <AdminControlPanel selectHandler={selectHandler}/>
         case Component.MANAGE_BRANCHES:
-            return <BranchesControlPage/>
+            return <MoveBackWrapper onBack={moveToControlPanel}><BranchesControlPage/></MoveBackWrapper>
         default:
             return null;
     }

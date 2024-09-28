@@ -1,57 +1,41 @@
 import React from 'react';
-import {Box} from '@mui/material';
-import CardComponent from "./card";
+import {Grid} from '@mui/material';
+import {ListAlt, PersonAddAlt} from '@mui/icons-material';
+import PoolIcon from '@mui/icons-material/Pool';
 import {Component} from "../../utils/componentsEnum";
-import op from "../../assets/images/op.webp"
-import listImage from "../../assets/images/op.webp"
-import manageImage from "../../assets/images/op.webp"
+import CardComponent from "./card";
 
-interface ControlPanelProps {
+interface AdminControlPanelProps {
     selectHandler: (select: Component) => void;
 }
 
-const ControlPanel: React.FC<ControlPanelProps> = ({selectHandler}) => {
-    const handleAddOperator = () => {
-        selectHandler(Component.REGISTER)
-    };
-
-    const handleListOperators = () => {
-        selectHandler(Component.ACTIVE_USERS_TABLE);
-    };
-
-    const handleManageBranches = () => {
-        selectHandler(Component.MANAGE_BRANCHES);
-    };
+const AdminControlPanel: React.FC<AdminControlPanelProps> = ({selectHandler}) => {
+    const moveBackHandler = () => selectHandler(Component.CONTROL_PANEL);
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100vh',
-            }}
-        >
-            <CardComponent
-                title="Add New Operator"
-                buttonText="Go to Form"
-                backgroundImage={op}
-                onButtonClick={handleAddOperator}
-            />
-            <CardComponent
-                title="List All Operators"
-                buttonText="View Operators"
-                backgroundImage={listImage}
-                onButtonClick={handleListOperators}
-            />
-            <CardComponent
-                title="Manage Branches"
-                buttonText="Manage Now"
-                backgroundImage={manageImage}
-                onButtonClick={handleManageBranches}
-            />
-        </Box>
+        <div className="App">
+            <Grid container spacing={3} style={{padding: '20px'}}>
+                <CardComponent
+                    label="Register New Operator"
+                    onButtonClick={() => selectHandler(Component.REGISTER)}>
+                    <PersonAddAlt style={{fontSize: 50, color: '#1976d2'}}/>
+                </CardComponent>
+
+                <CardComponent
+                    label="List Active Operators"
+                    onButtonClick={() => selectHandler(Component.ACTIVE_USERS_TABLE)}>
+                    <ListAlt style={{fontSize: 50, color: '#43a047'}}/>
+                </CardComponent>
+
+                <CardComponent
+                    label="Manage Branches"
+                    onButtonClick={() => selectHandler(Component.MANAGE_BRANCHES)}>
+                    <PoolIcon style={{fontSize: 50, color: '#f57c00'}}/>
+                </CardComponent>
+
+            </Grid>
+        </div>
     );
 };
 
-export default ControlPanel;
+export default AdminControlPanel;

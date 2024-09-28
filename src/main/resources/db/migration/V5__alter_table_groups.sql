@@ -1,0 +1,3 @@
+ALTER TABLE clients.groups
+    ALTER COLUMN day TYPE TEXT,
+    ALTER COLUMN hour TYPE TEXT;

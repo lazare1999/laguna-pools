@@ -26,6 +26,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUser;
+
 /**
  * Created by Lazo on 9/11/24
  */
@@ -154,4 +156,8 @@ public class MyUserDetailsService implements UserDetailsService {
                 .toList();
     }
 
+    public boolean userIsAdmin() {
+        return getCurrentApplicationUser().getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_LAGUNA_ADMIN"));
+    }
 }

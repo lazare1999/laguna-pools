@@ -46,6 +46,8 @@ const MenuProps = {
     },
 };
 
+const COLUMNS = ["#", "Usernames", "Last Auth Dates", "Roles", "Branches", "Actions"]
+
 const ActiveUsersTable: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [count, setCount] = useState<number>(0);
@@ -371,18 +373,15 @@ const ActiveUsersTable: React.FC = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>#</TableCell>
-                            <TableCell>Username</TableCell>
-                            <TableCell>Last auth date</TableCell>
-                            <TableCell>roles</TableCell>
-                            <TableCell>branch</TableCell>
-                            <TableCell>Actions</TableCell>
+                            {COLUMNS.map((column) => (
+                                <TableCell>{column}</TableCell>
+                            ))}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {loading ? (
                             <TableRow>
-                                <TableCell colSpan={5} align="center">
+                                <TableCell colSpan={COLUMNS.length} align="center">
                                     <LoadingPage label="Loading Data..."/>
                                 </TableCell>
                             </TableRow>

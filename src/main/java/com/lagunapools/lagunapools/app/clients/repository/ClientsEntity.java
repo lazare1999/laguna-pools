@@ -59,7 +59,7 @@ public class ClientsEntity {
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.age = client.getAge();
-        this.cost = client.getCost();
+        this.cost = client.getCost() == null ? 0.0 : client.getCost();
         this.expDate = client.getExpDate();
         this.doctorCheckTill = client.getDoctorCheckTill();
         this.phoneNumber = client.getPhoneNumber();
@@ -69,6 +69,6 @@ public class ClientsEntity {
         this.parent = client.getParent();
         this.createdBy = username;
         this.updatedBy = username;
-        this.groups = GroupMapper.toEntity(client.getGroups());
+        this.groups = GroupMapper.toEntities(client.getGroups());
     }
 }

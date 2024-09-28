@@ -11,15 +11,17 @@ import java.util.stream.Collectors;
  */
 
 public class GroupMapper {
-    public static List<GroupDTO> toDTO(List<GroupEntity> entities) {
+    public static List<GroupDTO> toDTOs(List<GroupEntity> entities) {
         return entities.stream()
-                .map(e -> new GroupDTO(e.getId(), e.getDay(), e.getHour()))
+                .map(e -> new GroupDTO(e.getId(),
+                        e.getDay(),
+                        e.getHour()))
                 .collect(Collectors.toList());
     }
 
-    public static List<GroupEntity> toEntity(List<GroupDTO> dtoS) {
+    public static List<GroupEntity> toEntities(List<GroupDTO> dtoS) {
         return dtoS.stream()
-                .map(e -> new GroupEntity(e.getId(), e.getDay(), e.getHour()))
+                .map(e -> new GroupEntity(e.getDay(), e.getHour()))
                 .collect(Collectors.toList());
     }
 }

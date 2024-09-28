@@ -1,8 +1,8 @@
-import {DateEnum} from "../../utils/DateEnum";
+import {DayEnum} from "../../utils/DayEnum";
 import {HoursEnum} from "../../utils/HoursEnum";
 
 export interface GroupModel {
     id: number;
-    day: DateEnum;
+    day: DayEnum;
     hour: HoursEnum;
 }
