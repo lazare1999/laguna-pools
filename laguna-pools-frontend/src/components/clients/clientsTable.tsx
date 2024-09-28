@@ -228,7 +228,8 @@ const ClientsTable: React.FC = () => {
                         <TableHead>
                             <TableRow>
                                 {COLUMNS.map((column) => (
-                                    <TableCell key={column}>{column}</TableCell>
+                                    column === "Actions" ? <TableCell align="center" key={column}>{column}</TableCell> :
+                                        <TableCell key={column}>{column}</TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
