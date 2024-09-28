@@ -63,9 +63,14 @@ jobs:
           name: docker-files
           path: |
             docker/docker-compose.yaml
+            docker/backup_postgres.sh
             docker/react-frontend/Dockerfile
             docker/spring-backend/Dockerfile
             docker/nginx.conf
+
+      - name: Set execute permission for backup script
+        run: |
+          chmod +x docker/backup_postgres.sh
 
   deploy:
     needs: build
@@ -110,6 +115,7 @@ jobs:
           scp -i ~/.ssh/id_rsa -r build/libs/laguna-pools-0.0.1.jar ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/spring-backend/
           scp -i ~/.ssh/id_rsa -r laguna-pools-frontend/dist/* ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/react-frontend/dist/
           scp -i ~/.ssh/id_rsa docker/docker-compose.yaml ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/
+          scp -i ~/.ssh/id_rsa docker/backup_postgres.sh ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/
           scp -i ~/.ssh/id_rsa docker/nginx.conf ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/
           scp -i ~/.ssh/id_rsa docker/react-frontend/Dockerfile ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/react-frontend/Dockerfile
           scp -i ~/.ssh/id_rsa docker/spring-backend/Dockerfile ubuntu@"${{ secrets.AWS_HOST }}":/opt/pools/docker/spring-backend/Dockerfile
