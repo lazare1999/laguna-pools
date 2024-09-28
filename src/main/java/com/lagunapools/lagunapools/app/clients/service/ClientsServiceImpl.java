@@ -3,10 +3,7 @@ package com.lagunapools.lagunapools.app.clients.service;
 import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
 import com.lagunapools.lagunapools.app.branches.repository.BranchRepository;
 import com.lagunapools.lagunapools.app.clients.models.*;
-import com.lagunapools.lagunapools.app.clients.repository.ClientsEntity;
-import com.lagunapools.lagunapools.app.clients.repository.ClientsRepository;
-import com.lagunapools.lagunapools.app.clients.repository.GroupEntity;
-import com.lagunapools.lagunapools.app.clients.repository.GroupRepository;
+import com.lagunapools.lagunapools.app.clients.repository.*;
 import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
@@ -36,6 +33,7 @@ import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
 public class ClientsServiceImpl implements ClientsService {
 
     private final ClientsRepository clientsRepository;
+    private final ClientGroupsRepository clientGroupsRepository;
     private final GroupRepository groupRepository;
     private final BranchRepository branchRepository;
     private final UserRepository userRepository;
@@ -70,8 +68,8 @@ public class ClientsServiceImpl implements ClientsService {
             Objects.requireNonNull(query).distinct(true);
             Predicate predicate = builder.conjunction();
 
-            if (isAdmin && request.getBranchIdFilter() != null) {
-                predicate = builder.and(predicate, builder.equal(root.get("branchId"), request.getBranchIdFilter()));
+            if (isAdmin && !request.getBranches().isEmpty()) {
+                predicate = builder.and(predicate, builder.in(root.get("branchId")).value(request.getBranches()));
             } else if (!isAdmin) {
                 predicate = builder.and(predicate, builder.equal(root.get("branchId"), branchId));
             }
@@ -199,6 +197,18 @@ public class ClientsServiceImpl implements ClientsService {
     @Override
     public ResponseEntity<?> getClient(Long clientId) {
         return okResponse(clientsRepository.findById(clientId));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> deleteClient(Long clientId) {
+        if (clientId == null)
+            return badRequestResponse("Client id is null");
+
+        clientGroupsRepository.deleteByClientId(clientId);
+        clientsRepository.deleteById(clientId);
+
+        return okResponse("Client deleted successfully");
     }
 
     @Override

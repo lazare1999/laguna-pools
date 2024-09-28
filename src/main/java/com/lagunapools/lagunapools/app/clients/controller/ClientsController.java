@@ -36,6 +36,11 @@ public class ClientsController {
         return clientsService.getClient(clientId);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteClient(@RequestParam Long clientId) {
+        return clientsService.deleteClient(clientId);
+    }
+
     @GetMapping({"/list_groups"})
     @Cacheable(value = "groupsList")
     public List<GroupDTO> listGroups() {
