@@ -48,7 +48,12 @@ const MenuProps = {
 
 const COLUMNS = ["#", "Usernames", "Last Auth Dates", "Roles", "Branches", "Actions"]
 
-const ActiveUsersTable: React.FC = () => {
+interface ActiveUsersTableProps {
+    roles: Array<TargetView>;
+    branches: Array<BranchModel>;
+}
+
+const ActiveUsersTable: React.FC<ActiveUsersTableProps> = ({roles, branches}) => {
     const [users, setUsers] = useState<User[]>([]);
     const [count, setCount] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
@@ -62,9 +67,6 @@ const ActiveUsersTable: React.FC = () => {
     const [lastAuthDateTo, setLastAuthDateTo] = useState<string>("");
     const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
     const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
-
-    const [roles, setRoles] = useState<Array<TargetView>>([]);
-    const [branches, setBranches] = useState<Array<BranchModel>>([]);
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -110,45 +112,6 @@ const ActiveUsersTable: React.FC = () => {
             setAlertOpen(true);
         }
     };
-
-    const fetchRolesList = async () => {
-        try {
-            const rolesData = await authClient.request('admin/roles/list_roles', HttpMethod.GET);
-
-            if (Array.isArray(rolesData.data)) {
-                setRoles(rolesData.data);
-            } else {
-                setAlertMessage(`Fetched roles are not an array: ${rolesData.data}`);
-                setAlertOpen(true);
-                setRoles([]);
-            }
-        } catch (err) {
-            setAlertMessage(`Failed to fetch roles: ${err}`);
-            setAlertOpen(true);
-        }
-    };
-
-    const fetchBranchesList = async () => {
-        try {
-            const branches = await authClient.request('admin/branches/list_branches', HttpMethod.GET);
-
-            if (Array.isArray(branches.data)) {
-                setBranches(branches.data);
-            } else {
-                setAlertMessage(`Fetched branches are not an array: ${branches.data}`);
-                setAlertOpen(true);
-                setBranches([]);
-            }
-        } catch (err) {
-            setAlertMessage(`Failed to fetch branches: ${err}`);
-            setAlertOpen(true);
-        }
-    };
-
-    useEffect(() => {
-        fetchRolesList().then(r => r);
-        fetchBranchesList().then(r => r);
-    }, []);
 
     useEffect(() => {
         fetchUsers().then(r => r);

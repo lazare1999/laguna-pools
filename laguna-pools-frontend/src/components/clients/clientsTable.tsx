@@ -3,7 +3,15 @@ import {
     Alert,
     Box,
     Button,
+    Checkbox,
+    FormControl,
+    InputLabel,
+    ListItemText,
+    MenuItem,
+    OutlinedInput,
     Paper,
+    Select,
+    SelectChangeEvent,
     Snackbar,
     Table,
     TableBody,
@@ -27,10 +35,16 @@ import FilterDialog from "./filterDialog";
 import {ClientFilters, defaultClientFilters, defaultDialogFilters, DialogFilters} from "../models/clientFilterModels";
 import LoadingPage from "../common/loadingPage";
 import {Toast} from "../../utils/alertsUtils";
+import {BranchModel} from "../models/branchModel";
 
 const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Cost", "Notes", "Actions"];
 
-const ClientsTable: React.FC = () => {
+interface ClientsTableProps {
+    userRoles: string[];
+    branches: Array<BranchModel>;
+}
+
+const ClientsTable: React.FC<ClientsTableProps> = ({userRoles, branches}) => {
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [filters, setFilters] = useState<ClientFilters>(defaultClientFilters);
@@ -62,6 +76,7 @@ const ClientsTable: React.FC = () => {
                 pageKey: page.toString(),
                 pageSize: rowsPerPage.toString(),
                 ...filters,
+                branches: filters.branches.join(','),
             };
 
             const queryString = new URLSearchParams(params).toString();
@@ -146,6 +161,18 @@ const ClientsTable: React.FC = () => {
         setFilters(newFilters);
     };
 
+    const hasRole = (role: string) => {
+        return userRoles.includes(role);
+    };
+
+    const handleBranchChange = (event: SelectChangeEvent<string[]>) => {
+        const {value} = event.target;
+        setFilters({
+            ...filters,
+            branches: typeof value === "string" ? value.split(",") : value,
+        });
+    };
+
     return (
         <>
             <Paper>
@@ -173,6 +200,35 @@ const ClientsTable: React.FC = () => {
                         margin="normal"
                         sx={{flexGrow: 5, height: 64}}
                     />
+                    {hasRole("ROLE_LAGUNA_ADMIN") &&
+                        <FormControl sx={{flexGrow: 20}}>
+                            <InputLabel id="branches-select-label-client">Branches</InputLabel>
+                            <Select
+                                labelId="branches-select-label-client"
+                                id="branches-select-client"
+                                multiple
+                                value={filters.branches}
+                                onChange={handleBranchChange}
+                                input={<OutlinedInput id={"branches-select-label-input"} label="Branches"/>}
+                                renderValue={(selected) => selected.join(', \n')}
+                                MenuProps={{
+                                    PaperProps: {
+                                        style: {
+                                            maxHeight: 48 * 4.5 + 8,
+                                            width: 250,
+                                        },
+                                    },
+                                }}
+                            >
+                                {branches.map((branch) => (
+                                    <MenuItem key={branch.id} value={branch.id}>
+                                        <Checkbox checked={filters.branches.includes(String(branch.id))}/>
+                                        <ListItemText primary={branch.branchName}/>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    }
                     <Button
                         id={"clients-table-add-client-id"}
                         variant="outlined"

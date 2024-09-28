@@ -15,7 +15,6 @@ import com.lagunapools.lagunapools.common.models.ChangePasswordModel;
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
-import static com.lagunapools.lagunapools.utils.EncryptUtils.encrypt;
+import static com.lagunapools.lagunapools.utils.EncryptUtils.createSaltedHash;
 import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUser;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.badRequestResponse;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
@@ -42,9 +41,6 @@ public class AdminServiceImpl implements AdminService {
 
     private final BranchRepository branchRepository;
 
-    @Value("${salt}")
-    private String SALT;
-
     @Override
     @Transactional
     public ResponseEntity<?> addUser(AddUserModel u) {
@@ -61,21 +57,24 @@ public class AdminServiceImpl implements AdminService {
         if (user.isPresent())
             return badRequestResponse("User already exists");
 
-        var usersDomain = new UsersDomain(
-                u.getUsername(),
-                encrypt(SALT, u.getPassword()),
-                userName,
-                userName
-        );
+        try {
+            var usersDomain = new UsersDomain(
+                    u.getUsername(),
+                    createSaltedHash(u.getPassword()),
+                    userName,
+                    userName
+            );
 
-        BranchEntity branch = branchRepository.getBranchEntitiesByBranchName(u.getBranchName());
-        usersDomain.setBranch(branch);
+            BranchEntity branch = branchRepository.getBranchEntitiesByBranchName(u.getBranchName());
+            usersDomain.setBranch(branch);
 
-        var newUserId = usersRepository.saveAndFlush(usersDomain).getUserId();
+            var newUserId = usersRepository.saveAndFlush(usersDomain).getUserId();
 
-        u.getRoles().forEach(r -> userRolesRepository.save(new UserRolesDomain(newUserId, r)));
-
-        return okResponse(newUserId);
+            u.getRoles().forEach(r -> userRolesRepository.save(new UserRolesDomain(newUserId, r)));
+            return okResponse(newUserId);
+        } catch (Exception e) {
+            return badRequestResponse(e.getMessage());
+        }
     }
 
     @Override
@@ -157,11 +156,15 @@ public class AdminServiceImpl implements AdminService {
         if (Objects.isNull(cUser))
             return badRequestResponse("User not found");
 
-        cUser.setUserPassword(encrypt(SALT, cm.getNewPassword()));
-        cUser.setUpdatedBy(getCurrentApplicationUser().getUsername());
-        usersRepository.save(cUser);
+        try {
+            cUser.setUserPassword(createSaltedHash(cm.getNewPassword()));
+            cUser.setUpdatedBy(getCurrentApplicationUser().getUsername());
+            usersRepository.save(cUser);
 
-        return okResponse(true);
+            return okResponse(true);
+        } catch (Exception e) {
+            return badRequestResponse(e.getMessage());
+        }
     }
 
     @Override
@@ -169,8 +172,13 @@ public class AdminServiceImpl implements AdminService {
     @CacheEvict(value = "branchesList", allEntries = true)
     public ResponseEntity<?> changeUserDetails(EditUserModel changeModel) {
         UsersDomain cUser = usersRepository.findByUserId(changeModel.getUserId());
+
         if (StringUtils.isNotEmpty(changeModel.getNewPassword())) {
-            cUser.setUserPassword(encrypt(SALT, changeModel.getNewPassword()));
+            try {
+                cUser.setUserPassword(createSaltedHash(changeModel.getNewPassword()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         if (changeModel.getNewBranch() == null)

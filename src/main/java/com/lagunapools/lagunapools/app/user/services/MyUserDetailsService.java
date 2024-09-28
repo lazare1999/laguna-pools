@@ -94,7 +94,7 @@ public class MyUserDetailsService implements UserDetailsService {
         return remoteAddr;
     }
 
-    public Authentication authenticateJwt(Integer maxLoginAttempts, UsersDomain user, String userName, String password, boolean success) throws AuthenticationException {
+    public Authentication authenticateJwt(Integer maxLoginAttempts, UsersDomain user, boolean success) throws AuthenticationException {
         String remoteAddress = null;
         ServletRequestAttributes ra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (ra != null) {
@@ -121,11 +121,11 @@ public class MyUserDetailsService implements UserDetailsService {
 
         var grantedAuthorities = getGrantedAuthorities(user);
 
-        ApplicationUser appUser = new ApplicationUser(userId, userName, password, true, true, true, true, grantedAuthorities);
+        ApplicationUser appUser = new ApplicationUser(userId, user.getUserName(), user.getUserPassword(), true, true, true, true, grantedAuthorities);
         updateLastAuthorisedTime(userId, remoteAddress);
         logAuthorise(userId, 0, remoteAddress);
 
-        return new UsernamePasswordAuthenticationToken(appUser, password, grantedAuthorities);
+        return new UsernamePasswordAuthenticationToken(appUser, user.getUserPassword(), grantedAuthorities);
     }
 
     private void lockUserAccount(UsersDomain user) {
