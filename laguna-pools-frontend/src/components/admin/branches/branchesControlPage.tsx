@@ -17,6 +17,7 @@ import {Refresh} from "@mui/icons-material";
 import authClient from '../../../api/api';
 import {HttpMethod} from '../../../utils/httpMethodEnum';
 import {BranchModel} from "../../models/branchModel";
+import LoadingPage from "../../common/loadingPage";
 
 const BranchesControlPage: React.FC = () => {
     const [branches, setBranches] = useState<Array<BranchModel>>([]);
@@ -24,20 +25,23 @@ const BranchesControlPage: React.FC = () => {
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [severity, setSeverity] = useState<"info" | "success" | "error" | "warning" | undefined>("info");
+    const [loading, setLoading] = useState<boolean>(false);
 
     const fetchBranches = async () => {
+        setLoading(true);
         try {
             const response = await authClient.request('admin/branches/list_branches', HttpMethod.GET);
             setBranches(response.data);
         } catch (error) {
             console.error('Error fetching branches:', error);
         }
+        setLoading(false);
     };
 
     const handleAddBranch = async () => {
         if (!window.confirm(`Are you sure you want to add the branch: ${branchName}?`))
             return;
-        
+
         try {
             const response = await authClient.request(`admin/branches/add_branch?branchName=${branchName}`, HttpMethod.POST);
             setAlertMessage(response.data);
@@ -133,38 +137,41 @@ const BranchesControlPage: React.FC = () => {
             </Typography>
             <Divider sx={{marginBottom: 2}}/>
 
-            <List sx={{bgcolor: '#f9f9f9', borderRadius: 1, padding: 2}}>
-                {branches.map((branch) => (
-                    <ListItem
-                        key={branch.id}
-                        sx={{
-                            border: '1px solid #ddd',
-                            borderRadius: 1,
-                            marginBottom: 1,
-                            bgcolor: '#fff',
-                            boxShadow: 1,
-                            transition: '0.3s',
-                            '&:hover': {
-                                bgcolor: '#e3f2fd',
-                                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-                            }
-                        }}
-                    >
-                        <ListItemText
-                            primary={branch.branchName}
-                            secondary={`Users: ${branch.usersCount}, Clients: ${branch.clientsCount}`}
-                        />
-                        <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => handleRemoveBranch(branch.id, branch.branchName)}
-                            sx={{marginLeft: 2}}
+            {loading ? <LoadingPage label="Loading branches..."/> : <>
+                <List sx={{bgcolor: '#f9f9f9', borderRadius: 1, padding: 2}}>
+                    {branches.map((branch) => (
+                        <ListItem
+                            key={branch.id}
+                            sx={{
+                                border: '1px solid #ddd',
+                                borderRadius: 1,
+                                marginBottom: 1,
+                                bgcolor: '#fff',
+                                boxShadow: 1,
+                                transition: '0.3s',
+                                '&:hover': {
+                                    bgcolor: '#e3f2fd',
+                                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                                }
+                            }}
                         >
-                            <DeleteForeverOutlinedIcon/>
-                        </Button>
-                    </ListItem>
-                ))}
-            </List>
+                            <ListItemText
+                                primary={branch.branchName}
+                                secondary={`Users: ${branch.usersCount}, Clients: ${branch.clientsCount}`}
+                            />
+                            <Button
+                                variant="contained"
+                                color="error"
+                                onClick={() => handleRemoveBranch(branch.id, branch.branchName)}
+                                sx={{marginLeft: 2}}
+                            >
+                                <DeleteForeverOutlinedIcon/>
+                            </Button>
+                        </ListItem>
+                    ))}
+                </List>
+            </>
+            }
             <Snackbar
                 open={alertOpen}
                 autoHideDuration={6000}
