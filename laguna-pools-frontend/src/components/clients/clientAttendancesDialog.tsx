@@ -19,7 +19,7 @@ import {
 import {HoursEnum} from "../../utils/HoursEnum";
 import {Client} from "../models/clientsModel";
 import {Attendance} from "../models/attnedance";
-import {getAttendancesListById} from "./utils";
+import {addAttendance, getAttendancesListById} from "./utils";
 
 interface ClientAttendancesDialogProps {
     client: Client;
@@ -79,11 +79,16 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
 
     const handleSaveAttendance = () => {
         if (newAttendance) {
-            const updatedAttendances = [...attendances, newAttendance].sort(
-                (a, b) => new Date(b.day).getTime() - new Date(a.day).getTime()
-            );
-            setAttendances(updatedAttendances);
-            setNewAttendance(null);
+            addAttendance(client.id, newAttendance.day, newAttendance.time, newAttendance.attended).then(
+                () => {
+                    const updatedAttendances = [...attendances, newAttendance].sort(
+                        (a, b) => new Date(b.day).getTime() - new Date(a.day).getTime()
+                    );
+                    setAttendances(updatedAttendances);
+                    setNewAttendance(null);
+                }
+            ).catch(err => console.error(err));
+
         }
     };
 
@@ -91,15 +96,13 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
         return attended ? {backgroundColor: 'green', color: 'white'} : {backgroundColor: 'red', color: 'white'};
     };
 
-    // Handle pagination change
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
     };
 
-    // Handle rows per page change
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0); // Reset to the first page
+        setPage(0);
     };
 
     return (

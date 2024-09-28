@@ -42,3 +42,19 @@ export const getAttendancesListById = async (id: number, page: number, rowsPerPa
 
     return [];
 };
+
+
+function concatenateDayAndHour(day: string, hour: HoursEnum): Date {
+    const dateTimeString = `${day}T${hour}:00`;
+    return new Date(dateTimeString);
+}
+
+
+export const addAttendance = async (clientId: number, day: string, hour: HoursEnum, attended: boolean) => {
+    const time = `${day}T${hour}:00`;
+    return authClient.request("attendances", HttpMethod.POST, {
+        clientId: clientId,
+        time: time,
+        attended: attended
+    });
+}
