@@ -22,6 +22,7 @@ import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../../utils/constants"
 import {TargetView} from "../models/targetViewModel";
 import {BranchModel} from "../models/branchModel";
 import {fetchBranchesList, fetchRolesList} from "../../utils/utils";
+import BoxWrapper from "../common/border";
 
 const RegisterForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');
@@ -119,105 +120,107 @@ const RegisterForm: React.FC = () => {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <Box component="form" onSubmit={handleSubmit} sx={{mt: 1}}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Username"
-                        autoFocus
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        slotProps={{
-                            inputLabel: {
-                                shrink: true,
-                            }
-                        }}
-                    />
-                    <PasswordField
-                        id={'register_user_password_field_id'}
-                        name={'register_user_password_field_text'}
-                        label="Password"
-                        password={password}
-                        onChange={handlePasswordChange}
-                        helperText={passwordError}
-                    />
-                    <PasswordField
-                        id={'register_user_confirm_password_field_id'}
-                        name={'register_user_confirm_password_field_text'}
-                        label="Confirm Password"
-                        password={confirmPassword}
-                        onChange={handleConfirmPasswordChange}
-                        helperText={""}
-                    />
-
-                    <FormControl fullWidth margin="normal" required>
-                        <InputLabel shrink id="branch-label">Branch</InputLabel>
-                        <Select
-                            labelId="branch-label"
-                            value={branchName}
-                            onChange={(e) => setBranchName(e.target.value)}
+        <BoxWrapper>
+            <Container component="main" maxWidth="xs">
+                <Box
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Box component="form" onSubmit={handleSubmit} sx={{mt: 1}}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Username"
                             autoFocus
-                        >
-                            {branches.map(b => (
-                                <MenuItem id={`add-user-branch-id-${b.id}`} key={b.id} value={b.branchName}>
-                                    {b.branchName}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            slotProps={{
+                                inputLabel: {
+                                    shrink: true,
+                                }
+                            }}
+                        />
+                        <PasswordField
+                            id={'register_user_password_field_id'}
+                            name={'register_user_password_field_text'}
+                            label="Password"
+                            password={password}
+                            onChange={handlePasswordChange}
+                            helperText={passwordError}
+                        />
+                        <PasswordField
+                            id={'register_user_confirm_password_field_id'}
+                            name={'register_user_confirm_password_field_text'}
+                            label="Confirm Password"
+                            password={confirmPassword}
+                            onChange={handleConfirmPasswordChange}
+                            helperText={""}
+                        />
 
-                    <FormControl component="fieldset" margin="normal">
-                        <FormLabel component="legend">Select Roles</FormLabel>
-                        <FormGroup>
-                            {roles.map(role => (
-                                <FormControlLabel
-                                    key={role.targetId}
-                                    control={
-                                        <Checkbox
-                                            id={`register-page-roles-${role.targetId}`}
-                                            checked={selectedRoles.includes(role.targetId)}
-                                            onChange={() => handleRoleChange(role.targetId)}
-                                        />
-                                    }
-                                    label={role.targetDescription}
-                                />
-                            ))}
-                        </FormGroup>
-                    </FormControl>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{mt: 3, mb: 2}}
-                        disabled={submitLoading || !isFormValid()}
-                    >
-                        {submitLoading ? <CircularProgress size={24}/> : 'Register'}
-                    </Button>
-                    <Toast
-                        open={toastOpen}
-                        message={toastMessage}
-                        onClose={() => setToastOpen(false)}
-                        options={{autoHideDuration: 3000}}
-                    />
-                    <AlertDialog
-                        open={alertOpen}
-                        title="Error"
-                        message={alertMessage}
-                        onClose={() => setAlertOpen(false)}
-                    />
+                        <FormControl fullWidth margin="normal" required>
+                            <InputLabel shrink id="branch-label">Branch</InputLabel>
+                            <Select
+                                labelId="branch-label"
+                                value={branchName}
+                                onChange={(e) => setBranchName(e.target.value)}
+                                autoFocus
+                            >
+                                {branches.map(b => (
+                                    <MenuItem id={`add-user-branch-id-${b.id}`} key={b.id} value={b.branchName}>
+                                        {b.branchName}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <FormControl component="fieldset" margin="normal">
+                            <FormLabel component="legend">Select Roles</FormLabel>
+                            <FormGroup>
+                                {roles.map(role => (
+                                    <FormControlLabel
+                                        key={role.targetId}
+                                        control={
+                                            <Checkbox
+                                                id={`register-page-roles-${role.targetId}`}
+                                                checked={selectedRoles.includes(role.targetId)}
+                                                onChange={() => handleRoleChange(role.targetId)}
+                                            />
+                                        }
+                                        label={role.targetDescription}
+                                    />
+                                ))}
+                            </FormGroup>
+                        </FormControl>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{mt: 3, mb: 2}}
+                            disabled={submitLoading || !isFormValid()}
+                        >
+                            {submitLoading ? <CircularProgress size={24}/> : 'Register'}
+                        </Button>
+                        <Toast
+                            open={toastOpen}
+                            message={toastMessage}
+                            onClose={() => setToastOpen(false)}
+                            options={{autoHideDuration: 3000}}
+                        />
+                        <AlertDialog
+                            open={alertOpen}
+                            title="Error"
+                            message={alertMessage}
+                            onClose={() => setAlertOpen(false)}
+                        />
+                    </Box>
                 </Box>
-            </Box>
-        </Container>
+            </Container>
+        </BoxWrapper>
     );
 };
 
