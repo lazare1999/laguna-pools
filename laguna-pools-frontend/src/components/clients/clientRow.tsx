@@ -25,6 +25,8 @@ import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import ClientAttendancesDialog from "./clientAttendancesDialog";
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import authClient from "../../api/api";
+import {HttpMethod} from "../../utils/httpMethodEnum";
 
 interface ClientRowProps {
     client: Client;
@@ -59,8 +61,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
     };
 
     const handleSaveClick = () => {
-        onUpdate(editableClient); // Call the update function with the new data
-        setEditMode(false);
+        onUpdate(editableClient);
+        authClient.request('clients', HttpMethod.POST, editableClient).then(() => {
+            setEditMode(false);
+        });
     };
 
     const handleInputChange = (field: keyof Client, value: string | boolean | number) => {
@@ -387,7 +391,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                         </TableCell>
 
 
-                        <TableCell>
+                        <TableCell align="center">
                             <IconButton onClick={handleSaveClick}>
                                 <Save/>
                             </IconButton>

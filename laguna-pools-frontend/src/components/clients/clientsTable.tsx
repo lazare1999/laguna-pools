@@ -24,12 +24,9 @@ import {
 } from "@mui/material";
 import ClientRow from "./clientRow";
 import AddClientDialog from "./addClientDialog";
-import authClient from "../../api/api";
-import {HttpMethod} from "../../utils/httpMethodEnum";
 import {Client} from "../models/clientsModel";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import {Refresh} from "@mui/icons-material";
-import ClearAllIcon from "@mui/icons-material/ClearAll";
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import FilterDialog from "./filterDialog";
 import {ClientFilters, defaultClientFilters, defaultDialogFilters, DialogFilters} from "../models/clientFilterModels";
@@ -38,6 +35,11 @@ import {Toast} from "../../utils/alertsUtils";
 import {BranchModel} from "../models/branchModel";
 import {fetchBranchesList} from "../../utils/utils";
 import {UserApiService} from "../../api/userApiService";
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
+import {FILTER_BUTTON_STYLES} from "../../utils/constants";
+import {getAllFilteredClientsGrid, getClients} from "./utils";
+import {exportTableToExcel} from "../../utils/exportExcel";
+import PlaylistRemoveOutlinedIcon from '@mui/icons-material/PlaylistRemoveOutlined';
 
 const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Cost", "Notes", "Actions"];
 
@@ -79,15 +81,7 @@ const ClientsTable: React.FC = () => {
     const fetchClients = async () => {
         setLoading(true);
         try {
-            const params = {
-                pageKey: page.toString(),
-                pageSize: rowsPerPage.toString(),
-                ...filters,
-                branches: filters.branches.join(','),
-            };
-
-            const queryString = new URLSearchParams(params).toString();
-            const response = await authClient.request(`clients/all?${queryString}`, HttpMethod.GET);
+            const response = await getClients(page.toString(), rowsPerPage.toString(), filters);
 
             if (Array.isArray(response.data.content)) {
                 setClients(response.data.content);
@@ -180,6 +174,11 @@ const ClientsTable: React.FC = () => {
         });
     };
 
+    const exportClients = async () => {
+        const result = await getAllFilteredClientsGrid(filters);
+        exportTableToExcel(result, "clients" + new Date())
+    }
+
     return (
         <>
             <Paper>
@@ -240,50 +239,37 @@ const ClientsTable: React.FC = () => {
                         id={"clients-table-add-client-id"}
                         variant="outlined"
                         onClick={handleOpenDialog}
-                        sx={{
-                            flexGrow: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            height: "50px"
-                        }}
+                        sx={FILTER_BUTTON_STYLES}
                     >
                         <PersonAddAltIcon/>
                     </Button>
                     <Button
                         variant="outlined"
                         onClick={handleRefresh}
-                        sx={{
-                            flexGrow: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            height: "50px"
-                        }}
+                        sx={FILTER_BUTTON_STYLES}
                     >
                         <Refresh/>
                     </Button>
                     <Button
                         variant="outlined"
                         onClick={handleOpenFilterDialog}
-                        sx={{
-                            flexGrow: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            height: "50px"
-                        }}
+                        sx={FILTER_BUTTON_STYLES}
                     >
                         <FilterAltOutlinedIcon/>
                     </Button>
                     <Button
                         variant="outlined"
-                        onClick={handleClearAll}
-                        sx={{
-                            flexGrow: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            height: "50px"
-                        }}
+                        onClick={exportClients}
+                        sx={FILTER_BUTTON_STYLES}
                     >
-                        <ClearAllIcon/>
+                        <DownloadOutlinedIcon/>
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={handleClearAll}
+                        sx={FILTER_BUTTON_STYLES}
+                    >
+                        <PlaylistRemoveOutlinedIcon/>
                     </Button>
                 </Box>
                 <TableContainer>

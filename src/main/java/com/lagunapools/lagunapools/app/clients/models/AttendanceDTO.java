@@ -20,7 +20,7 @@ public class AttendanceDTO {
 
     public AttendanceDTO(AttendanceEntity attendance) {
         this.id = attendance.getId();
-        this.clientId = attendance.getClient().getId();
+        this.clientId = attendance.getClientId();
         this.time = attendance.getTime();
         this.attended = attendance.isAttended();
     }

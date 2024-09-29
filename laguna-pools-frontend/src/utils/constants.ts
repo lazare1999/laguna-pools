@@ -4,3 +4,10 @@ export const REFRESH_TOKEN_EXP_NAME = "refresh_token_expires_in";
 
 export const STRONG_PASSWORD_REGEX = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$%^&*_])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
 export const PASSWORD_ERROR_TEXT = 'Password must be at least 8 characters long, including at least two uppercase letters, two digits, three lowercase letters, and one special character.';
+
+export const FILTER_BUTTON_STYLES = {
+    flexGrow: 0,
+    display: "flex",
+    alignItems: "center",
+    height: "50px"
+}

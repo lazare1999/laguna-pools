@@ -5,6 +5,7 @@ import PasswordField from "./common/passwordTextBox";
 import {Component} from "../utils/componentsEnum";
 import authenticateUtils from "../api/authenticateUtils";
 import {AlertDialog} from "../utils/alertsUtils";
+import BoxWrapper from "./common/border";
 
 interface LoginFormProps {
     selectHandler: (select: Component) => void;
@@ -42,58 +43,60 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <Avatar>
-                    <LockOutlinedIcon/>
-                </Avatar>
-                <Box component="form" onSubmit={handleSubmit} sx={{mt: 1}}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        label="Username"
-                        autoFocus
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        slotProps={{
-                            inputLabel: {
-                                shrink: true,
-                            }
-                        }}
-                    />
-                    <PasswordField
-                        id={'login_password_field_id'}
-                        name={'login_password_field_text'}
-                        label={'Password'}
-                        password={password}
-                        onChange={handlePasswordChange}
-                        helperText={""}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{mt: 3, mb: 2}}
-                    >
-                        Sign In
-                    </Button>
-                    <AlertDialog
-                        open={alertOpen}
-                        title='Error'
-                        message={alertMessage}
-                        onClose={() => setAlertOpen(false)}
-                    />
+        <BoxWrapper>
+            <Container component="main" maxWidth="xs">
+                <Box
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Avatar>
+                        <LockOutlinedIcon/>
+                    </Avatar>
+                    <Box component="form" onSubmit={handleSubmit} sx={{mt: 1}}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Username"
+                            autoFocus
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            slotProps={{
+                                inputLabel: {
+                                    shrink: true,
+                                }
+                            }}
+                        />
+                        <PasswordField
+                            id={'login_password_field_id'}
+                            name={'login_password_field_text'}
+                            label={'Password'}
+                            password={password}
+                            onChange={handlePasswordChange}
+                            helperText={""}
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{mt: 3, mb: 2}}
+                        >
+                            Sign In
+                        </Button>
+                        <AlertDialog
+                            open={alertOpen}
+                            title='Error'
+                            message={alertMessage}
+                            onClose={() => setAlertOpen(false)}
+                        />
+                    </Box>
                 </Box>
-            </Box>
-        </Container>
+            </Container>
+        </BoxWrapper>
     );
 };
 
