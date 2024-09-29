@@ -176,15 +176,16 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
                                             label="Attended"
                                         />
                                     </TableCell>
-                                    <TableCell>
-                                        <Button onClick={handleSaveAttendance} variant="contained">
-                                            Save
-                                        </Button>
-                                    </TableCell>
                                 </TableRow>
                             )}
                         </TableBody>
                     </Table>
+                    {
+                        newAttendance &&
+                        <Button sx={{marginTop: "1%"}} onClick={handleSaveAttendance} variant="contained">
+                            Save
+                        </Button>
+                    }
 
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}

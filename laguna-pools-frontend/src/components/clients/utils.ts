@@ -3,6 +3,7 @@ import {Attendance} from "../models/attnedance";
 import {HttpMethod} from "../../utils/httpMethodEnum";
 
 import authClient from "../../api/api";
+import {ClientFilters} from "../models/clientFilterModels";
 
 const determineHoursEnum = (hour: number): HoursEnum => {
     if (hour < 0 || hour > 23) {
@@ -57,4 +58,33 @@ export const addAttendance = async (clientId: number, day: string, hour: HoursEn
         time: time,
         attended: attended
     });
+}
+
+
+export const getClients = async (pageKey: string, pageSize: string, filters: ClientFilters) => {
+    const params: Record<string, any> = {
+        pageKey: 0,
+        pageSize: 9999999,
+        ...filters,
+        branches: filters.branches.join(','),
+    };
+
+    const queryString = new URLSearchParams(params).toString();
+    return authClient.request(`clients/all?${queryString}`, HttpMethod.GET);
+}
+
+const getUserRowFromResponse = (client: any) => {
+    return [`${client.firstName} ${client.lastName}`, client.age, client.cost, client.phoneNumber, client.notes]
+}
+
+export const getAllFilteredClientsGrid = async (filters: ClientFilters) => {
+    const allClients = await getClients("0", "9999999", filters);
+
+    console.log(allClients.data.content);
+
+    const clientsArrays: string[][] = allClients.data.content.map((client: any) =>
+        getUserRowFromResponse(client).map((value: string | number | null) => value ? value.toString() : "")
+    );
+
+    return [["Client", "Age", "Cost", "Phone", "Notes"]].concat(clientsArrays);
 }

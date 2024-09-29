@@ -387,7 +387,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                         </TableCell>
 
 
-                        <TableCell>
+                        <TableCell align="center">
                             <IconButton onClick={handleSaveClick}>
                                 <Save/>
                             </IconButton>
