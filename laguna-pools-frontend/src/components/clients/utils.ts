@@ -94,10 +94,8 @@ const getUserRowFromResponse = (client: any) => {
     ]
 }
 
-export const getAllFilteredClientsGrid = async (filters: ClientFilters) => {
+export const getAllFilteredClientsGrid = async (filters: any) => {
     const allClients = await getClients("0", "9999999", filters);
-
-    console.log(allClients.data.content);
 
     const clientsArrays: string[][] = allClients.data.content.map((client: any) =>
         getUserRowFromResponse(client).map((value: any) => value ? value.toString() : "")
