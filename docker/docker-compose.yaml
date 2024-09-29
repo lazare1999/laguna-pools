@@ -14,22 +14,22 @@ services:
     volumes:
       - /data/laguna/postgres/data:/var/lib/postgresql/data
       - /data/laguna/postgres/backups:/data/laguna/postgres/backups
-  postgres-backup:
-    image: postgres:latest
-    container_name: laguna-pools-postgres-backup
-    restart: 'always'
-    environment:
-      PGUSER: lagunaUser
-      PGPASSWORD: lagunaPassword
-      PGDATABASE: laguna
-    volumes:
-      - /data/laguna/postgres/backups:/data/laguna/postgres/backups
-      - ./backup_postgres.sh:/backup_postgres.sh
-    entrypoint: [ "/bin/sh", "-c", "while true; do /backup_postgres.sh; sleep 86400; done" ]
-    networks:
-      - laguna-network
-    depends_on:
-      - postgres
+  #  postgres-backup:
+  #    image: postgres:latest
+  #    container_name: laguna-pools-postgres-backup
+  #    restart: 'always'
+  #    environment:
+  #      PGUSER: lagunaUser
+  #      PGPASSWORD: lagunaPassword
+  #      PGDATABASE: laguna
+  #    volumes:
+  #      - /data/laguna/postgres/backups:/data/laguna/postgres/backups
+  #      - ./backup_postgres.sh:/backup_postgres.sh
+  #    entrypoint: [ "/bin/sh", "-c", "while true; do /backup_postgres.sh; sleep 86400; done" ]
+  #    networks:
+  #      - laguna-network
+  #    depends_on:
+  #      - postgres
   nginx:
     image: 'nginx:latest'
     container_name: laguna-pools-nginx-1
@@ -49,7 +49,7 @@ services:
       - certbot
       - postgres
       - redis
-      - postgres-backup
+  #      - postgres-backup
   certbot:
     restart: 'always'
     image: certbot/certbot
