@@ -44,13 +44,6 @@ export const getAttendancesListById = async (id: number, page: number, rowsPerPa
     return [];
 };
 
-
-function concatenateDayAndHour(day: string, hour: HoursEnum): Date {
-    const dateTimeString = `${day}T${hour}:00`;
-    return new Date(dateTimeString);
-}
-
-
 export const addAttendance = async (clientId: number, day: string, hour: HoursEnum, attended: boolean) => {
     const time = `${day}T${hour}:00`;
     return authClient.request("attendances", HttpMethod.POST, {
@@ -59,7 +52,6 @@ export const addAttendance = async (clientId: number, day: string, hour: HoursEn
         attended: attended
     });
 }
-
 
 export const getClients = async (pageKey: string, pageSize: string, filters: ClientFilters) => {
     const params: Record<string, any> = {
@@ -74,7 +66,23 @@ export const getClients = async (pageKey: string, pageSize: string, filters: Cli
 }
 
 const getUserRowFromResponse = (client: any) => {
-    return [`${client.firstName} ${client.lastName}`, client.age, client.cost, client.phoneNumber, client.notes]
+
+    const groups: string = client.groups.map((group: any) => `${group.day} ${group.hour}`).join('\n');
+
+    return [
+        client.firstName,
+        client.lastName,
+        client.age,
+        client.expDate,
+        client.doctorCheckTill,
+        client.cost,
+        client.phoneNumber,
+        client.idStatus,
+        client.contractStatus,
+        client.parent,
+        groups,
+        client.notes
+    ]
 }
 
 export const getAllFilteredClientsGrid = async (filters: ClientFilters) => {
@@ -83,8 +91,19 @@ export const getAllFilteredClientsGrid = async (filters: ClientFilters) => {
     console.log(allClients.data.content);
 
     const clientsArrays: string[][] = allClients.data.content.map((client: any) =>
-        getUserRowFromResponse(client).map((value: string | number | null) => value ? value.toString() : "")
+        getUserRowFromResponse(client).map((value: any) => value ? value.toString() : "")
     );
 
-    return [["Client", "Age", "Cost", "Phone", "Notes"]].concat(clientsArrays);
+    return [[
+        "First Name",
+        "Last name",
+        "Birthday",
+        "Expiration",
+        "Doctor check",
+        "Cost", "Phone",
+        "Id Status",
+        "Contract",
+        "Parent",
+        "Groups",
+        "Notes"]].concat(clientsArrays);
 }
