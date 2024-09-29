@@ -15,15 +15,19 @@ const determineHoursEnum = (hour: number): HoursEnum => {
     return HoursEnum[`HOUR_${formattedHour}` as keyof typeof HoursEnum];
 };
 
-export const getAttendancesListById = async (id: number, page: number, rowsPerPage: number): Promise<Attendance[]> => {
+export const getAttendancesListById = async (
+    id: number,
+    page: number,
+    rowsPerPage: number
+): Promise<{ attendances: Attendance[]; total: number }> => {
     const result = await authClient.request("attendances/client", HttpMethod.POST, {
         pageKey: page,
         pageSize: rowsPerPage,
-        clientId: id
+        clientId: id,
     });
 
     if (result && result.data && result.data.attendances) {
-        return result.data.attendances.map((attendance: {
+        const attendances = result.data.attendances.map((attendance: {
             id: number;
             clientId: number;
             time: string;
@@ -36,12 +40,17 @@ export const getAttendancesListById = async (id: number, page: number, rowsPerPa
             return {
                 day,
                 time: hours,
-                attended: attendance.attended
+                attended: attendance.attended,
             } as Attendance;
         });
+
+        return {
+            attendances,
+            total: result.data.total,
+        };
     }
 
-    return [];
+    return {attendances: [], total: 0};
 };
 
 export const addAttendance = async (clientId: number, day: string, hour: HoursEnum, attended: boolean) => {

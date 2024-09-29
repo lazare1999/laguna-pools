@@ -27,7 +27,6 @@ import AddClientDialog from "./addClientDialog";
 import {Client} from "../models/clientsModel";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import {Refresh} from "@mui/icons-material";
-import ClearAllIcon from "@mui/icons-material/ClearAll";
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import FilterDialog from "./filterDialog";
 import {ClientFilters, defaultClientFilters, defaultDialogFilters, DialogFilters} from "../models/clientFilterModels";
@@ -40,6 +39,7 @@ import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import {FILTER_BUTTON_STYLES} from "../../utils/constants";
 import {getAllFilteredClientsGrid, getClients} from "./utils";
 import {exportTableToExcel} from "../../utils/exportExcel";
+import PlaylistRemoveOutlinedIcon from '@mui/icons-material/PlaylistRemoveOutlined';
 
 const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Cost", "Notes", "Actions"];
 
@@ -269,7 +269,7 @@ const ClientsTable: React.FC = () => {
                         onClick={handleClearAll}
                         sx={FILTER_BUTTON_STYLES}
                     >
-                        <ClearAllIcon/>
+                        <PlaylistRemoveOutlinedIcon/>
                     </Button>
                 </Box>
                 <TableContainer>
