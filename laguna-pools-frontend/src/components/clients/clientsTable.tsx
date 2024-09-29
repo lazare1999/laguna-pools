@@ -52,7 +52,7 @@ const ClientsTable: React.FC = () => {
     const [clients, setClients] = useState<Client[]>([]);
     const [count, setCount] = useState<number>(0);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
-    const [openFilterDialog, setOpenFilterDialog] = useState<boolean>(false); // State for filter dialog
+    const [openFilterDialog, setOpenFilterDialog] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
@@ -158,8 +158,8 @@ const ClientsTable: React.FC = () => {
         setOpenFilterDialog(false);
     };
 
-    const handleApplyFilters = (newFilters: any) => { // Adjust type as needed
-        setFilters(newFilters);
+    const handleApplyFilters = (newFilters: any) => {
+        setDialogFilters(newFilters);
     };
 
     const hasRole = (role: string) => {
@@ -227,8 +227,8 @@ const ClientsTable: React.FC = () => {
                                 }}
                             >
                                 {branches.map((branch) => (
-                                    <MenuItem key={branch.id} value={branch.id}>
-                                        <Checkbox checked={filters.branches.includes(String(branch.id))}/>
+                                    <MenuItem key={branch.id} value={branch.branchName}>
+                                        <Checkbox checked={filters.branches.includes(branch.branchName)}/>
                                         <ListItemText primary={branch.branchName}/>
                                     </MenuItem>
                                 ))}
