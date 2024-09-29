@@ -326,12 +326,17 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                          marginBottom: '1rem',
                                          marginTop: '1rem'
                                      }}>
-                                    <FormControl id={`edit-client-day-id-${editableClient.id}`} fullWidth>
+                                    <FormControl
+                                        id={`edit-client-day-id-${editableClient.id}`}
+                                        fullWidth
+                                        variant="outlined"
+                                    >
                                         <InputLabel id={`edit-day-select-label-${index}`}>Day</InputLabel>
                                         <Select
                                             labelId={`edit-day-select-label-${index}`}
                                             value={group.day || ""}
                                             onChange={(e) => handleDayChange(index, e.target.value as DayEnum)}
+                                            label="Day"
                                         >
                                             {Object.values(DayEnum).map((day) => (
                                                 <MenuItem key={day} value={day}>
@@ -341,12 +346,17 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                         </Select>
                                     </FormControl>
 
-                                    <FormControl id={`edit-client-hour-id-${editableClient.id}`} fullWidth>
+                                    <FormControl
+                                        id={`edit-client-hour-id-${editableClient.id}`}
+                                        fullWidth
+                                        variant="outlined"
+                                    >
                                         <InputLabel id={`edit-hour-select-label-${index}`}>Hour</InputLabel>
                                         <Select
                                             labelId={`edit-hour-select-label-${index}`}
                                             value={group.hour || ""}
                                             onChange={(e) => handleHourChange(index, e.target.value as HoursEnum)}
+                                            label="Hour"
                                         >
                                             {Object.values(HoursEnum).map((hour) => (
                                                 <MenuItem key={hour} value={hour}>
@@ -355,7 +365,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                             ))}
                                         </Select>
                                     </FormControl>
-
+                                    
                                     <Button onClick={() => handleRemoveGroup(index)} color="error">
                                         <ClearOutlinedIcon/>
                                     </Button>
