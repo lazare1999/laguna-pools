@@ -64,7 +64,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
     };
 
     const handlePhoneNumberChange = (value: string) => {
-        const regex = /^[0-9]*$/;
+        const regex = /^[0-9,]*$/;
         if (regex.test(value)) {
             if (value.length <= 20) {
                 handleInputChange("phoneNumber", value);
@@ -76,7 +76,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
         } else {
             const updatedValue = value.slice(0, -1);
             handleInputChange("phoneNumber", updatedValue);
-            setAlertMessage("Phone number must contain only digits.");
+            setAlertMessage("Phone number must contain only digits and commas.");
             setAlertOpen(true);
         }
     };
