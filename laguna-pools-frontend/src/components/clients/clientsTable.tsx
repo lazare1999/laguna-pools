@@ -175,6 +175,9 @@ const ClientsTable: React.FC = () => {
     };
 
     const exportClients = async () => {
+        if (!window.confirm(`Are you sure that you want to download excel?`))
+            return;
+
         const result = await getAllFilteredClientsGrid({...filters, ...dialogFilters});
         exportTableToExcel(result, "clients" + new Date())
     }
