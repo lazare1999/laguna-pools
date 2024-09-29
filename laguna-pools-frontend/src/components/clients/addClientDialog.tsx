@@ -54,7 +54,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-
+    const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
 
     const handleInputChange = (field: keyof Client, value: string | boolean | number) => {
         setNewClient({
@@ -101,6 +101,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
         newClient.groups = dayHourPairs;
 
         try {
+            setIsButtonDisabled(true);
             const result = await authClient.request('clients', HttpMethod.POST, newClient);
 
             openToastHandler();
@@ -116,6 +117,10 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
             const errorMessage = err.response?.data || err.message || "An unexpected error occurred.";
             setAlertMessage(`${errorMessage}`);
             setAlertOpen(true);
+        } finally {
+            setTimeout(() => {
+                setIsButtonDisabled(false);
+            }, 5000);
         }
     };
 
@@ -349,7 +354,9 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button onClick={handleAddClient} color="primary">Add</Button>
+                <Button onClick={handleAddClient} color="primary" disabled={isButtonDisabled}>
+                    Add
+                </Button>
             </DialogActions>
         </Dialog>
     );
