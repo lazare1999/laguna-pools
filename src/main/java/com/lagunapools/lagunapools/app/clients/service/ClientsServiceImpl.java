@@ -121,17 +121,22 @@ public class ClientsServiceImpl implements ClientsService {
             if (request.getContractStatus() != null && request.getContractStatus())
                 predicate = builder.and(predicate, builder.equal(root.get("contractStatus"), request.getContractStatus()));
 
-            if (request.getCostFrom() != null && request.getCostTo() != null) {
-                predicate = builder.and(predicate,
-                        builder.between(root.get("cost"),
-                                request.getCostFrom(),
-                                request.getCostTo()));
-            } else if (request.getCostFrom() != null) {
-                predicate = builder.and(predicate,
-                        builder.greaterThanOrEqualTo(root.get("cost"), request.getCostFrom()));
-            } else if (request.getCostTo() != null) {
-                predicate = builder.and(predicate,
-                        builder.lessThanOrEqualTo(root.get("cost"), request.getCostTo()));
+            Double costFrom = request.getCostFrom();
+            Double costTo = request.getCostTo();
+            if (costFrom != null && costTo != null) {
+                if (costFrom.equals(costTo) && costFrom != 0.0) {
+                    predicate = builder.and(predicate,
+                            builder.equal(root.get("cost"), costFrom));
+                } else if (costFrom != 0.0 && costTo != 0.0) {
+                    predicate = builder.and(predicate,
+                            builder.between(root.get("cost"), costFrom, costTo));
+                } else if (costFrom != 0.0) {
+                    predicate = builder.and(predicate,
+                            builder.greaterThanOrEqualTo(root.get("cost"), costFrom));
+                } else if (costTo != 0.0) {
+                    predicate = builder.and(predicate,
+                            builder.lessThanOrEqualTo(root.get("cost"), costTo));
+                }
             }
 
             if (request.getSelectedGroups() != null && !request.getSelectedGroups().isEmpty())

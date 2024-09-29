@@ -81,7 +81,7 @@ const ClientsTable: React.FC = () => {
     const fetchClients = async () => {
         setLoading(true);
         try {
-            const response = await getClients(page.toString(), rowsPerPage.toString(), filters);
+            const response = await getClients(page.toString(), rowsPerPage.toString(), {...filters, ...dialogFilters});
 
             if (Array.isArray(response.data.content)) {
                 setClients(response.data.content);
@@ -101,7 +101,7 @@ const ClientsTable: React.FC = () => {
 
     useEffect(() => {
         fetchClients().then(r => r);
-    }, [page, rowsPerPage, filters]);
+    }, [page, rowsPerPage, filters, dialogFilters]);
 
     const handleCloseAlert = () => {
         setAlertOpen(false);
@@ -175,7 +175,7 @@ const ClientsTable: React.FC = () => {
     };
 
     const exportClients = async () => {
-        const result = await getAllFilteredClientsGrid(filters);
+        const result = await getAllFilteredClientsGrid({...filters, ...dialogFilters});
         exportTableToExcel(result, "clients" + new Date())
     }
 

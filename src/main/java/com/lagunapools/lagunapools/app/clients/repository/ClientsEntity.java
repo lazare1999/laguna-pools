@@ -56,6 +56,7 @@ public class ClientsEntity {
     private BranchEntity branch;
 
     public ClientsEntity(ClientDTO client, String username) {
+        this.id = client.getId();
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.age = client.getAge();
