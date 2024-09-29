@@ -53,8 +53,11 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
                     attended: false
                 } as Attendance;
             } else {
-                prevState.time = value;
-                return prevState;
+                return {
+                    day: prevState.day,
+                    time: value,
+                    attended: prevState.attended
+                }
             }
         });
     };
