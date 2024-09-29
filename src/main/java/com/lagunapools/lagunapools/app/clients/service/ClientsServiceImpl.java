@@ -48,30 +48,20 @@ public class ClientsServiceImpl implements ClientsService {
             return new AllClientsResponseDTO();
         }
 
-        Long branchId;
         boolean isAdmin = userDetailsService.userIsAdmin();
-        var u = getCurrentApplicationUser();
-
-        if (!isAdmin) {
-            Optional<AppUser> currentUserOpt = userRepository.findById(u.getUserId());
-            if (currentUserOpt.isPresent()) {
-                AppUser currentUser = currentUserOpt.get();
-                branchId = currentUser.getBranch().getId();
-            } else {
-                return new AllClientsResponseDTO();
-            }
-        } else {
-            branchId = 0L;
-        }
 
         Page<ClientsEntity> clientPage = clientsRepository.findAll((root, query, builder) -> {
             Objects.requireNonNull(query).distinct(true);
             Predicate predicate = builder.conjunction();
 
             if (isAdmin && !request.getBranches().isEmpty()) {
-                predicate = builder.and(predicate, builder.in(root.get("branchId")).value(request.getBranches()));
+                predicate = builder.and(predicate, builder.in(root.get("branch").get("branchName")).value(request.getBranches()));
             } else if (!isAdmin) {
-                predicate = builder.and(predicate, builder.equal(root.get("branchId"), branchId));
+                Optional<AppUser> currentUserOpt = userRepository.findById(getCurrentApplicationUser().getUserId());
+                if (currentUserOpt.isPresent()) {
+                    AppUser currentUser = currentUserOpt.get();
+                    predicate = builder.and(predicate, builder.equal(root.get("branch").get("branchName"), currentUser.getBranch().getBranchName()));
+                }
             }
 
             if (StringUtils.isNotEmpty(request.getName()))
