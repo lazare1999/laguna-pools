@@ -302,15 +302,17 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                 <Divider></Divider>
                 {dayHourPairs.map((pair, index) => (
                     <div key={index} style={{display: 'flex', gap: '1rem', marginBottom: '1rem', marginTop: '1rem'}}>
-                        <FormControl id={`add-client-days-id-${newClient.id}`} fullWidth>
-                            <InputLabel
-                                id={`day-select-label-${index}`}
-                                sx={{backgroundColor: "#fff"}}
-                            >Day</InputLabel>
+                        <FormControl
+                            id={`add-client-days-id-${newClient.id}`}
+                            fullWidth
+                            variant="outlined"
+                        >
+                            <InputLabel id={`day-select-label-${index}`}>Day</InputLabel>
                             <Select
                                 labelId={`day-select-label-${index}`}
                                 value={pair.day || ""}
                                 onChange={(e) => handleDayChange(index, e.target.value as DayEnum)}
+                                label="Day"
                             >
                                 {Object.values(DayEnum).map((day) => (
                                     <MenuItem id={`add-client-menu-item-day-id-${day}`} key={day} value={day}>
@@ -319,14 +321,17 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                                 ))}
                             </Select>
                         </FormControl>
-
-                        <FormControl id={`add-client-hours-id-${newClient.id}`} fullWidth>
-                            <InputLabel id={`hour-select-label-${index}`}
-                                        sx={{backgroundColor: "#fff"}}>Hour</InputLabel>
+                        <FormControl
+                            id={`add-client-hours-id-${newClient.id}`}
+                            fullWidth
+                            variant="outlined"
+                        >
+                            <InputLabel id={`hour-select-label-${index}`}>Hour</InputLabel>
                             <Select
                                 labelId={`hour-select-label-${index}`}
                                 value={pair.hour || ""}
                                 onChange={(e) => handleHourChange(index, e.target.value as HoursEnum)}
+                                label="Hour"
                             >
                                 {Object.values(HoursEnum).map((hour) => (
                                     <MenuItem id={`add-client-menu-item-hours-id-${hour}`} key={hour} value={hour}>
@@ -335,7 +340,6 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                                 ))}
                             </Select>
                         </FormControl>
-
                         <Button onClick={() => handleRemovePair(index)} color="error"><ClearOutlinedIcon/></Button>
                     </div>
                 ))}
