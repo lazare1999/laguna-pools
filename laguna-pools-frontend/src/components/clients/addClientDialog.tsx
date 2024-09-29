@@ -303,7 +303,10 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                 {dayHourPairs.map((pair, index) => (
                     <div key={index} style={{display: 'flex', gap: '1rem', marginBottom: '1rem', marginTop: '1rem'}}>
                         <FormControl id={`add-client-days-id-${newClient.id}`} fullWidth>
-                            <InputLabel id={`day-select-label-${index}`}>Day</InputLabel>
+                            <InputLabel
+                                id={`day-select-label-${index}`}
+                                sx={{backgroundColor: "#fff"}}
+                            >Day</InputLabel>
                             <Select
                                 labelId={`day-select-label-${index}`}
                                 value={pair.day || ""}
@@ -318,7 +321,8 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                         </FormControl>
 
                         <FormControl id={`add-client-hours-id-${newClient.id}`} fullWidth>
-                            <InputLabel id={`hour-select-label-${index}`}>Hour</InputLabel>
+                            <InputLabel id={`hour-select-label-${index}`}
+                                        sx={{backgroundColor: "#fff"}}>Hour</InputLabel>
                             <Select
                                 labelId={`hour-select-label-${index}`}
                                 value={pair.hour || ""}
