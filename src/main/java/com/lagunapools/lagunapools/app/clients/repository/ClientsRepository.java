@@ -22,7 +22,9 @@ public interface ClientsRepository extends JpaRepository<ClientsEntity, Long>, J
     Integer countByBranchId(@Param("branchId") Long branchId);
 
     @Query("SELECT g.day, g.hour, COUNT(c.id) " +
-            "FROM GroupEntity g JOIN g.clients c " +
+            "FROM ClientGroupsEntity cg " +
+            "JOIN GroupEntity g ON cg.groupId = g.id " +
+            "JOIN ClientsEntity c ON cg.clientId = c.id " +
             "WHERE c.branchId = :branchId " +
             "GROUP BY g.day, g.hour " +
             "ORDER BY g.day, g.hour")

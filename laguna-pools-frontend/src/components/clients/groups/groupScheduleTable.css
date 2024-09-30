@@ -35,14 +35,14 @@
     border-bottom: 1px solid #ddd;
 }
 
-.schedule-table tr:hover {
-    background-color: rgba(0, 123, 255, 0.1);
-    transform: scale(1.02);
-}
-
 .cell-blue {
     background-color: #007BFF;
     color: white;
+}
+
+.cell-blue:hover {
+    background-color: #0056b3;
+    color: #e0e0e0;
 }
 
 .cell-yellow {
@@ -50,10 +50,21 @@
     color: black;
 }
 
+.cell-yellow:hover {
+    background-color: #e0a800;
+    color: #333333;
+}
+
 .cell-red {
     background-color: #DC3545;
     color: white;
 }
+
+.cell-red:hover {
+    background-color: #c82333;
+    color: #f8f9fa;
+}
+
 
 tfoot {
     font-weight: bold;

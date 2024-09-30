@@ -2,57 +2,143 @@ import React, {useEffect, useState} from 'react';
 import {DayEnum} from "../../../utils/enums/DayEnum";
 import {HoursEnum} from "../../../utils/enums/HoursEnum";
 import './groupScheduleTable.css';
-import {AlertDialog, Toast} from "../../../utils/alertsUtils";
+import {AlertDialog} from "../../../utils/alertsUtils";
 import {Button} from "@mui/material";
 import {Refresh} from "@mui/icons-material";
 import authClient from "../../../api/api";
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
 
 const GroupScheduleTable: React.FC = () => {
-    const [data, setData] = useState<{ [key in DayEnum]: number[] }>({
-        [DayEnum.MONDAY]: [],
-        [DayEnum.TUESDAY]: [],
-        [DayEnum.WEDNESDAY]: [],
-        [DayEnum.THURSDAY]: [],
-        [DayEnum.FRIDAY]: [],
-        [DayEnum.SATURDAY]: [],
-        [DayEnum.SUNDAY]: [],
+    const [data, setData] = useState<{ [key in DayEnum]: { [key in HoursEnum]: number } }>({
+        [DayEnum.MONDAY]: {
+            [HoursEnum.HOUR_09]: 0,
+            [HoursEnum.HOUR_10]: 0,
+            [HoursEnum.HOUR_11]: 0,
+            [HoursEnum.HOUR_12]: 0,
+            [HoursEnum.HOUR_13]: 0,
+            [HoursEnum.HOUR_14]: 0,
+            [HoursEnum.HOUR_15]: 0,
+            [HoursEnum.HOUR_16]: 0,
+            [HoursEnum.HOUR_17]: 0,
+            [HoursEnum.HOUR_18]: 0,
+            [HoursEnum.HOUR_19]: 0,
+            [HoursEnum.HOUR_20]: 0,
+            [HoursEnum.HOUR_21]: 0
+        },
+        [DayEnum.TUESDAY]: {
+            [HoursEnum.HOUR_09]: 0,
+            [HoursEnum.HOUR_10]: 0,
+            [HoursEnum.HOUR_11]: 0,
+            [HoursEnum.HOUR_12]: 0,
+            [HoursEnum.HOUR_13]: 0,
+            [HoursEnum.HOUR_14]: 0,
+            [HoursEnum.HOUR_15]: 0,
+            [HoursEnum.HOUR_16]: 0,
+            [HoursEnum.HOUR_17]: 0,
+            [HoursEnum.HOUR_18]: 0,
+            [HoursEnum.HOUR_19]: 0,
+            [HoursEnum.HOUR_20]: 0,
+            [HoursEnum.HOUR_21]: 0
+        },
+        [DayEnum.WEDNESDAY]: {
+            [HoursEnum.HOUR_09]: 0,
+            [HoursEnum.HOUR_10]: 0,
+            [HoursEnum.HOUR_11]: 0,
+            [HoursEnum.HOUR_12]: 0,
+            [HoursEnum.HOUR_13]: 0,
+            [HoursEnum.HOUR_14]: 0,
+            [HoursEnum.HOUR_15]: 0,
+            [HoursEnum.HOUR_16]: 0,
+            [HoursEnum.HOUR_17]: 0,
+            [HoursEnum.HOUR_18]: 0,
+            [HoursEnum.HOUR_19]: 0,
+            [HoursEnum.HOUR_20]: 0,
+            [HoursEnum.HOUR_21]: 0
+        },
+        [DayEnum.THURSDAY]: {
+            [HoursEnum.HOUR_09]: 0,
+            [HoursEnum.HOUR_10]: 0,
+            [HoursEnum.HOUR_11]: 0,
+            [HoursEnum.HOUR_12]: 0,
+            [HoursEnum.HOUR_13]: 0,
+            [HoursEnum.HOUR_14]: 0,
+            [HoursEnum.HOUR_15]: 0,
+            [HoursEnum.HOUR_16]: 0,
+            [HoursEnum.HOUR_17]: 0,
+            [HoursEnum.HOUR_18]: 0,
+            [HoursEnum.HOUR_19]: 0,
+            [HoursEnum.HOUR_20]: 0,
+            [HoursEnum.HOUR_21]: 0
+        },
+        [DayEnum.FRIDAY]: {
+            [HoursEnum.HOUR_09]: 0,
+            [HoursEnum.HOUR_10]: 0,
+            [HoursEnum.HOUR_11]: 0,
+            [HoursEnum.HOUR_12]: 0,
+            [HoursEnum.HOUR_13]: 0,
+            [HoursEnum.HOUR_14]: 0,
+            [HoursEnum.HOUR_15]: 0,
+            [HoursEnum.HOUR_16]: 0,
+            [HoursEnum.HOUR_17]: 0,
+            [HoursEnum.HOUR_18]: 0,
+            [HoursEnum.HOUR_19]: 0,
+            [HoursEnum.HOUR_20]: 0,
+            [HoursEnum.HOUR_21]: 0
+        },
+        [DayEnum.SATURDAY]: {
+            [HoursEnum.HOUR_09]: 0,
+            [HoursEnum.HOUR_10]: 0,
+            [HoursEnum.HOUR_11]: 0,
+            [HoursEnum.HOUR_12]: 0,
+            [HoursEnum.HOUR_13]: 0,
+            [HoursEnum.HOUR_14]: 0,
+            [HoursEnum.HOUR_15]: 0,
+            [HoursEnum.HOUR_16]: 0,
+            [HoursEnum.HOUR_17]: 0,
+            [HoursEnum.HOUR_18]: 0,
+            [HoursEnum.HOUR_19]: 0,
+            [HoursEnum.HOUR_20]: 0,
+            [HoursEnum.HOUR_21]: 0
+        },
+        [DayEnum.SUNDAY]: {
+            [HoursEnum.HOUR_09]: 0,
+            [HoursEnum.HOUR_10]: 0,
+            [HoursEnum.HOUR_11]: 0,
+            [HoursEnum.HOUR_12]: 0,
+            [HoursEnum.HOUR_13]: 0,
+            [HoursEnum.HOUR_14]: 0,
+            [HoursEnum.HOUR_15]: 0,
+            [HoursEnum.HOUR_16]: 0,
+            [HoursEnum.HOUR_17]: 0,
+            [HoursEnum.HOUR_18]: 0,
+            [HoursEnum.HOUR_19]: 0,
+            [HoursEnum.HOUR_20]: 0,
+            [HoursEnum.HOUR_21]: 0
+        },
     });
 
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
-    const [toastOpen, setToastOpen] = useState<boolean>(false);
-    const [toastMessage, setToastMessage] = useState<string>("");
 
-    const hours = [
-        HoursEnum.HOUR_09,
-        HoursEnum.HOUR_10,
-        HoursEnum.HOUR_11,
-        HoursEnum.HOUR_12,
-        HoursEnum.HOUR_13,
-        HoursEnum.HOUR_14,
-        HoursEnum.HOUR_15,
-        HoursEnum.HOUR_16,
-        HoursEnum.HOUR_17,
-        HoursEnum.HOUR_18,
-        HoursEnum.HOUR_19,
-        HoursEnum.HOUR_20,
-        HoursEnum.HOUR_21,
-    ];
+    const hours = Object.values(HoursEnum);
 
-    const columnSums = Array(hours.length).fill(0);
-    Object.values(data).forEach(dayCounts => {
-        dayCounts.forEach((count, index) => {
-            columnSums[index] += count;
-        });
-    });
+    const dayMap = {
+        [DayEnum.MONDAY]: 'ორშაბათი',
+        [DayEnum.TUESDAY]: 'სამშაბათი',
+        [DayEnum.WEDNESDAY]: 'ოთხშაბათი',
+        [DayEnum.THURSDAY]: 'ხუთშაბათი',
+        [DayEnum.FRIDAY]: 'პარასკევი',
+        [DayEnum.SATURDAY]: 'შაბათი',
+        [DayEnum.SUNDAY]: 'კვირა',
+    };
+
+    const columnSums = hours.map(hour =>
+        Object.values(data).reduce((sum, dayCounts) => sum + (dayCounts[hour] || 0), 0)
+    );
 
     const getCellClass = (count: number, isSums: boolean) => {
         const blueLimit = 0;
-        let redLimit = 10;
-        if (isSums) {
-            redLimit *= 7;
-        }
+        const redLimit = isSums ? 70 : 10; // Adjusted based on whether it's a sum or not
 
         if (count === blueLimit) return 'cell-blue';
         if (count >= redLimit) return 'cell-red';
@@ -62,16 +148,14 @@ const GroupScheduleTable: React.FC = () => {
     const fetchData = async () => {
         try {
             const response = await authClient.request('groups', HttpMethod.GET);
-
             if (response.status === 200) {
+                const fetchedData = response.data.data;
                 debugger;
-                const fetchedData = await response.data.data;
                 setData(fetchedData);
             } else {
                 setAlertMessage('Network response was not ok');
                 setAlertOpen(true);
             }
-
         } catch (error) {
             setAlertMessage(`Error fetching data: ${error}`);
             setAlertOpen(true);
@@ -91,7 +175,7 @@ const GroupScheduleTable: React.FC = () => {
             <table className="schedule-table">
                 <thead>
                 <tr>
-                    <th>დრო</th>
+                    <th>დრო/დღე</th>
                     {hours.map((hour) => (
                         <th key={hour}>{hour}</th>
                     ))}
@@ -99,18 +183,21 @@ const GroupScheduleTable: React.FC = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {Object.keys(data).map((day) => {
+                {Object.keys(dayMap).map((day) => {
                     const dayCounts = data[day as DayEnum];
-                    const daySum = dayCounts.reduce((acc, count) => acc + count, 0);
+                    const daySum = Object.values(dayCounts).reduce((acc, count) => acc + count, 0);
 
                     return (
                         <tr key={day}>
-                            <td>{day}</td>
-                            {dayCounts.map((count, index) => (
-                                <td key={index} className={getCellClass(count, false)}>
-                                    {count}
-                                </td>
-                            ))}
+                            <td>{dayMap[day as DayEnum]}</td>
+                            {hours.map((hour) => {
+                                const count = dayCounts[hour] || 0;
+                                return (
+                                    <td key={hour} className={getCellClass(count, false)}>
+                                        {count}
+                                    </td>
+                                );
+                            })}
                             <td>{daySum}</td>
                         </tr>
                     );
@@ -143,17 +230,11 @@ const GroupScheduleTable: React.FC = () => {
             >
                 <Refresh/>
             </Button>
-            <Toast
-                open={toastOpen}
-                message={toastMessage}
-                onClose={() => setToastOpen(false)}
-                options={{autoHideDuration: 3000}}
-            />
             <AlertDialog
-                open={alertOpen}
                 title="Error"
-                message={alertMessage}
+                open={alertOpen}
                 onClose={() => setAlertOpen(false)}
+                message={alertMessage}
             />
         </div>
     );
