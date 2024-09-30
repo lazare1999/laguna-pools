@@ -9,6 +9,7 @@ import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
 import com.lagunapools.lagunapools.utils.LazoUtils;
 import io.micrometer.common.util.StringUtils;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +35,14 @@ public class ClientsServiceImpl implements ClientsService {
 
     private final ClientsRepository clientsRepository;
     private final ClientGroupsRepository clientGroupsRepository;
+    private final AttendancesRepository attendancesRepository;
     private final GroupRepository groupRepository;
     private final BranchRepository branchRepository;
     private final UserRepository userRepository;
 
     private final MyUserDetailsService userDetailsService;
+
+    private final EntityManager entityManager;
 
     @Override
     public AllClientsResponseDTO getAllClients(AllClientsRequestDTO request) {
@@ -197,14 +201,30 @@ public class ClientsServiceImpl implements ClientsService {
     @Override
     @Transactional
     public ResponseEntity<?> deleteClient(Long clientId) {
-        if (clientId == null)
-            return badRequestResponse("Client id is null");
+        if (userDetailsService.userIsAdmin()) {
+            return okResponse("Admin not allowed to Delete client");
+        }
 
-        clientGroupsRepository.deleteByClientId(clientId);
+        if (clientId == null) {
+            return badRequestResponse("Client id is null");
+        }
+
+        if (!clientsRepository.existsById(clientId)) {
+            return badRequestResponse("Client not found with id: " + clientId);
+        }
+
+        clientGroupsRepository.deleteAllByClientId(clientId);
+        entityManager.flush();
+        entityManager.clear();
+        attendancesRepository.deleteAllByClientId(clientId);
+        entityManager.flush();
+        entityManager.clear();
+
         clientsRepository.deleteById(clientId);
 
         return okResponse("Client deleted successfully");
     }
+
 
     @Override
     @Cacheable(value = "groupsList")
