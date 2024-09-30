@@ -64,8 +64,8 @@ export const addAttendance = async (clientId: number, day: string, hour: HoursEn
 
 export const getClients = async (pageKey: string, pageSize: string, filters: ClientFilters) => {
     const params: Record<string, any> = {
-        pageKey: 0,
-        pageSize: 9999999,
+        pageKey: pageKey,
+        pageSize: pageSize,
         ...filters,
         branches: filters.branches.join(','),
     };
