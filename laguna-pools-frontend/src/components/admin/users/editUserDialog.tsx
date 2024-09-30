@@ -159,16 +159,22 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
                     onChange={handleRepeatPasswordChange}
                     helperText={""}
                 />
-                <FormControl fullWidth margin="normal">
-                    <InputLabel shrink id="branch-label">Select Branch</InputLabel>
+                <FormControl
+                    id={`edit-user-branch-id`}
+                    fullWidth
+                    variant="outlined"
+                    margin="normal"
+                >
+                    <InputLabel id={`branch-select-label`}>Select Branch</InputLabel>
                     <Select
-                        labelId="branch-label"
+                        labelId={`branch-select-label`}
                         value={branchName}
                         onChange={(e) => setBranchName(e.target.value)}
+                        label="Select Branch"
                         autoFocus
                     >
                         {branches.map(b => (
-                            <MenuItem id={`edit-user-branch-id-${b.id}`} key={b.id} value={b.branchName}>
+                            <MenuItem id={`edit-user-branch-menu-item-id-${b.id}`} key={b.id} value={b.branchName}>
                                 {b.branchName}
                             </MenuItem>
                         ))}

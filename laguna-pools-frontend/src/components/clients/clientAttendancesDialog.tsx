@@ -174,21 +174,29 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
                                                 />
                                             </TableCell>
                                             <TableCell>
-                                                <FormControl fullWidth>
+                                                <FormControl
+                                                    id={`select-hour-client-${client.id}`}
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    margin="normal"
+                                                >
                                                     <InputLabel id={`hour-select-label-${client.id}`}>Hour</InputLabel>
                                                     <Select
                                                         required
                                                         labelId={`hour-select-label-${client.id}`}
-                                                        value={newAttendance.time}
+                                                        value={newAttendance.time || ""}
                                                         onChange={(e) => handleHourChange(client.id, e.target.value as HoursEnum)}
+                                                        label="Hour"
                                                     >
                                                         {Object.values(HoursEnum).map((hour) => (
-                                                            <MenuItem key={hour} value={hour}>
+                                                            <MenuItem id={`menu-item-hour-${hour}`} key={hour}
+                                                                      value={hour}>
                                                                 {hour}
                                                             </MenuItem>
                                                         ))}
                                                     </Select>
                                                 </FormControl>
+
                                             </TableCell>
                                             <TableCell>
                                                 <FormControlLabel
