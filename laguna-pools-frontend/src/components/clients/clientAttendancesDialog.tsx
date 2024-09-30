@@ -16,7 +16,7 @@ import {
     TableRow,
     TextField
 } from '@mui/material';
-import {HoursEnum} from "../../utils/HoursEnum";
+import {HoursEnum} from "../../utils/enums/HoursEnum";
 import {Client} from "../models/clientsModel";
 import {Attendance} from "../models/attnedance";
 import {addAttendance, getAttendancesListById} from "./utils";
@@ -87,7 +87,7 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
     };
 
     const handleAddNewRow = () => {
-        setNewAttendance({day: '', time: HoursEnum.HOUR_00, attended: false});
+        setNewAttendance({day: '', time: HoursEnum.HOUR_09, attended: false});
     };
 
     const handleSaveAttendance = () => {

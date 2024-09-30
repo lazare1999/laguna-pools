@@ -1,7 +1,7 @@
 import axios from "axios";
 import AuthenticateUtils from "./authenticateUtils";
 import {API_BASE_URL} from "../config";
-import {HttpMethod} from "../utils/httpMethodEnum";
+import {HttpMethod} from "../utils/enums/httpMethodEnum";
 
 const createAuthClient = async () => {
     try {

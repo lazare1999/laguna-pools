@@ -25,7 +25,7 @@ import {
 import {Refresh} from "@mui/icons-material";
 import ActiveUserRow from "./activeUserRow";
 import {User} from "../../models/usersModel";
-import {HttpMethod} from "../../../utils/httpMethodEnum";
+import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
 import authClient from "../../../api/api";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";

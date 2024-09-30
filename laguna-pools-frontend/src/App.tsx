@@ -8,7 +8,7 @@ import AuthenticateUtils from "./api/authenticateUtils";
 import PasswordDialog from "./components/reLoginDialog";
 import LoadingPageProgress from "./components/common/loadingPage";
 import authClient from "./api/api";
-import {HttpMethod} from "./utils/httpMethodEnum";
+import {HttpMethod} from "./utils/enums/httpMethodEnum";
 
 const App = () => {
     const [select, setSelect] = useState<Component>(Component.LOGIN);

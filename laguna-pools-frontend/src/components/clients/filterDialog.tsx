@@ -24,7 +24,7 @@ import {Cancel, CheckCircle} from "@mui/icons-material";
 import {DialogFilters} from "../models/clientFilterModels";
 import {GroupModel} from "../models/GroupModel";
 import authClient from "../../api/api";
-import {HttpMethod} from "../../utils/httpMethodEnum";
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
 interface FilterDialogProps {
     open: boolean;

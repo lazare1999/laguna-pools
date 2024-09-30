@@ -1,6 +1,6 @@
-import {HoursEnum} from "../../utils/HoursEnum";
+import {HoursEnum} from "../../utils/enums/HoursEnum";
 import {Attendance} from "../models/attnedance";
-import {HttpMethod} from "../../utils/httpMethodEnum";
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
 import authClient from "../../api/api";
 import {ClientFilters} from "../models/clientFilterModels";

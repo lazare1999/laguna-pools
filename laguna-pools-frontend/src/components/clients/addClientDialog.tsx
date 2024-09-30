@@ -18,8 +18,8 @@ import {
     Typography,
 } from "@mui/material";
 import {Client} from "../models/clientsModel";
-import {DayEnum} from "../../utils/DayEnum";
-import {HoursEnum} from "../../utils/HoursEnum";
+import {DayEnum} from "../../utils/enums/DayEnum";
+import {HoursEnum} from "../../utils/enums/HoursEnum";
 import {GroupModel} from "../models/GroupModel";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
@@ -27,7 +27,7 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import {Box} from "@mui/system";
 import Divider from '@mui/material/Divider';
 import authClient from "../../api/api";
-import {HttpMethod} from "../../utils/httpMethodEnum";
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
 interface AddClientDialogProps {
     open: boolean;
@@ -48,7 +48,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
     const [dayHourPairs, setDayHourPairs] = useState<GroupModel[]>([{
         id: 0,
         day: DayEnum.SUNDAY,
-        hour: HoursEnum.HOUR_00
+        hour: HoursEnum.HOUR_09
     }]);
 
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -109,7 +109,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
 
             onAddClient(newClient);
             setNewClient({} as Client);
-            setDayHourPairs([{id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_00}]);
+            setDayHourPairs([{id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_09}]);
             onClose();
 
         } catch (err) {
@@ -125,7 +125,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
     };
 
     const handleAddPair = () => {
-        setDayHourPairs([...dayHourPairs, {id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_00}]);
+        setDayHourPairs([...dayHourPairs, {id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_09}]);
     };
 
     const handleRemovePair = (index: number) => {

@@ -15,7 +15,7 @@ import AddBusinessOutlinedIcon from '@mui/icons-material/AddBusinessOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import {Refresh} from "@mui/icons-material";
 import authClient from '../../../api/api';
-import {HttpMethod} from '../../../utils/httpMethodEnum';
+import {HttpMethod} from '../../../utils/enums/httpMethodEnum';
 import {BranchModel} from "../../models/branchModel";
 import LoadingPage from "../../common/loadingPage";
 

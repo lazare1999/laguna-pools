@@ -17,8 +17,8 @@ import {Delete, Edit, Save} from "@mui/icons-material";
 import {Client} from "../models/clientsModel";
 import UnpublishedOutlinedIcon from '@mui/icons-material/UnpublishedOutlined';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
-import {DayEnum} from "../../utils/DayEnum";
-import {HoursEnum} from "../../utils/HoursEnum";
+import {DayEnum} from "../../utils/enums/DayEnum";
+import {HoursEnum} from "../../utils/enums/HoursEnum";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
 
@@ -26,7 +26,7 @@ import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import ClientAttendancesDialog from "./clientAttendancesDialog";
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import authClient from "../../api/api";
-import {HttpMethod} from "../../utils/httpMethodEnum";
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
 interface ClientRowProps {
     client: Client;
@@ -98,10 +98,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
     };
 
     const handleAddPair = () => {
-        setDayHourPairs([...dayHourPairs, {id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_00}]);
+        setDayHourPairs([...dayHourPairs, {id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_09}]);
         setEditableClient({
             ...editableClient,
-            groups: [...dayHourPairs, {id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_00}]
+            groups: [...dayHourPairs, {id: 0, day: DayEnum.SUNDAY, hour: HoursEnum.HOUR_09}]
         });
     };
 

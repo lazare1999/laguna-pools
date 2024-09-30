@@ -1,5 +1,7 @@
 package com.lagunapools.lagunapools.app.clients.service;
 
-public interface GroupsService {
+import org.springframework.http.ResponseEntity;
 
+public interface GroupsService {
+    ResponseEntity<?> getGroupsTable();
 }

@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import authClient from '../../api/api'
 import {AlertDialog, Toast} from "../../utils/alertsUtils";
-import {HttpMethod} from "../../utils/httpMethodEnum";
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import PasswordField from "../common/passwordTextBox";
 import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../../utils/constants";
 import {TargetView} from "../models/targetViewModel";

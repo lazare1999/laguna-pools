@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface ClientsRepository extends JpaRepository<ClientsEntity, Long>, JpaSpecificationExecutor<ClientsEntity> {
 
@@ -18,4 +20,12 @@ public interface ClientsRepository extends JpaRepository<ClientsEntity, Long>, J
 
     @Query("SELECT COUNT(c) FROM ClientsEntity c WHERE c.branchId = :branchId")
     Integer countByBranchId(@Param("branchId") Long branchId);
+
+    @Query("SELECT g.day, g.hour, COUNT(c.id) " +
+            "FROM GroupEntity g JOIN g.clients c " +
+            "WHERE c.branchId = :branchId " +
+            "GROUP BY g.day, g.hour " +
+            "ORDER BY g.day, g.hour")
+    List<Object[]> countClientsByHourAndDay(Long branchId);
+
 }

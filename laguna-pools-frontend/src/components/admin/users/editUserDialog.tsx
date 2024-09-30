@@ -20,7 +20,7 @@ import {AlertDialog} from "../../../utils/alertsUtils";
 import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../../../utils/constants";
 import PasswordField from "../../common/passwordTextBox";
 import authClient from "../../../api/api";
-import {HttpMethod} from "../../../utils/httpMethodEnum";
+import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
 import {TargetView} from "../../models/targetViewModel";
 import {BranchModel} from "../../models/branchModel";
 

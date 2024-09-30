@@ -1,5 +1,5 @@
 import authClient from "../api/api";
-import {HttpMethod} from "./httpMethodEnum";
+import {HttpMethod} from "./enums/httpMethodEnum";
 
 export const fetchRolesList = async () => {
     try {
