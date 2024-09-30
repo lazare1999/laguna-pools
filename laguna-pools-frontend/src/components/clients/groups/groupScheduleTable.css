@@ -1,0 +1,71 @@
+.table-container {
+    margin: 20px auto;
+    max-width: 90%;
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd; /* Added border for the table */
+}
+
+.schedule-table th,
+.schedule-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd; /* Added border for table cells */
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.schedule-table th {
+    background-color: #007BFF;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.schedule-table tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.cell-blue {
+    background-color: #007BFF;
+    color: white;
+}
+
+.cell-blue:hover {
+    background-color: #0056b3;
+    color: #e0e0e0;
+}
+
+.cell-yellow {
+    background-color: #FFC107;
+    color: black;
+}
+
+.cell-yellow:hover {
+    background-color: #e0a800;
+    color: #333333;
+}
+
+.cell-red {
+    background-color: #DC3545;
+    color: white;
+}
+
+.cell-red:hover {
+    background-color: #c82333;
+    color: #f8f9fa;
+}
+
+
+tfoot {
+    font-weight: bold;
+}

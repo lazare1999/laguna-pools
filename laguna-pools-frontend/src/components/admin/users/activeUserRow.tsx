@@ -9,7 +9,7 @@ import PersonRemoveAlt1OutlinedIcon from '@mui/icons-material/PersonRemoveAlt1Ou
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import {format} from "date-fns";
 import authClient from "../../../api/api";
-import {HttpMethod} from "../../../utils/httpMethodEnum";
+import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
 import {TargetView} from "../../models/targetViewModel";
 import {BranchModel} from "../../models/branchModel";
 
