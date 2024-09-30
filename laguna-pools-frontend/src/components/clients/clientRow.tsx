@@ -125,18 +125,18 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
 
     const getExpirationFieldStyle = () => {
         if (!editableClient.expDate) {
-            return {backgroundColor: 'red'}; // Empty field
+            return {backgroundColor: 'rgba(234,118,118,0.8)'};
         } else if (isPastDate(editableClient.expDate)) {
-            return {backgroundColor: 'yellow'}; // Past date
+            return {backgroundColor: 'rgba(244,219,105,0.93)'};
         }
         return {};
     };
 
     const getDoctorCheckFieldStyle = () => {
         if (!editableClient.doctorCheckTill) {
-            return {backgroundColor: 'red'}; // Empty field
+            return {backgroundColor: 'rgba(234,118,118,0.8)'};
         } else if (isPastDate(editableClient.doctorCheckTill)) {
-            return {backgroundColor: 'yellow'}; // Past date
+            return {backgroundColor: 'rgba(244,219,105,0.93)'};
         }
         return {};
     };
@@ -144,15 +144,15 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
     const getRowStyle = (condition: string) => {
         const styles = {
             expired: {
-                background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.7), rgba(255, 100, 100, 0.7))',
+                background: 'rgba(234,118,118,0.8)',
                 color: 'white',
             },
             warning: {
-                background: 'linear-gradient(135deg, rgba(255, 255, 0, 0.7), rgba(255, 255, 150, 0.7))',
+                background: 'rgba(244,219,105,0.93)',
                 color: 'black',
             },
             valid: {
-                background: 'linear-gradient(135deg, rgba(100, 255, 100, 0.7), rgba(150, 255, 150, 0.7))',
+                background: 'rgba(124,244,105,0.93)',
                 color: 'black',
             },
         };
