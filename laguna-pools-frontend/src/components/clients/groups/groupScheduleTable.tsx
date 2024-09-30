@@ -150,7 +150,6 @@ const GroupScheduleTable: React.FC = () => {
             const response = await authClient.request('groups', HttpMethod.GET);
             if (response.status === 200) {
                 const fetchedData = response.data.data;
-                debugger;
                 setData(fetchedData);
             } else {
                 setAlertMessage('Network response was not ok');
