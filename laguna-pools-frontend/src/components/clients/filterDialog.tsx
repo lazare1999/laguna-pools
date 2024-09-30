@@ -156,7 +156,14 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                                 value={filters.selectedGroups}
                                 onChange={handleGroupChange}
                                 input={<OutlinedInput id={"groups-select-label-input"} label="Groups"/>}
-                                renderValue={(selected) => selected.join(', ')}
+                                renderValue={(selected) =>
+                                    selected
+                                        .map((id) => {
+                                            const group = groups.find((g) => String(g.id) === id);
+                                            return group ? `${group.day} - ${group.hour}` : '';
+                                        })
+                                        .join(', ')
+                                }
                                 MenuProps={{
                                     PaperProps: {
                                         style: {

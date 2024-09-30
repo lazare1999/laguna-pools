@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * Created by Lazo on 9/25/24
  */
@@ -18,7 +20,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(schema = "clients", name = "client_groups")
-public class ClientGroupsEntity {
+public class ClientGroupsEntity implements Serializable {
 
     @Id
     private Long id;

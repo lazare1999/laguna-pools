@@ -105,11 +105,16 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
         });
     };
 
-    const handleDeleteClick = () => {
-        const confirmed = window.confirm(`Are you sure you want to delete ${client.firstName} ${client.lastName}?`);
-        if (confirmed) {
-            onDelete(client);
-        }
+    const handleDeleteClick = async () => {
+        if (!window.confirm(`Are you sure you want to delete ${client.firstName} ${client.lastName}?`))
+            return;
+
+        const endpoint = `/clients?clientId=${client.id}`;
+        await authClient.request(endpoint, HttpMethod.DELETE).then(r => {
+            if (r.status === 200) {
+                onDelete(client);
+            }
+        });
     };
 
     const isPastDate = (dateString: string | undefined) => {
@@ -365,7 +370,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                             ))}
                                         </Select>
                                     </FormControl>
-                                    
+
                                     <Button onClick={() => handleRemoveGroup(index)} color="error">
                                         <ClearOutlinedIcon/>
                                     </Button>
