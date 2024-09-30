@@ -162,12 +162,17 @@ const RegisterForm: React.FC = () => {
                             helperText={""}
                         />
 
-                        <FormControl fullWidth margin="normal" required>
-                            <InputLabel shrink id="branch-label">Branch</InputLabel>
+                        <FormControl
+                            id={`add-user-branch-id`}
+                            fullWidth
+                            variant="outlined"
+                        >
+                            <InputLabel id={`branch-select-label`}>Branch</InputLabel>
                             <Select
-                                labelId="branch-label"
+                                labelId={`branch-select-label`}
                                 value={branchName}
                                 onChange={(e) => setBranchName(e.target.value)}
+                                label="Branch"
                                 autoFocus
                             >
                                 {branches.map(b => (
