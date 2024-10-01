@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AuthenticationRequest implements Serializable {
 
-    private String username;
-    private String password;
+    private String encryptedUsername;
+    private String encryptedPassword;
 
 }

@@ -9,6 +9,7 @@ import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.repository.UsersRepository;
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
 import com.lagunapools.lagunapools.services.RedisService;
+import com.lagunapools.lagunapools.utils.DecryptUtil;
 import com.lagunapools.lagunapools.utils.JwtUtils;
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
@@ -84,12 +85,15 @@ public class MainServiceImpl implements MainService {
     @Override
     @Transactional
     public ResponseEntity<?> createAuthenticationToken(AuthenticationRequest autRequest) throws Exception {
-        if (StringUtils.isEmpty(autRequest.getUsername()) || StringUtils.isEmpty(autRequest.getPassword()))
+        String username = DecryptUtil.decrypt(autRequest.getEncryptedUsername());
+        String password = DecryptUtil.decrypt(autRequest.getEncryptedPassword());
+
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password))
             return badRequestResponse("1");
 
-        var user = userRepository.findByUsername(autRequest.getUsername());
+        var user = userRepository.findByUsername(username);
         if (user == null)
-            return badRequestResponse("No User found with username " + autRequest.getUsername());
+            return badRequestResponse("No User found with username " + username);
 
         var u = usersRepository.findByUserId(user.getUserId());
 
@@ -98,7 +102,7 @@ public class MainServiceImpl implements MainService {
         }
 
         Integer maxLoginAttempts = 3;
-        Authentication newUser = userDetailsService.authenticateJwt(maxLoginAttempts, u, verifyPassword(autRequest.getPassword(), user.getPassword()));
+        Authentication newUser = userDetailsService.authenticateJwt(maxLoginAttempts, u, verifyPassword(password, user.getPassword()));
         if (newUser == null)
             return forbiddenResponse("Wrong password.");
 
@@ -119,7 +123,7 @@ public class MainServiceImpl implements MainService {
                     " password", e);
         }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(autRequest.getUsername());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         final AuthenticationResponse jwt = jwtTokenUtils.generateToken(userDetails);
 

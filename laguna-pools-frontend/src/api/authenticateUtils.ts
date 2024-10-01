@@ -2,6 +2,7 @@ import axios from "axios";
 import {AuthenticationResponse} from "./authenticateResponse";
 import {REFRESH_TOKEN_EXP_NAME, REFRESH_TOKEN_NAME} from "../utils/constants";
 import {API_BASE_URL} from "../config";
+import {encrypt} from "../utils/encryption";
 
 const authClientForUtils = axios.create({
     baseURL: API_BASE_URL,
@@ -91,13 +92,16 @@ class AuthenticateUtils {
 
     static authenticate = async (
         username: string,
-        password: string
+        password: string,
     ) => {
-        if (!username || !password) return "Username and password is required";
+        const encryptedUsername = encrypt(username);
+        const encryptedPassword = encrypt(password);
+
+        if (!encryptedUsername || !encryptedPassword) return "Encrypted data, IV, and key are required";
 
         try {
             await authClientForUtils.post(
-                `authenticate?username=${username}&password=${password}`
+                `authenticate?encryptedUsername=${encryptedUsername}&encryptedPassword=${encryptedPassword}`
             ).then(res => {
                 localStorage.setItem("laguna_username", username);
                 if (res.status === 200) {
@@ -105,7 +109,6 @@ class AuthenticateUtils {
                 }
             });
         } catch (e: any) {
-
             if (e.response.status === 423) {
                 return "User is locked. \n Contact administrator";
             } else if (e.response.status === 403) {
