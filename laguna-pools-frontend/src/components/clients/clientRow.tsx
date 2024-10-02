@@ -483,12 +483,17 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                 </Grid>
                             </Grid>
                         </TableCell>
-                        <TableCell>
-                            {client.groups.map((group, index) => (
-                                <span key={index}>
-                                <strong>{`${group.day}:`}</strong> {`${group.hour}`} {index < client.groups.length - 1 && '; '}
-                            </span>
-                            ))}
+                        <TableCell
+                            style={{backgroundColor: client.groups.length === 0 ? 'rgba(234,118,118,0.8)' : 'transparent'}}>
+                            {client.groups.length === 0 ? (
+                                <span>No groups available</span>
+                            ) : (
+                                client.groups.map((group, index) => (
+                                    <span key={index}>
+                                        <strong>{`${group.day}:`}</strong> {`${group.hour}`} {index < client.groups.length - 1 && '; '}
+                                    </span>
+                                ))
+                            )}
                         </TableCell>
                         <TableCell>
                             {new Intl.NumberFormat('ka-GE', {

@@ -56,6 +56,17 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                                                        setFilters,
                                                    }) => {
     const [groups, setGroups] = useState<GroupModel[]>([]);
+    const [searchInput, setSearchInput] = useState('');
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchInput(e.target.value.toLowerCase());
+    };
+
+    const filteredGroups = groups.filter(
+        (g) =>
+            g.day.toLowerCase().includes(searchInput) ||
+            g.hour.toLowerCase().includes(searchInput)
+    );
 
     useEffect(() => {
         const fetchGroups = async () => {
@@ -155,7 +166,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                                 multiple
                                 value={filters.selectedGroups}
                                 onChange={handleGroupChange}
-                                input={<OutlinedInput id={"groups-select-label-input"} label="Groups"/>}
+                                input={<OutlinedInput id="groups-select-label-input" label="Groups"/>}
                                 renderValue={(selected) =>
                                     selected
                                         .map((id) => {
@@ -173,12 +184,31 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                                     },
                                 }}
                             >
-                                {groups.map((g) => (
-                                    <MenuItem key={g.id} value={String(g.id)}>
-                                        <Checkbox checked={filters.selectedGroups.includes(String(g.id))}/>
-                                        <ListItemText primary={`${g.day} - ${g.hour}`}/>
-                                    </MenuItem>
-                                ))}
+                                <MenuItem>
+                                    <TextField
+                                        fullWidth
+                                        placeholder="Search groups"
+                                        value={searchInput}
+                                        onChange={handleSearchChange}
+                                    />
+                                </MenuItem>
+
+                                {filteredGroups.length > 0 ? (
+                                    filteredGroups.map((g) => (
+                                        <MenuItem
+                                            key={g.id}
+                                            value={String(g.id)}
+                                            disableRipple
+                                        >
+                                            <Checkbox
+                                                checked={filters.selectedGroups.includes(String(g.id))}/>
+                                            <ListItemText
+                                                primary={`${g.day} - ${g.hour}`}/>
+                                        </MenuItem>
+                                    ))
+                                ) : (
+                                    <MenuItem disabled>No groups found</MenuItem>
+                                )}
                             </Select>
                         </FormControl>
                     </Grid>
