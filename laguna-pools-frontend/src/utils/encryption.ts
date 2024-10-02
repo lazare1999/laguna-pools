@@ -9,5 +9,9 @@ export function encrypt(text: string): string {
         mode: CryptoJS.mode.CBC,
         padding: CryptoJS.pad.Pkcs7,
     });
-    return encrypted.toString();
+
+    return encrypted.toString()
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
 }

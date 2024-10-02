@@ -19,7 +19,7 @@ public class DecryptUtil {
     public static String decrypt(String encryptedText) {
         try {
 
-            byte[] encryptedBytes = Base64.getDecoder().decode(encryptedText);
+            byte[] encryptedBytes = Base64.getUrlDecoder().decode(encryptedText);
 
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             SecretKeySpec secretKeySpec = new SecretKeySpec(KEY.getBytes(StandardCharsets.UTF_8), "AES");
