@@ -1,4 +1,4 @@
-package com.lagunapools.lagunapools.app.clients.models;
+package com.lagunapools.lagunapools.app.clients.models.groups;
 
 
 import com.lagunapools.lagunapools.app.clients.repository.GroupEntity;

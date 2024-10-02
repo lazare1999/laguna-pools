@@ -1,110 +1,25 @@
 import {DayEnum} from "../../../utils/enums/DayEnum";
 import {HoursEnum} from "../../../utils/enums/HoursEnum";
 
-export const INITIAL_GRID = {
-    [DayEnum.MONDAY]: {
-        [HoursEnum.HOUR_09]: 0,
-        [HoursEnum.HOUR_10]: 0,
-        [HoursEnum.HOUR_11]: 0,
-        [HoursEnum.HOUR_12]: 0,
-        [HoursEnum.HOUR_13]: 0,
-        [HoursEnum.HOUR_14]: 0,
-        [HoursEnum.HOUR_15]: 0,
-        [HoursEnum.HOUR_16]: 0,
-        [HoursEnum.HOUR_17]: 0,
-        [HoursEnum.HOUR_18]: 0,
-        [HoursEnum.HOUR_19]: 0,
-        [HoursEnum.HOUR_20]: 0,
-        [HoursEnum.HOUR_21]: 0
-    },
-    [DayEnum.TUESDAY]: {
-        [HoursEnum.HOUR_09]: 0,
-        [HoursEnum.HOUR_10]: 0,
-        [HoursEnum.HOUR_11]: 0,
-        [HoursEnum.HOUR_12]: 0,
-        [HoursEnum.HOUR_13]: 0,
-        [HoursEnum.HOUR_14]: 0,
-        [HoursEnum.HOUR_15]: 0,
-        [HoursEnum.HOUR_16]: 0,
-        [HoursEnum.HOUR_17]: 0,
-        [HoursEnum.HOUR_18]: 0,
-        [HoursEnum.HOUR_19]: 0,
-        [HoursEnum.HOUR_20]: 0,
-        [HoursEnum.HOUR_21]: 0
-    },
-    [DayEnum.WEDNESDAY]: {
-        [HoursEnum.HOUR_09]: 0,
-        [HoursEnum.HOUR_10]: 0,
-        [HoursEnum.HOUR_11]: 0,
-        [HoursEnum.HOUR_12]: 0,
-        [HoursEnum.HOUR_13]: 0,
-        [HoursEnum.HOUR_14]: 0,
-        [HoursEnum.HOUR_15]: 0,
-        [HoursEnum.HOUR_16]: 0,
-        [HoursEnum.HOUR_17]: 0,
-        [HoursEnum.HOUR_18]: 0,
-        [HoursEnum.HOUR_19]: 0,
-        [HoursEnum.HOUR_20]: 0,
-        [HoursEnum.HOUR_21]: 0
-    },
-    [DayEnum.THURSDAY]: {
-        [HoursEnum.HOUR_09]: 0,
-        [HoursEnum.HOUR_10]: 0,
-        [HoursEnum.HOUR_11]: 0,
-        [HoursEnum.HOUR_12]: 0,
-        [HoursEnum.HOUR_13]: 0,
-        [HoursEnum.HOUR_14]: 0,
-        [HoursEnum.HOUR_15]: 0,
-        [HoursEnum.HOUR_16]: 0,
-        [HoursEnum.HOUR_17]: 0,
-        [HoursEnum.HOUR_18]: 0,
-        [HoursEnum.HOUR_19]: 0,
-        [HoursEnum.HOUR_20]: 0,
-        [HoursEnum.HOUR_21]: 0
-    },
-    [DayEnum.FRIDAY]: {
-        [HoursEnum.HOUR_09]: 0,
-        [HoursEnum.HOUR_10]: 0,
-        [HoursEnum.HOUR_11]: 0,
-        [HoursEnum.HOUR_12]: 0,
-        [HoursEnum.HOUR_13]: 0,
-        [HoursEnum.HOUR_14]: 0,
-        [HoursEnum.HOUR_15]: 0,
-        [HoursEnum.HOUR_16]: 0,
-        [HoursEnum.HOUR_17]: 0,
-        [HoursEnum.HOUR_18]: 0,
-        [HoursEnum.HOUR_19]: 0,
-        [HoursEnum.HOUR_20]: 0,
-        [HoursEnum.HOUR_21]: 0
-    },
-    [DayEnum.SATURDAY]: {
-        [HoursEnum.HOUR_09]: 0,
-        [HoursEnum.HOUR_10]: 0,
-        [HoursEnum.HOUR_11]: 0,
-        [HoursEnum.HOUR_12]: 0,
-        [HoursEnum.HOUR_13]: 0,
-        [HoursEnum.HOUR_14]: 0,
-        [HoursEnum.HOUR_15]: 0,
-        [HoursEnum.HOUR_16]: 0,
-        [HoursEnum.HOUR_17]: 0,
-        [HoursEnum.HOUR_18]: 0,
-        [HoursEnum.HOUR_19]: 0,
-        [HoursEnum.HOUR_20]: 0,
-        [HoursEnum.HOUR_21]: 0
-    },
-    [DayEnum.SUNDAY]: {
-        [HoursEnum.HOUR_09]: 0,
-        [HoursEnum.HOUR_10]: 0,
-        [HoursEnum.HOUR_11]: 0,
-        [HoursEnum.HOUR_12]: 0,
-        [HoursEnum.HOUR_13]: 0,
-        [HoursEnum.HOUR_14]: 0,
-        [HoursEnum.HOUR_15]: 0,
-        [HoursEnum.HOUR_16]: 0,
-        [HoursEnum.HOUR_17]: 0,
-        [HoursEnum.HOUR_18]: 0,
-        [HoursEnum.HOUR_19]: 0,
-        [HoursEnum.HOUR_20]: 0,
-        [HoursEnum.HOUR_21]: 0
-    },
+export interface GroupInfo {
+    groupId: number | null;
+    count: number;
 }
+
+export interface GroupsCustomObject {
+    map: Record<string, GroupInfo>;
+}
+
+const createHourlyMap = (): Record<string, GroupInfo> => {
+    return Object.fromEntries(Object.values(HoursEnum).map(hour => [hour, {groupId: null, count: 0}]));
+};
+
+export const INITIAL_GRID: { [key in DayEnum]: GroupsCustomObject } = {
+    [DayEnum.MONDAY]: {map: createHourlyMap()},
+    [DayEnum.TUESDAY]: {map: createHourlyMap()},
+    [DayEnum.WEDNESDAY]: {map: createHourlyMap()},
+    [DayEnum.THURSDAY]: {map: createHourlyMap()},
+    [DayEnum.FRIDAY]: {map: createHourlyMap()},
+    [DayEnum.SATURDAY]: {map: createHourlyMap()},
+    [DayEnum.SUNDAY]: {map: createHourlyMap()},
+};

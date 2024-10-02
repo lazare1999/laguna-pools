@@ -8,24 +8,20 @@ import {Refresh} from "@mui/icons-material";
 import authClient from "../../../api/api";
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
 import ClientModal from "./clientsDialog";
-import {INITIAL_GRID} from "./initialGrid";
+import {GroupsCustomObject, INITIAL_GRID} from "./initialGrid";
 import {fetchClientsFor} from "./utils";
 import {Client} from "../../models/clientsModel";
 
 const GroupScheduleTable: React.FC = () => {
-    const [data, setData] = useState<{ [key in DayEnum]: { [key in HoursEnum]: number } }>(INITIAL_GRID);
-
+    const [data, setData] = useState<{ [key in DayEnum]: GroupsCustomObject }>(INITIAL_GRID);
     const [isModalOpen, setModalOpen] = useState(false);
     const [branches, setBranches] = useState<string[]>(["Test"]);
-    const [clients, setClients] = useState([
-        {id: 1, firstName: 'John', lastName: 'Doe'},
-        {id: 2, firstName: 'Jane', lastName: 'Smith'},
-        {id: 3, firstName: 'Michael', lastName: 'Johnson'},
-    ])
+    const [clients, setClients] = useState<Client[]>([]);
 
-    const handleOpenModal = (day: DayEnum, hour: HoursEnum) => {
-        console.log(day.toString());
-        fetchClientsFor(day, hour, branches).then(res => {
+    const handleOpenModal = (id: number | null) => {
+        if (id === null) return;
+
+        fetchClientsFor(id, branches).then(res => {
             const newClients = res.data.content.map((c: Client) => ({
                 id: c.id,
                 firstName: c.firstName,
@@ -35,10 +31,9 @@ const GroupScheduleTable: React.FC = () => {
             setClients(newClients);
         });
         setModalOpen(true);
-    }
+    };
 
     const handleCloseModal = () => setModalOpen(false);
-
 
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
@@ -56,7 +51,12 @@ const GroupScheduleTable: React.FC = () => {
     };
 
     const columnSums = hours.map(hour =>
-        Object.values(data).reduce((sum, dayCounts) => sum + (dayCounts[hour] || 0), 0)
+        Object.values(data).reduce((sum, dayCounts) => {
+            if (dayCounts && dayCounts.map) {
+                return sum + (dayCounts.map[hour] ? dayCounts.map[hour].count : 0);
+            }
+            return sum;
+        }, 0)
     );
 
     const getCellClass = (count: number, isSums: boolean) => {
@@ -85,11 +85,11 @@ const GroupScheduleTable: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchData().then(r => r);
+        fetchData();
     }, []);
 
     const handleRefresh = () => {
-        fetchData().then(r => r);
+        fetchData();
     };
 
     return (
@@ -108,16 +108,22 @@ const GroupScheduleTable: React.FC = () => {
                     <tbody>
                     {Object.keys(dayMap).map((day) => {
                         const dayCounts = data[day as DayEnum];
-                        const daySum = Object.values(dayCounts).reduce((acc, count) => acc + count, 0);
+                        const dayMapValues = dayCounts?.map || {};
 
+                        const daySum = Object.values(dayMapValues).reduce((acc, groupInfo) => acc + (groupInfo.count || 0), 0);
                         return (
                             <tr key={day}>
                                 <td>{dayMap[day as DayEnum]}</td>
                                 {hours.map((hour) => {
-                                    const count = dayCounts[hour] || 0;
+                                    const groupInfo = dayMapValues[hour] || {groupId: null, count: 0};
+                                    const count = groupInfo.count || 0;
+
                                     return (
-                                        <td onClick={() => handleOpenModal(day as DayEnum, hour)} key={hour}
-                                            className={getCellClass(count, false)}>
+                                        <td
+                                            onClick={() => handleOpenModal(groupInfo.groupId)}
+                                            key={hour}
+                                            className={getCellClass(count, false)}
+                                        >
                                             {count}
                                         </td>
                                     );
@@ -163,7 +169,7 @@ const GroupScheduleTable: React.FC = () => {
             </div>
             <ClientModal open={isModalOpen} clients={clients} handleClose={handleCloseModal}/>
         </>
-    )
+    );
 };
 
 export default GroupScheduleTable;

@@ -1,4 +1,4 @@
-package com.lagunapools.lagunapools.app.clients.models;
+package com.lagunapools.lagunapools.app.clients.models.groups;
 
 
 import lombok.AllArgsConstructor;
@@ -18,13 +18,13 @@ import java.util.Map;
 @AllArgsConstructor
 public class GroupsResponseDTO {
 
-    private Map<DayOfWeek, Map<String, Integer>> data;
+    private Map<DayOfWeek, GroupsCustomObject> data;
 
     public GroupsResponseDTO() {
         this.data = new HashMap<>();
     }
 
-    public void addData(DayOfWeek day, Map<String, Integer> counts) {
-        this.data.put(day, counts);
+    public void addData(DayOfWeek day, GroupsCustomObject obj) {
+        this.data.put(day, obj);
     }
 }

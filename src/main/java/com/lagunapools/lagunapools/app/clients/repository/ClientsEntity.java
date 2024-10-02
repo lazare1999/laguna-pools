@@ -2,7 +2,7 @@ package com.lagunapools.lagunapools.app.clients.repository;
 
 import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
 import com.lagunapools.lagunapools.app.clients.models.ClientDTO;
-import com.lagunapools.lagunapools.app.clients.models.GroupMapper;
+import com.lagunapools.lagunapools.app.clients.models.groups.GroupMapper;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
