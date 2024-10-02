@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box,
     Button,
@@ -14,6 +14,8 @@ import {
 
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
+import authClient from '../../../api/api';
 
 interface Client {
     id: number;
@@ -41,6 +43,13 @@ const style = {
 const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose}) => {
     const [checkedClients, setCheckedClients] = useState<number[]>([]);
 
+    useEffect(() => {
+        if (open) {
+            setCheckedClients(clients.map(client => client.id));
+        }
+    }, [clients, open]);
+
+
     const handleToggle = (id: number) => {
         const currentIndex = checkedClients.indexOf(id);
         const newChecked = [...checkedClients];
@@ -58,8 +67,35 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose}) =
         setCheckedClients((prevChecked) => prevChecked.filter((clientId) => clientId !== id));
     };
 
-    const handleSave = () => {
-        handleClose();
+    const handleSave = async () => {
+
+        const checkedClientIds = [...checkedClients];
+        const uncheckedClientIds = clients
+            .filter(client => !checkedClientIds.includes(client.id))
+            .map(client => client.id);
+        debugger;
+
+        try {
+            if (checkedClientIds.length > 0) {
+                await authClient.request('attendances/clients/add', HttpMethod.POST, {
+                    clientIds: checkedClientIds,
+                    time: new Date(),
+                    attended: true,
+                });
+            }
+
+            if (uncheckedClientIds.length > 0) {
+                await authClient.request('attendances/clients/add', HttpMethod.POST, {
+                    clientIds: uncheckedClientIds,
+                    time: new Date(),
+                    attended: false,
+                });
+            }
+
+            handleClose();
+        } catch (error) {
+            console.error('Error saving attendances:', error);
+        }
     }
 
     return (
@@ -79,17 +115,17 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose}) =
                                 <ListItemSecondaryAction>
                                     {checkedClients.includes(client.id) ? (
                                         <IconButton
-                                            color="secondary"
-                                            onClick={() => handleRemove(client.id)}
-                                        >
-                                            <ClearIcon/>
-                                        </IconButton>
-                                    ) : (
-                                        <IconButton
                                             color="success"
                                             onClick={() => handleToggle(client.id)}
                                         >
                                             <CheckIcon/>
+                                        </IconButton>
+                                    ) : (
+                                        <IconButton
+                                            color="secondary"
+                                            onClick={() => handleRemove(client.id)}
+                                        >
+                                            <ClearIcon/>
                                         </IconButton>
                                     )}
                                 </ListItemSecondaryAction>
