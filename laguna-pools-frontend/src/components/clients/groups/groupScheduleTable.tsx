@@ -3,7 +3,7 @@ import {DayEnum} from "../../../utils/enums/DayEnum";
 import {HoursEnum} from "../../../utils/enums/HoursEnum";
 import './groupScheduleTable.css';
 import {AlertDialog} from "../../../utils/alertsUtils";
-import {Button} from "@mui/material";
+import {Button, SelectChangeEvent} from "@mui/material";
 import {Refresh} from "@mui/icons-material";
 import authClient from "../../../api/api";
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
@@ -11,17 +11,19 @@ import ClientModal from "./clientsDialog";
 import {GroupsCustomObject, INITIAL_GRID} from "./initialGrid";
 import {fetchClientsFor} from "./utils";
 import {Client} from "../../models/clientsModel";
+import BranchSelector from "../branchSelector";
+import {ClientFilters, defaultClientFilters} from "../../models/clientFilterModels";
 
 const GroupScheduleTable: React.FC = () => {
     const [data, setData] = useState<{ [key in DayEnum]: GroupsCustomObject }>(INITIAL_GRID);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [branches, setBranches] = useState<string[]>(["Test"]);
     const [clients, setClients] = useState<Client[]>([]);
+    const [filters, setFilters] = useState<ClientFilters>(defaultClientFilters);
 
     const handleOpenModal = (id: number | null) => {
         if (id === null) return;
 
-        fetchClientsFor(id, branches).then(res => {
+        fetchClientsFor(id, filters.branches).then(res => {
             const newClients = res.data.content.map((c: Client) => ({
                 id: c.id,
                 firstName: c.firstName,
@@ -92,8 +94,43 @@ const GroupScheduleTable: React.FC = () => {
         fetchData();
     };
 
+    const getClassByBorder = (day: DayEnum, hour: HoursEnum) => {
+        const now = new Date();
+        const gmtPlus4Offset = 4 * 60; // GMT+4 offset in minutes
+        const localOffset = now.getTimezoneOffset(); // Current local offset from GMT
+        const gmtPlus4Time = new Date(now.getTime() + (gmtPlus4Offset + localOffset) * 60 * 1000); // Adjust to GMT+4
+
+        const currentDay: string = DayEnum[gmtPlus4Time
+            .toLocaleString('en-US', {weekday: 'long'})
+            .toUpperCase() as keyof typeof DayEnum];
+
+        const currentHour: string = gmtPlus4Time
+            .getHours()
+            .toString()
+            .padStart(2, '0') + ':00';
+
+        const result = (currentDay === day && currentHour === hour) ? " highlight-cell" : "";
+        console.log(result);
+
+
+        if (result === " highlight-cell") {
+            console.log(day + " " + hour);
+        }
+
+        return result
+    };
+
+    const handleBranchChange = (event: SelectChangeEvent<string[]>) => {
+        const {value} = event.target;
+        setFilters({
+            ...filters,
+            branches: typeof value === "string" ? value.split(",") : value,
+        });
+    }
+
     return (
         <>
+            <BranchSelector filters={filters} handleBranchChange={handleBranchChange}/>
             <div className="table-container">
                 <table className="schedule-table">
                     <thead>
@@ -122,7 +159,7 @@ const GroupScheduleTable: React.FC = () => {
                                         <td
                                             onClick={() => handleOpenModal(groupInfo.groupId)}
                                             key={hour}
-                                            className={getCellClass(count, false)}
+                                            className={`${getCellClass(count, false)}${getClassByBorder(day as DayEnum, hour)}`}
                                         >
                                             {count}
                                         </td>

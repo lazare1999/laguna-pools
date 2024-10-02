@@ -3,14 +3,9 @@ import {
     Alert,
     Box,
     Button,
-    Checkbox,
     FormControl,
     InputLabel,
-    ListItemText,
-    MenuItem,
-    OutlinedInput,
     Paper,
-    Select,
     SelectChangeEvent,
     Snackbar,
     Table,
@@ -32,14 +27,13 @@ import FilterDialog from "./filterDialog";
 import {ClientFilters, defaultClientFilters, defaultDialogFilters, DialogFilters} from "../models/clientFilterModels";
 import LoadingPage from "../common/loadingPage";
 import {Toast} from "../../utils/alertsUtils";
-import {BranchModel} from "../models/branchModel";
-import {fetchBranchesList} from "../../utils/utils";
 import {UserApiService} from "../../api/userApiService";
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import {FILTER_BUTTON_STYLES} from "../../utils/constants";
 import {getAllFilteredClientsGrid, getClients} from "./utils";
 import {exportTableToExcel} from "../../utils/exportExcel";
 import PlaylistRemoveOutlinedIcon from '@mui/icons-material/PlaylistRemoveOutlined';
+import BranchSelector from "./branchSelector";
 
 const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Cost", "Notes", "Actions"];
 
@@ -61,13 +55,11 @@ const ClientsTable: React.FC = () => {
     const [toastMessage, setToastMessage] = useState<string>("");
 
     const [userRoles, setUserRoles] = useState<string[]>([]);
-    const [branches, setBranches] = useState<Array<BranchModel>>([]);
 
     useEffect(() => {
         UserApiService.getRoles().then(r => {
             setUserRoles(r.data.roles);
         }).catch(err => console.error(err));
-        fetchBranchesList().then(r => setBranches(r));
     }, []);
 
     const openToastHandler = () => {
@@ -212,30 +204,7 @@ const ClientsTable: React.FC = () => {
                     {hasRole("ROLE_LAGUNA_ADMIN") &&
                         <FormControl sx={{flexGrow: 20}}>
                             <InputLabel id="branches-select-label-client">Branches</InputLabel>
-                            <Select
-                                labelId="branches-select-label-client"
-                                id="branches-select-client"
-                                multiple
-                                value={filters.branches}
-                                onChange={handleBranchChange}
-                                input={<OutlinedInput id={"branches-select-label-input"} label="Branches"/>}
-                                renderValue={(selected) => selected.join(', \n')}
-                                MenuProps={{
-                                    PaperProps: {
-                                        style: {
-                                            maxHeight: 48 * 4.5 + 8,
-                                            width: 250,
-                                        },
-                                    },
-                                }}
-                            >
-                                {branches.map((branch) => (
-                                    <MenuItem key={branch.id} value={branch.branchName}>
-                                        <Checkbox checked={filters.branches.includes(branch.branchName)}/>
-                                        <ListItemText primary={branch.branchName}/>
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                            <BranchSelector filters={filters} handleBranchChange={handleBranchChange}/>
                         </FormControl>
                     }
                     <Button
