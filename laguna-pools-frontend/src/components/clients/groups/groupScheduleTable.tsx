@@ -98,7 +98,7 @@ const GroupScheduleTable: React.FC = () => {
                 <table className="schedule-table">
                     <thead>
                     <tr>
-                        <th>დრო/დღე</th>
+                        <th>დღე/დრო</th>
                         {hours.map((hour) => (
                             <th key={hour}>{hour}</th>
                         ))}

@@ -73,7 +73,6 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose}) =
         const uncheckedClientIds = clients
             .filter(client => !checkedClientIds.includes(client.id))
             .map(client => client.id);
-        debugger;
 
         try {
             if (checkedClientIds.length > 0) {
