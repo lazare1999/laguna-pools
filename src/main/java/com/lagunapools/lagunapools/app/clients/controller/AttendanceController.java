@@ -1,8 +1,9 @@
 package com.lagunapools.lagunapools.app.clients.controller;
 
+import com.lagunapools.lagunapools.app.clients.models.AddAttendancesRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AttendanceDTO;
 import com.lagunapools.lagunapools.app.clients.models.AttendancesDTO;
-import com.lagunapools.lagunapools.app.clients.models.AttendancesRequestDTO;
+import com.lagunapools.lagunapools.app.clients.models.FetchAttendancesRequestDTO;
 import com.lagunapools.lagunapools.app.clients.service.AttendanceService;
 import com.lagunapools.lagunapools.common.interefaces.PreAuthorizeLagunaRoles;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,12 @@ public class AttendanceController {
     }
 
     @PostMapping("/client")
-    public AttendancesDTO getAttendances(@RequestBody AttendancesRequestDTO attendancesRequest) {
+    public AttendancesDTO getAttendances(@RequestBody FetchAttendancesRequestDTO attendancesRequest) {
         return attendanceService.getAttendances(attendancesRequest);
+    }
+
+    @PostMapping("clients/add")
+    public ResponseEntity<?> addAttendances(@RequestBody AddAttendancesRequestDTO request) {
+        return this.attendanceService.addAttendances(request);
     }
 }

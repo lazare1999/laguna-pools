@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttendancesRequestDTO {
+public class FetchAttendancesRequestDTO {
     private Integer pageKey;
     private Integer pageSize;
     private Long clientId;

@@ -9,19 +9,34 @@ import authClient from "../../../api/api";
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
 import ClientModal from "./clientsDialog";
 import {INITIAL_GRID} from "./initialGrid";
+import {fetchClientsFor} from "./utils";
+import {Client} from "../../models/clientsModel";
 
 const GroupScheduleTable: React.FC = () => {
     const [data, setData] = useState<{ [key in DayEnum]: { [key in HoursEnum]: number } }>(INITIAL_GRID);
 
     const [isModalOpen, setModalOpen] = useState(false);
-
-    const clients = [
+    const [branches, setBranches] = useState<string[]>(["Test"]);
+    const [clients, setClients] = useState([
         {id: 1, firstName: 'John', lastName: 'Doe'},
         {id: 2, firstName: 'Jane', lastName: 'Smith'},
         {id: 3, firstName: 'Michael', lastName: 'Johnson'},
-    ];
+    ])
 
-    const handleOpenModal = () => setModalOpen(true);
+    const handleOpenModal = (day: DayEnum, hour: HoursEnum) => {
+        console.log(day.toString());
+        fetchClientsFor(day, hour, branches).then(res => {
+            const newClients = res.data.content.map((c: Client) => ({
+                id: c.id,
+                firstName: c.firstName,
+                lastName: c.lastName
+            }));
+
+            setClients(newClients);
+        });
+        setModalOpen(true);
+    }
+
     const handleCloseModal = () => setModalOpen(false);
 
 
@@ -101,7 +116,8 @@ const GroupScheduleTable: React.FC = () => {
                                 {hours.map((hour) => {
                                     const count = dayCounts[hour] || 0;
                                     return (
-                                        <td onClick={handleOpenModal} key={hour} className={getCellClass(count, false)}>
+                                        <td onClick={() => handleOpenModal(day as DayEnum, hour)} key={hour}
+                                            className={getCellClass(count, false)}>
                                             {count}
                                         </td>
                                     );

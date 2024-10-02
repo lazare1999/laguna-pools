@@ -15,6 +15,11 @@ const App = () => {
     const [openSessionWindow, setOpenSessionWindow] = useState(false);
     const [reLoginDialogOpen, setReLoginDialogOpen] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [branches, setBranches] = useState<string[]>([]);
+
+    const branchesHandler = (branches: string[]) => {
+        setBranches(branches);
+    }
 
     const checkLoginStatus = async () => {
         const token = await AuthenticateUtils.getJwtViaRefreshTokenFromLocalStorage();
@@ -85,7 +90,8 @@ const App = () => {
                                     setOpenSessionWindow={open => setOpenSessionWindow(open)}/>
                     {openSessionWindow &&
                         <TopMenu selectHandler={selectHandler} onLogout={logOutHandler}/>}
-                    <ComponentMapper selectHandler={selectHandler} currentComponent={select}
+                    <ComponentMapper branchesHandler={branchesHandler} selectHandler={selectHandler}
+                                     currentComponent={select}
                                      setOpenSessionWindow={setOpenSessionWindow}/>
                 </>}
         </div>

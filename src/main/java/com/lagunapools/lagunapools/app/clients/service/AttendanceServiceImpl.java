@@ -1,8 +1,9 @@
 package com.lagunapools.lagunapools.app.clients.service;
 
+import com.lagunapools.lagunapools.app.clients.models.AddAttendancesRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AttendanceDTO;
 import com.lagunapools.lagunapools.app.clients.models.AttendancesDTO;
-import com.lagunapools.lagunapools.app.clients.models.AttendancesRequestDTO;
+import com.lagunapools.lagunapools.app.clients.models.FetchAttendancesRequestDTO;
 import com.lagunapools.lagunapools.app.clients.repository.AttendanceEntity;
 import com.lagunapools.lagunapools.app.clients.repository.AttendancesRepository;
 import jakarta.transaction.Transactional;
@@ -32,7 +33,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     @Transactional
-    public AttendancesDTO getAttendances(AttendancesRequestDTO attendancesRequest) {
+    public AttendancesDTO getAttendances(FetchAttendancesRequestDTO attendancesRequest) {
         Pageable pageable = PageRequest.of(attendancesRequest.getPageKey(), attendancesRequest.getPageSize());
 
         Page<AttendanceEntity> attendancesPage = attendancesRepository
@@ -41,4 +42,20 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         return new AttendancesDTO(attendancesPage.getTotalElements(), attendancesList);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> addAttendances(AddAttendancesRequestDTO request) {
+        List<AttendanceDTO> attendances = request
+                .getClientIds()
+                .stream()
+                .map(id -> new AttendanceDTO(id, request.getTime(), request.isAttended()))
+                .toList();
+
+        attendances.forEach(this::addAttendance);
+
+        return okResponse("Clients added");
+    }
+
+
 }
