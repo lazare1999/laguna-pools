@@ -6,6 +6,7 @@ import com.lagunapools.lagunapools.app.clients.models.groups.GroupsResponseDTO;
 import com.lagunapools.lagunapools.app.clients.repository.ClientsRepository;
 import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
+import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
 import com.lagunapools.lagunapools.common.enums.Hour;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +29,22 @@ public class GroupsServiceImpl implements GroupsService {
     private final ClientsRepository clientsRepository;
     private final UserRepository userRepository;
 
+    private final MyUserDetailsService userDetailsService;
+
     @Override
-    public ResponseEntity<?> getGroupsTable() {
-        Optional<AppUser> currentUserOpt = userRepository.findById(getCurrentApplicationUser().getUserId());
-        if (currentUserOpt.isEmpty()) {
-            return badRequestResponse("User not found");
+    public ResponseEntity<?> getGroupsTable(List<String> branches) {
+        boolean isAdmin = userDetailsService.userIsAdmin();
+        List<Object[]> results;
+        if (isAdmin) {
+            results = clientsRepository.countClientsByHourAndDay(branches);
+        } else {
+            Optional<AppUser> currentUserOpt = userRepository.findById(getCurrentApplicationUser().getUserId());
+            if (currentUserOpt.isEmpty()) {
+                return badRequestResponse("User not found");
+            }
+            results = clientsRepository.countClientsByHourAndDay(currentUserOpt.get().getBranch().getId());
         }
 
-        List<Object[]> results = clientsRepository.countClientsByHourAndDay(currentUserOpt.get().getBranch().getId());
         GroupsResponseDTO responseDTO = initializeGroupsResponse();
 
         populateResponseWithData(results, responseDTO);
@@ -60,10 +69,14 @@ public class GroupsServiceImpl implements GroupsService {
             long id = ((Number) result[2]).intValue();
             long count = ((Number) result[3]).intValue();
 
-            Map<String, GroupInfo> hourCounts = new HashMap<>();
-            hourCounts.put(hour.getHour(), new GroupInfo(id, count));
-
-            responseDTO.getData().get(day).setMap(hourCounts);
+            Map<String, GroupInfo> map = responseDTO.getData().get(day).getMap();
+            if (map == null) {
+                Map<String, GroupInfo> hourCounts = new HashMap<>();
+                hourCounts.put(hour.getHour(), new GroupInfo(id, count));
+                responseDTO.getData().get(day).setMap(hourCounts);
+            } else {
+                map.put(hour.getHour(), new GroupInfo(id, count));
+            }
         }
     }
 }

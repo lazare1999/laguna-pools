@@ -204,7 +204,9 @@ const ClientsTable: React.FC = () => {
                     {hasRole("ROLE_LAGUNA_ADMIN") &&
                         <FormControl sx={{flexGrow: 20}}>
                             <InputLabel id="branches-select-label-client">Branches</InputLabel>
-                            <BranchSelector filters={filters} handleBranchChange={handleBranchChange}/>
+                            <BranchSelector id={"branches-select-label-client"}
+                                            labelId={"branches-select-label-client-label-id"}
+                                            filters={filters} handleBranchChange={handleBranchChange}/>
                         </FormControl>
                     }
                     <Button

@@ -3,7 +3,7 @@ import {DayEnum} from "../../../utils/enums/DayEnum";
 import {HoursEnum} from "../../../utils/enums/HoursEnum";
 import './groupScheduleTable.css';
 import {AlertDialog} from "../../../utils/alertsUtils";
-import {Button, SelectChangeEvent} from "@mui/material";
+import {Button, FormControl, InputLabel, SelectChangeEvent} from "@mui/material";
 import {Refresh} from "@mui/icons-material";
 import authClient from "../../../api/api";
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
@@ -13,6 +13,7 @@ import {fetchClientsFor} from "./utils";
 import {Client} from "../../models/clientsModel";
 import BranchSelector from "../branchSelector";
 import {ClientFilters, defaultClientFilters} from "../../models/clientFilterModels";
+import {UserApiService} from "../../../api/userApiService";
 
 const GroupScheduleTable: React.FC = () => {
     const [data, setData] = useState<{ [key in DayEnum]: GroupsCustomObject }>(INITIAL_GRID);
@@ -34,6 +35,14 @@ const GroupScheduleTable: React.FC = () => {
         });
         setModalOpen(true);
     };
+
+    const [userRoles, setUserRoles] = useState<string[]>([]);
+
+    useEffect(() => {
+        UserApiService.getRoles().then(r => {
+            setUserRoles(r.data.roles);
+        }).catch(err => console.error(err));
+    }, []);
 
     const handleCloseModal = () => setModalOpen(false);
 
@@ -72,7 +81,8 @@ const GroupScheduleTable: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            const response = await authClient.request('groups', HttpMethod.GET);
+
+            const response = await authClient.request(`groups?branches=${filters.branches}`, HttpMethod.GET);
             if (response.status === 200) {
                 const fetchedData = response.data.data;
                 setData(fetchedData);
@@ -87,11 +97,11 @@ const GroupScheduleTable: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        fetchData().then(r => r);
+    }, [filters]);
 
     const handleRefresh = () => {
-        fetchData();
+        fetchData().then(r => r);
     };
 
     const getClassByBorder = (day: DayEnum, hour: HoursEnum) => {
@@ -110,11 +120,9 @@ const GroupScheduleTable: React.FC = () => {
             .padStart(2, '0') + ':00';
 
         const result = (currentDay === day && currentHour === hour) ? " highlight-cell" : "";
-        console.log(result);
 
 
         if (result === " highlight-cell") {
-            console.log(day + " " + hour);
         }
 
         return result
@@ -128,83 +136,95 @@ const GroupScheduleTable: React.FC = () => {
         });
     }
 
+    const hasRole = (role: string) => {
+        return userRoles.includes(role);
+    };
+
     return (
         <>
-            <BranchSelector filters={filters} handleBranchChange={handleBranchChange}/>
-            <div className="table-container">
-                <table className="schedule-table">
-                    <thead>
-                    <tr>
-                        <th>დღე/დრო</th>
-                        {hours.map((hour) => (
-                            <th key={hour}>{hour}</th>
-                        ))}
-                        <th>ჯამში რაოდენობა</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {Object.keys(dayMap).map((day) => {
-                        const dayCounts = data[day as DayEnum];
-                        const dayMapValues = dayCounts?.map || {};
+            {hasRole("ROLE_LAGUNA_ADMIN") &&
+                <FormControl style={{width: '50%', marginTop: 10}}>
+                    <InputLabel id="branches-select-label-groups">Branches</InputLabel>
+                    <BranchSelector id={"branches-select-label-groups"}
+                                    labelId={"branches-select-label-groups-label-id"}
+                                    filters={filters} handleBranchChange={handleBranchChange}/>
+                </FormControl>
 
-                        const daySum = Object.values(dayMapValues).reduce((acc, groupInfo) => acc + (groupInfo.count || 0), 0);
-                        return (
-                            <tr key={day}>
-                                <td>{dayMap[day as DayEnum]}</td>
-                                {hours.map((hour) => {
-                                    const groupInfo = dayMapValues[hour] || {groupId: null, count: 0};
-                                    const count = groupInfo.count || 0;
+            }
+                <div className="table-container">
+                    <table className="schedule-table">
+                        <thead>
+                        <tr>
+                            <th>დღე/დრო</th>
+                            {hours.map((hour) => (
+                                <th key={hour}>{hour}</th>
+                            ))}
+                            <th>ჯამში რაოდენობა</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {Object.keys(dayMap).map((day) => {
+                            const dayCounts = data[day as DayEnum];
+                            const dayMapValues = dayCounts?.map || {};
 
-                                    return (
-                                        <td
-                                            onClick={() => handleOpenModal(groupInfo.groupId)}
-                                            key={hour}
-                                            className={`${getCellClass(count, false)}${getClassByBorder(day as DayEnum, hour)}`}
-                                        >
-                                            {count}
-                                        </td>
-                                    );
-                                })}
-                                <td>{daySum}</td>
-                            </tr>
-                        );
-                    })}
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td>სულ რაოდენობა</td>
-                        {columnSums.map((total, index) => (
-                            <td key={index} className={getCellClass(total, true)}>
-                                {total}
-                            </td>
-                        ))}
-                        <td>{columnSums.reduce((acc, total) => acc + total, 0)}</td>
-                    </tr>
-                    </tfoot>
-                </table>
-                <Button
-                    variant="outlined"
-                    onClick={handleRefresh}
-                    sx={{
-                        position: "absolute",
-                        bottom: 20,
-                        right: 20,
-                        flexGrow: 0,
-                        display: "flex",
-                        alignItems: "center",
-                        height: "50px",
-                    }}
-                >
-                    <Refresh/>
-                </Button>
-                <AlertDialog
-                    title="Error"
-                    open={alertOpen}
-                    onClose={() => setAlertOpen(false)}
-                    message={alertMessage}
-                />
-            </div>
-            <ClientModal open={isModalOpen} clients={clients} handleClose={handleCloseModal}/>
+                            const daySum = Object.values(dayMapValues).reduce((acc, groupInfo) => acc + (groupInfo.count || 0), 0);
+                            return (
+                                <tr key={day}>
+                                    <td>{dayMap[day as DayEnum]}</td>
+                                    {hours.map((hour) => {
+                                        const groupInfo = dayMapValues[hour] || {groupId: null, count: 0};
+                                        const count = groupInfo.count || 0;
+
+                                        return (
+                                            <td
+                                                onClick={() => handleOpenModal(groupInfo.groupId)}
+                                                key={hour}
+                                                className={`${getCellClass(count, false)}${getClassByBorder(day as DayEnum, hour)}`}
+                                            >
+                                                {count}
+                                            </td>
+                                        );
+                                    })}
+                                    <td>{daySum}</td>
+                                </tr>
+                            );
+                        })}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td>სულ რაოდენობა</td>
+                            {columnSums.map((total, index) => (
+                                <td key={index} className={getCellClass(total, true)}>
+                                    {total}
+                                </td>
+                            ))}
+                            <td>{columnSums.reduce((acc, total) => acc + total, 0)}</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    <Button
+                        variant="outlined"
+                        onClick={handleRefresh}
+                        sx={{
+                            position: "absolute",
+                            bottom: 20,
+                            right: 20,
+                            flexGrow: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            height: "50px",
+                        }}
+                    >
+                        <Refresh/>
+                    </Button>
+                    <AlertDialog
+                        title="Error"
+                        open={alertOpen}
+                        onClose={() => setAlertOpen(false)}
+                        message={alertMessage}
+                    />
+                </div>
+                <ClientModal open={isModalOpen} clients={clients} handleClose={handleCloseModal}/>
         </>
     );
 };

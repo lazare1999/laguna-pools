@@ -5,25 +5,27 @@ import {BranchModel} from "../models/branchModel";
 import {fetchBranchesList} from "../../utils/utils";
 
 interface BranchSelectorProps {
+    id: string,
+    labelId: string,
     filters: ClientFilters,
     handleBranchChange: (event: SelectChangeEvent<string[]>) => void;
 }
 
-const BranchSelector: React.FC<BranchSelectorProps> = ({filters, handleBranchChange}) => {
+const BranchSelector: React.FC<BranchSelectorProps> = ({id, labelId, filters, handleBranchChange}) => {
     const [branches, setBranches] = useState<Array<BranchModel>>([]);
 
     useEffect(() => {
         fetchBranchesList().then(r => setBranches(r));
-    })
+    }, [])
 
     return (
         <Select
-            labelId="branches-select-label-client"
-            id="branches-select-client"
+            labelId={labelId}
+            id={id}
             multiple
             value={filters.branches}
             onChange={handleBranchChange}
-            input={<OutlinedInput id={"branches-select-label-input"} label="Branches"/>}
+            input={<OutlinedInput id={labelId} label="Branches"/>}
             renderValue={(selected) => selected.join(', \n')}
             MenuProps={{
                 PaperProps: {

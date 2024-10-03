@@ -25,7 +25,6 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
 
         try {
             let ans = await authenticateUtils.authenticate(username, password);
-            console.log(ans);
             if (ans === "Successfully authenticated") {
                 setOpenSessionWindow(true);
                 selectHandler(Component.CLIENTS_TABLE);

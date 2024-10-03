@@ -30,4 +30,14 @@ public interface ClientsRepository extends JpaRepository<ClientsEntity, Long>, J
             "ORDER BY g.day, g.hour")
     List<Object[]> countClientsByHourAndDay(Long branchId);
 
+    @Query("SELECT g.day, g.hour, g.id, COUNT(c.id) " +
+            "FROM ClientGroupsEntity cg " +
+            "JOIN GroupEntity g ON cg.groupId = g.id " +
+            "JOIN ClientsEntity c ON cg.clientId = c.id " +
+            "WHERE c.branch.branchName IN :branches " +
+            "GROUP BY g.day, g.hour, g.id " +
+            "ORDER BY g.day, g.hour")
+    List<Object[]> countClientsByHourAndDay(List<String> branches);
+
+
 }
