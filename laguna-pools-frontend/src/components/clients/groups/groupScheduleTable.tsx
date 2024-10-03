@@ -3,119 +3,48 @@ import {DayEnum} from "../../../utils/enums/DayEnum";
 import {HoursEnum} from "../../../utils/enums/HoursEnum";
 import './groupScheduleTable.css';
 import {AlertDialog} from "../../../utils/alertsUtils";
-import {Button} from "@mui/material";
+import {Button, FormControl, InputLabel, SelectChangeEvent} from "@mui/material";
 import {Refresh} from "@mui/icons-material";
 import authClient from "../../../api/api";
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
+import ClientModal from "./clientsDialog";
+import {GroupsCustomObject, INITIAL_GRID} from "./initialGrid";
+import {fetchClientsFor} from "./utils";
+import {Client} from "../../models/clientsModel";
+import BranchSelector from "../branchSelector";
+import {ClientFilters, defaultClientFilters} from "../../models/clientFilterModels";
+import {UserApiService} from "../../../api/userApiService";
 
 const GroupScheduleTable: React.FC = () => {
-    const [data, setData] = useState<{ [key in DayEnum]: { [key in HoursEnum]: number } }>({
-        [DayEnum.MONDAY]: {
-            [HoursEnum.HOUR_09]: 0,
-            [HoursEnum.HOUR_10]: 0,
-            [HoursEnum.HOUR_11]: 0,
-            [HoursEnum.HOUR_12]: 0,
-            [HoursEnum.HOUR_13]: 0,
-            [HoursEnum.HOUR_14]: 0,
-            [HoursEnum.HOUR_15]: 0,
-            [HoursEnum.HOUR_16]: 0,
-            [HoursEnum.HOUR_17]: 0,
-            [HoursEnum.HOUR_18]: 0,
-            [HoursEnum.HOUR_19]: 0,
-            [HoursEnum.HOUR_20]: 0,
-            [HoursEnum.HOUR_21]: 0
-        },
-        [DayEnum.TUESDAY]: {
-            [HoursEnum.HOUR_09]: 0,
-            [HoursEnum.HOUR_10]: 0,
-            [HoursEnum.HOUR_11]: 0,
-            [HoursEnum.HOUR_12]: 0,
-            [HoursEnum.HOUR_13]: 0,
-            [HoursEnum.HOUR_14]: 0,
-            [HoursEnum.HOUR_15]: 0,
-            [HoursEnum.HOUR_16]: 0,
-            [HoursEnum.HOUR_17]: 0,
-            [HoursEnum.HOUR_18]: 0,
-            [HoursEnum.HOUR_19]: 0,
-            [HoursEnum.HOUR_20]: 0,
-            [HoursEnum.HOUR_21]: 0
-        },
-        [DayEnum.WEDNESDAY]: {
-            [HoursEnum.HOUR_09]: 0,
-            [HoursEnum.HOUR_10]: 0,
-            [HoursEnum.HOUR_11]: 0,
-            [HoursEnum.HOUR_12]: 0,
-            [HoursEnum.HOUR_13]: 0,
-            [HoursEnum.HOUR_14]: 0,
-            [HoursEnum.HOUR_15]: 0,
-            [HoursEnum.HOUR_16]: 0,
-            [HoursEnum.HOUR_17]: 0,
-            [HoursEnum.HOUR_18]: 0,
-            [HoursEnum.HOUR_19]: 0,
-            [HoursEnum.HOUR_20]: 0,
-            [HoursEnum.HOUR_21]: 0
-        },
-        [DayEnum.THURSDAY]: {
-            [HoursEnum.HOUR_09]: 0,
-            [HoursEnum.HOUR_10]: 0,
-            [HoursEnum.HOUR_11]: 0,
-            [HoursEnum.HOUR_12]: 0,
-            [HoursEnum.HOUR_13]: 0,
-            [HoursEnum.HOUR_14]: 0,
-            [HoursEnum.HOUR_15]: 0,
-            [HoursEnum.HOUR_16]: 0,
-            [HoursEnum.HOUR_17]: 0,
-            [HoursEnum.HOUR_18]: 0,
-            [HoursEnum.HOUR_19]: 0,
-            [HoursEnum.HOUR_20]: 0,
-            [HoursEnum.HOUR_21]: 0
-        },
-        [DayEnum.FRIDAY]: {
-            [HoursEnum.HOUR_09]: 0,
-            [HoursEnum.HOUR_10]: 0,
-            [HoursEnum.HOUR_11]: 0,
-            [HoursEnum.HOUR_12]: 0,
-            [HoursEnum.HOUR_13]: 0,
-            [HoursEnum.HOUR_14]: 0,
-            [HoursEnum.HOUR_15]: 0,
-            [HoursEnum.HOUR_16]: 0,
-            [HoursEnum.HOUR_17]: 0,
-            [HoursEnum.HOUR_18]: 0,
-            [HoursEnum.HOUR_19]: 0,
-            [HoursEnum.HOUR_20]: 0,
-            [HoursEnum.HOUR_21]: 0
-        },
-        [DayEnum.SATURDAY]: {
-            [HoursEnum.HOUR_09]: 0,
-            [HoursEnum.HOUR_10]: 0,
-            [HoursEnum.HOUR_11]: 0,
-            [HoursEnum.HOUR_12]: 0,
-            [HoursEnum.HOUR_13]: 0,
-            [HoursEnum.HOUR_14]: 0,
-            [HoursEnum.HOUR_15]: 0,
-            [HoursEnum.HOUR_16]: 0,
-            [HoursEnum.HOUR_17]: 0,
-            [HoursEnum.HOUR_18]: 0,
-            [HoursEnum.HOUR_19]: 0,
-            [HoursEnum.HOUR_20]: 0,
-            [HoursEnum.HOUR_21]: 0
-        },
-        [DayEnum.SUNDAY]: {
-            [HoursEnum.HOUR_09]: 0,
-            [HoursEnum.HOUR_10]: 0,
-            [HoursEnum.HOUR_11]: 0,
-            [HoursEnum.HOUR_12]: 0,
-            [HoursEnum.HOUR_13]: 0,
-            [HoursEnum.HOUR_14]: 0,
-            [HoursEnum.HOUR_15]: 0,
-            [HoursEnum.HOUR_16]: 0,
-            [HoursEnum.HOUR_17]: 0,
-            [HoursEnum.HOUR_18]: 0,
-            [HoursEnum.HOUR_19]: 0,
-            [HoursEnum.HOUR_20]: 0,
-            [HoursEnum.HOUR_21]: 0
-        },
-    });
+    const [data, setData] = useState<{ [key in DayEnum]: GroupsCustomObject }>(INITIAL_GRID);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [clients, setClients] = useState<Client[]>([]);
+    const [filters, setFilters] = useState<ClientFilters>(defaultClientFilters);
+
+    const handleOpenModal = (id: number | null) => {
+        if (id === null) return;
+
+        fetchClientsFor(id, filters.branches).then(res => {
+            const newClients = res.data.content.map((c: Client) => ({
+                id: c.id,
+                firstName: c.firstName,
+                lastName: c.lastName
+            }));
+
+            setClients(newClients);
+        });
+        setModalOpen(true);
+    };
+
+    const [userRoles, setUserRoles] = useState<string[]>([]);
+
+    useEffect(() => {
+        UserApiService.getRoles().then(r => {
+            setUserRoles(r.data.roles);
+        }).catch(err => console.error(err));
+    }, []);
+
+    const handleCloseModal = () => setModalOpen(false);
 
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
@@ -133,7 +62,12 @@ const GroupScheduleTable: React.FC = () => {
     };
 
     const columnSums = hours.map(hour =>
-        Object.values(data).reduce((sum, dayCounts) => sum + (dayCounts[hour] || 0), 0)
+        Object.values(data).reduce((sum, dayCounts) => {
+            if (dayCounts && dayCounts.map) {
+                return sum + (dayCounts.map[hour] ? dayCounts.map[hour].count : 0);
+            }
+            return sum;
+        }, 0)
     );
 
     const getCellClass = (count: number, isSums: boolean) => {
@@ -147,7 +81,8 @@ const GroupScheduleTable: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            const response = await authClient.request('groups', HttpMethod.GET);
+
+            const response = await authClient.request(`groups?branches=${filters.branches}`, HttpMethod.GET);
             if (response.status === 200) {
                 const fetchedData = response.data.data;
                 setData(fetchedData);
@@ -163,79 +98,134 @@ const GroupScheduleTable: React.FC = () => {
 
     useEffect(() => {
         fetchData().then(r => r);
-    }, []);
+    }, [filters]);
 
     const handleRefresh = () => {
         fetchData().then(r => r);
     };
 
-    return (
-        <div className="table-container">
-            <table className="schedule-table">
-                <thead>
-                <tr>
-                    <th>დრო/დღე</th>
-                    {hours.map((hour) => (
-                        <th key={hour}>{hour}</th>
-                    ))}
-                    <th>ჯამში რაოდენობა</th>
-                </tr>
-                </thead>
-                <tbody>
-                {Object.keys(dayMap).map((day) => {
-                    const dayCounts = data[day as DayEnum];
-                    const daySum = Object.values(dayCounts).reduce((acc, count) => acc + count, 0);
+    const getClassByBorder = (day: DayEnum, hour: HoursEnum) => {
+        const now = new Date();
+        const gmtPlus4Offset = 4 * 60; // GMT+4 offset in minutes
+        const localOffset = now.getTimezoneOffset(); // Current local offset from GMT
+        const gmtPlus4Time = new Date(now.getTime() + (gmtPlus4Offset + localOffset) * 60 * 1000); // Adjust to GMT+4
 
-                    return (
-                        <tr key={day}>
-                            <td>{dayMap[day as DayEnum]}</td>
-                            {hours.map((hour) => {
-                                const count = dayCounts[hour] || 0;
-                                return (
-                                    <td key={hour} className={getCellClass(count, false)}>
-                                        {count}
-                                    </td>
-                                );
-                            })}
-                            <td>{daySum}</td>
+        const currentDay: string = DayEnum[gmtPlus4Time
+            .toLocaleString('en-US', {weekday: 'long'})
+            .toUpperCase() as keyof typeof DayEnum];
+
+        const currentHour: string = gmtPlus4Time
+            .getHours()
+            .toString()
+            .padStart(2, '0') + ':00';
+
+        const result = (currentDay === day && currentHour === hour) ? " highlight-cell" : "";
+
+
+        if (result === " highlight-cell") {
+        }
+
+        return result
+    };
+
+    const handleBranchChange = (event: SelectChangeEvent<string[]>) => {
+        const {value} = event.target;
+        setFilters({
+            ...filters,
+            branches: typeof value === "string" ? value.split(",") : value,
+        });
+    }
+
+    const hasRole = (role: string) => {
+        return userRoles.includes(role);
+    };
+
+    return (
+        <>
+            {hasRole("ROLE_LAGUNA_ADMIN") &&
+                <FormControl style={{width: '50%', marginTop: 10}}>
+                    <InputLabel id="branches-select-label-groups">Branches</InputLabel>
+                    <BranchSelector id={"branches-select-label-groups"}
+                                    labelId={"branches-select-label-groups-label-id"}
+                                    filters={filters} handleBranchChange={handleBranchChange}/>
+                </FormControl>
+
+            }
+                <div className="table-container">
+                    <table className="schedule-table">
+                        <thead>
+                        <tr>
+                            <th>დღე/დრო</th>
+                            {hours.map((hour) => (
+                                <th key={hour}>{hour}</th>
+                            ))}
+                            <th>ჯამში რაოდენობა</th>
                         </tr>
-                    );
-                })}
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td>სულ რაოდენობა</td>
-                    {columnSums.map((total, index) => (
-                        <td key={index} className={getCellClass(total, true)}>
-                            {total}
-                        </td>
-                    ))}
-                    <td>{columnSums.reduce((acc, total) => acc + total, 0)}</td>
-                </tr>
-                </tfoot>
-            </table>
-            <Button
-                variant="outlined"
-                onClick={handleRefresh}
-                sx={{
-                    position: "absolute",
-                    bottom: 20,
-                    right: 20,
-                    flexGrow: 0,
-                    display: "flex",
-                    alignItems: "center",
-                    height: "50px",
-                }}
-            >
-                <Refresh/>
-            </Button>
-            <AlertDialog
-                title="Error"
-                open={alertOpen}
-                onClose={() => setAlertOpen(false)}
-                message={alertMessage}
-            />
-        </div>
+                        </thead>
+                        <tbody>
+                        {Object.keys(dayMap).map((day) => {
+                            const dayCounts = data[day as DayEnum];
+                            const dayMapValues = dayCounts?.map || {};
+
+                            const daySum = Object.values(dayMapValues).reduce((acc, groupInfo) => acc + (groupInfo.count || 0), 0);
+                            return (
+                                <tr key={day}>
+                                    <td>{dayMap[day as DayEnum]}</td>
+                                    {hours.map((hour) => {
+                                        const groupInfo = dayMapValues[hour] || {groupId: null, count: 0};
+                                        const count = groupInfo.count || 0;
+
+                                        return (
+                                            <td
+                                                onClick={() => handleOpenModal(groupInfo.groupId)}
+                                                key={hour}
+                                                className={`${getCellClass(count, false)}${getClassByBorder(day as DayEnum, hour)}`}
+                                            >
+                                                {count}
+                                            </td>
+                                        );
+                                    })}
+                                    <td>{daySum}</td>
+                                </tr>
+                            );
+                        })}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td>სულ რაოდენობა</td>
+                            {columnSums.map((total, index) => (
+                                <td key={index} className={getCellClass(total, true)}>
+                                    {total}
+                                </td>
+                            ))}
+                            <td>{columnSums.reduce((acc, total) => acc + total, 0)}</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    <Button
+                        variant="outlined"
+                        onClick={handleRefresh}
+                        sx={{
+                            position: "absolute",
+                            bottom: 20,
+                            right: 20,
+                            flexGrow: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            height: "50px",
+                        }}
+                    >
+                        <Refresh/>
+                    </Button>
+                    <AlertDialog
+                        title="Error"
+                        open={alertOpen}
+                        onClose={() => setAlertOpen(false)}
+                        message={alertMessage}
+                    />
+                </div>
+                <ClientModal open={isModalOpen} clients={clients} handleClose={handleCloseModal}/>
+        </>
     );
 };
 

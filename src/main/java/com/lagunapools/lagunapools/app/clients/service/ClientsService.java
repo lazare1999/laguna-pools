@@ -3,7 +3,7 @@ package com.lagunapools.lagunapools.app.clients.service;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsResponseDTO;
 import com.lagunapools.lagunapools.app.clients.models.ClientDTO;
-import com.lagunapools.lagunapools.app.clients.models.GroupDTO;
+import com.lagunapools.lagunapools.app.clients.models.groups.GroupDTO;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

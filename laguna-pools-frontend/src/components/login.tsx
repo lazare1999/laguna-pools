@@ -10,9 +10,10 @@ import BoxWrapper from "./common/border";
 interface LoginFormProps {
     selectHandler: (select: Component) => void;
     setOpenSessionWindow: (open: boolean) => void;
+    branchesHandler: (branches: string[]) => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindow}) => {
+const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindow, branchesHandler}) => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
@@ -24,7 +25,6 @@ const LoginForm: React.FC<LoginFormProps> = ({selectHandler, setOpenSessionWindo
 
         try {
             let ans = await authenticateUtils.authenticate(username, password);
-
             if (ans === "Successfully authenticated") {
                 setOpenSessionWindow(true);
                 selectHandler(Component.CLIENTS_TABLE);

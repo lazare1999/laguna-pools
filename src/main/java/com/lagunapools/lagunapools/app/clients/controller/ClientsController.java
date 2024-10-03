@@ -3,7 +3,7 @@ package com.lagunapools.lagunapools.app.clients.controller;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsResponseDTO;
 import com.lagunapools.lagunapools.app.clients.models.ClientDTO;
-import com.lagunapools.lagunapools.app.clients.models.GroupDTO;
+import com.lagunapools.lagunapools.app.clients.models.groups.GroupDTO;
 import com.lagunapools.lagunapools.app.clients.service.ClientsService;
 import com.lagunapools.lagunapools.common.interefaces.PreAuthorizeLagunaRoles;
 import lombok.RequiredArgsConstructor;

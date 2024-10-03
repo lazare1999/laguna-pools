@@ -3,7 +3,6 @@ import {Attendance} from "../models/attnedance";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
 import authClient from "../../api/api";
-import {ClientFilters} from "../models/clientFilterModels";
 
 const determineHoursEnum = (hour: number): HoursEnum => {
     if (hour < 0 || hour > 23) {
@@ -62,7 +61,7 @@ export const addAttendance = async (clientId: number, day: string, hour: HoursEn
     });
 }
 
-export const getClients = async (pageKey: string, pageSize: string, filters: ClientFilters) => {
+export const getClients = async (pageKey: string, pageSize: string, filters: any) => {
     const params: Record<string, any> = {
         pageKey: pageKey,
         pageSize: pageSize,

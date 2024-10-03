@@ -24,4 +24,10 @@ public class AttendanceDTO {
         this.time = attendance.getTime();
         this.attended = attendance.isAttended();
     }
+
+    public AttendanceDTO(Long clientId, LocalDateTime time, boolean attended) {
+        this.clientId = clientId;
+        this.time = time;
+        this.attended = attended;
+    }
 }

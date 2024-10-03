@@ -74,6 +74,20 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
         });
     };
 
+    const handlePhoneNumberChange = (value: string) => {
+        const regex = /^[0-9,]*$/;
+        if (regex.test(value)) {
+            if (value.length <= 20) {
+                handleInputChange("phoneNumber", value);
+            } else {
+                handleInputChange("phoneNumber", value.substring(0, 20));
+            }
+        } else {
+            const updatedValue = value.slice(0, -1);
+            handleInputChange("phoneNumber", updatedValue);
+        }
+    };
+
 
     const handleDayChange = (index: number, day: DayEnum) => {
         const updatedGroups = dayHourPairs.map((group, idx) =>
@@ -246,7 +260,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                         sx={{marginBottom: 1}}
                                         label="Phone Number"
                                         value={editableClient.phoneNumber}
-                                        onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+                                        onChange={(e) => handlePhoneNumberChange(e.target.value)}
                                         fullWidth
                                     />
                                 </Grid>
@@ -469,12 +483,17 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                 </Grid>
                             </Grid>
                         </TableCell>
-                        <TableCell>
-                            {client.groups.map((group, index) => (
-                                <span key={index}>
-                                <strong>{`${group.day}:`}</strong> {`${group.hour}`} {index < client.groups.length - 1 && '; '}
-                            </span>
-                            ))}
+                        <TableCell
+                            style={{backgroundColor: client.groups.length === 0 ? 'rgba(234,118,118,0.8)' : 'transparent'}}>
+                            {client.groups.length === 0 ? (
+                                <span>No groups available</span>
+                            ) : (
+                                client.groups.map((group, index) => (
+                                    <span key={index}>
+                                        <strong>{`${group.day}:`}</strong> {`${group.hour}`} {index < client.groups.length - 1 && '; '}
+                                    </span>
+                                ))
+                            )}
                         </TableCell>
                         <TableCell>
                             {new Intl.NumberFormat('ka-GE', {

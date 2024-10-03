@@ -1,9 +1,12 @@
 package com.lagunapools.lagunapools.app.clients.service;
 
-import com.lagunapools.lagunapools.app.clients.models.GroupsResponseDTO;
+import com.lagunapools.lagunapools.app.clients.models.groups.GroupInfo;
+import com.lagunapools.lagunapools.app.clients.models.groups.GroupsCustomObject;
+import com.lagunapools.lagunapools.app.clients.models.groups.GroupsResponseDTO;
 import com.lagunapools.lagunapools.app.clients.repository.ClientsRepository;
 import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
+import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
 import com.lagunapools.lagunapools.common.enums.Hour;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,41 +29,54 @@ public class GroupsServiceImpl implements GroupsService {
     private final ClientsRepository clientsRepository;
     private final UserRepository userRepository;
 
+    private final MyUserDetailsService userDetailsService;
+
     @Override
-    public ResponseEntity<?> getGroupsTable() {
-        Optional<AppUser> currentUserOpt = userRepository.findById(getCurrentApplicationUser().getUserId());
-        if (currentUserOpt.isEmpty()) {
-            return badRequestResponse("User not found");
-        }
-
-        AppUser currentUser = currentUserOpt.get();
-        List<Object[]> results = clientsRepository.countClientsByHourAndDay(currentUser.getBranch().getId());
-
-        GroupsResponseDTO responseDTO = new GroupsResponseDTO();
-
-        for (DayOfWeek day : DayOfWeek.values()) {
-            Map<String, Integer> hourCounts = new HashMap<>();
-
-            for (Hour hour : Hour.values()) {
-                hourCounts.put(hour.getHour(), 0);
+    public ResponseEntity<?> getGroupsTable(List<String> branches) {
+        boolean isAdmin = userDetailsService.userIsAdmin();
+        List<Object[]> results;
+        if (isAdmin) {
+            results = clientsRepository.countClientsByHourAndDay(branches);
+        } else {
+            Optional<AppUser> currentUserOpt = userRepository.findById(getCurrentApplicationUser().getUserId());
+            if (currentUserOpt.isEmpty()) {
+                return badRequestResponse("User not found");
             }
-
-            responseDTO.addData(day, hourCounts);
+            results = clientsRepository.countClientsByHourAndDay(currentUserOpt.get().getBranch().getId());
         }
 
-        for (Object[] result : results) {
-            String dayStr = (String) result[0];
-            String hourStr = (String) result[1];
-            int count = ((Number) result[2]).intValue();
+        GroupsResponseDTO responseDTO = initializeGroupsResponse();
 
-            DayOfWeek day = DayOfWeek.valueOf(dayStr.toUpperCase());
-
-            Hour hour = Hour.fromValue(hourStr);
-
-            responseDTO.getData().get(day).put(hour.getHour(), count);
-        }
+        populateResponseWithData(results, responseDTO);
 
         return okResponse(responseDTO);
     }
 
+    private GroupsResponseDTO initializeGroupsResponse() {
+        GroupsResponseDTO responseDTO = new GroupsResponseDTO();
+
+        for (DayOfWeek day : DayOfWeek.values()) {
+            responseDTO.addData(day, new GroupsCustomObject());
+        }
+
+        return responseDTO;
+    }
+
+    private void populateResponseWithData(List<Object[]> results, GroupsResponseDTO responseDTO) {
+        for (Object[] result : results) {
+            DayOfWeek day = DayOfWeek.valueOf(((String) result[0]).toUpperCase());
+            Hour hour = Hour.fromValue((String) result[1]);
+            long id = ((Number) result[2]).intValue();
+            long count = ((Number) result[3]).intValue();
+
+            Map<String, GroupInfo> map = responseDTO.getData().get(day).getMap();
+            if (map == null) {
+                Map<String, GroupInfo> hourCounts = new HashMap<>();
+                hourCounts.put(hour.getHour(), new GroupInfo(id, count));
+                responseDTO.getData().get(day).setMap(hourCounts);
+            } else {
+                map.put(hour.getHour(), new GroupInfo(id, count));
+            }
+        }
+    }
 }
