@@ -3,6 +3,7 @@ import {AppBar, Box, Button, Toolbar} from '@mui/material';
 import {ExitToApp} from '@mui/icons-material';
 import {Component} from '../utils/componentsEnum';
 import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import PoolOutlinedIcon from '@mui/icons-material/PoolOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import {UserApiService} from "../api/userApiService";
@@ -44,6 +45,10 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
                     >
                         Admin Panel
                     </Button>
+                    <Button color="inherit" startIcon={<CalendarMonthOutlinedIcon/>}
+                            onClick={() => selectHandler(Component.DAYS)}>
+                        Days
+                    </Button>
                 </>
                 }
 
@@ -56,12 +61,7 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
                         onClick={() => selectHandler(Component.GROUPS)}>
                     Groups
                 </Button>
-                {/*<Button color="inherit" startIcon={<CalendarMonthOutlinedIcon/>}*/}
-                {/*        onClick={() => selectHandler(Component.DAYS)}>*/}
-                {/*    Days*/}
-                {/*</Button>*/}
-
-
+                
                 <Box sx={{flexGrow: 1}}/>
                 <Button
                     color="inherit"

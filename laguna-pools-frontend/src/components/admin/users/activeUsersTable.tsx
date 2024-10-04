@@ -53,7 +53,7 @@ const ActiveUsersTable: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [count, setCount] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
-    const [rowsPerPage, setRowsPerPage] = useState<number>(10); // Set default to 10 rows per page
+    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [filterText, setFilterText] = useState<string>("");

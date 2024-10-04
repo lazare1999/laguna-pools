@@ -8,6 +8,7 @@ import AdminControlPanel from "../components/admin/controlPanel";
 import BranchesControlPage from "../components/admin/branches/branchesControlPage";
 import MoveBackWrapper from "../components/admin/moveBack";
 import GroupScheduleTable from "../components/clients/groups/groupScheduleTable";
+import DaysTable from "../components/days/daysTable";
 
 interface ComponentMapperProps {
     currentComponent: Component
@@ -40,6 +41,8 @@ const ComponentMapper: React.FC<ComponentMapperProps> = ({
             return <AdminControlPanel selectHandler={selectHandler}/>
         case Component.MANAGE_BRANCHES:
             return <MoveBackWrapper onBack={moveToControlPanel}><BranchesControlPage/></MoveBackWrapper>
+        case Component.DAYS:
+            return <DaysTable/>
         default:
             return null;
     }
