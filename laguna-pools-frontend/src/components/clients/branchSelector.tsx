@@ -1,13 +1,12 @@
 import {Checkbox, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent} from "@mui/material";
 import React, {useEffect, useState} from "react";
-import {ClientFilters} from "../models/clientFilterModels";
 import {BranchModel} from "../models/branchModel";
 import {fetchBranchesList} from "../../utils/utils";
 
 interface BranchSelectorProps {
     id: string,
     labelId: string,
-    filters: ClientFilters,
+    filters: any,
     handleBranchChange: (event: SelectChangeEvent<string[]>) => void;
 }
 

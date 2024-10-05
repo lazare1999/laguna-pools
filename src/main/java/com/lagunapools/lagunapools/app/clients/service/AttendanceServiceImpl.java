@@ -1,11 +1,11 @@
 package com.lagunapools.lagunapools.app.clients.service;
 
-import com.lagunapools.lagunapools.app.clients.models.AddAttendancesRequestDTO;
-import com.lagunapools.lagunapools.app.clients.models.AttendanceDTO;
-import com.lagunapools.lagunapools.app.clients.models.AttendancesDTO;
 import com.lagunapools.lagunapools.app.clients.models.FetchAttendancesRequestDTO;
+import com.lagunapools.lagunapools.app.clients.models.attendances.*;
 import com.lagunapools.lagunapools.app.clients.repository.AttendanceEntity;
 import com.lagunapools.lagunapools.app.clients.repository.AttendancesRepository;
+import com.lagunapools.lagunapools.utils.LazoUtils;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
@@ -22,6 +23,35 @@ import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
 @RequiredArgsConstructor
 public class AttendanceServiceImpl implements AttendanceService {
     private final AttendancesRepository attendancesRepository;
+
+    @Override
+    public AttendancesDaysResponseDTO attendances(AttendancesDaysRequestDTO request) {
+        if (request.getPageKey() == null || request.getPageSize() == null)
+            return new AttendancesDaysResponseDTO();
+
+        LocalDateTime time;
+        if (request.getSelectedDay() != null && request.getSelectedTime() != null)
+            time = LocalDateTime.of(request.getSelectedDay(), request.getSelectedTime());
+        else
+            time = null;
+
+        Page<AttendanceEntity> page = attendancesRepository.findAll((root, query, builder) -> {
+            Predicate predicate = builder.conjunction();
+
+            predicate = builder.and(predicate, builder.equal(root.get("attended"), request.getAttended()));
+
+            if (time != null)
+                predicate = builder.and(predicate, builder.equal(root.get("time"), time));
+
+            if (!request.getBranches().isEmpty())
+                predicate = builder.and(predicate, builder.in(root.get("client").get("branch").get("branchName")).value(request.getBranches()));
+
+            return predicate;
+        }, PageRequest.of(request.getPageKey(), request.getPageSize(), LazoUtils.getSortAsc("id")));
+
+
+        return new AttendancesDaysResponseDTO(page.getTotalElements(), page.toList());
+    }
 
     @Override
     @Transactional
