@@ -4,6 +4,7 @@ import com.lagunapools.lagunapools.app.clients.models.FetchAttendancesRequestDTO
 import com.lagunapools.lagunapools.app.clients.models.attendances.*;
 import com.lagunapools.lagunapools.app.clients.repository.AttendanceEntity;
 import com.lagunapools.lagunapools.app.clients.repository.AttendancesRepository;
+import com.lagunapools.lagunapools.app.clients.repository.ClientsRepository;
 import com.lagunapools.lagunapools.utils.LazoUtils;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
@@ -17,12 +18,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.lagunapools.lagunapools.utils.ResponseUtils.badRequestResponse;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
 
 @Service
 @RequiredArgsConstructor
 public class AttendanceServiceImpl implements AttendanceService {
     private final AttendancesRepository attendancesRepository;
+    private final ClientsRepository clientsRepository;
 
     @Override
     public AttendancesDaysResponseDTO attendances(AttendancesDaysRequestDTO request) {
@@ -56,9 +59,15 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public ResponseEntity<?> addAttendance(AttendanceDTO attendanceDTO) {
-        AttendanceEntity attendance = new AttendanceEntity(attendanceDTO);
-        attendancesRepository.save(attendance);
-        return okResponse("Attendance added");
+        try {
+            AttendanceEntity attendance = new AttendanceEntity(attendanceDTO);
+            attendance.setClient(clientsRepository.getReferenceById(attendanceDTO.getClientId()));
+            attendancesRepository.save(attendance);
+            return okResponse("Attendance added");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return badRequestResponse("Bad request!");
+        }
     }
 
     @Override

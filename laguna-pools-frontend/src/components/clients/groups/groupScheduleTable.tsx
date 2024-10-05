@@ -9,19 +9,26 @@ import authClient from "../../../api/api";
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
 import ClientModal from "./clientsDialog";
 import {GroupsCustomObject, INITIAL_GRID} from "./initialGrid";
-import {fetchClientsFor} from "./utils";
+import {fetchClientsFor, getCurrentTime} from "./utils";
 import {Client} from "../../models/clientsModel";
 import BranchSelector from "../branchSelector";
 import {ClientFilters, defaultClientFilters} from "../../models/clientFilterModels";
 import {UserApiService} from "../../../api/userApiService";
+import LoadingPage from "../../common/loadingPage";
 
 const GroupScheduleTable: React.FC = () => {
     const [data, setData] = useState<{ [key in DayEnum]: GroupsCustomObject }>(INITIAL_GRID);
     const [isModalOpen, setModalOpen] = useState(false);
     const [clients, setClients] = useState<Client[]>([]);
     const [filters, setFilters] = useState<ClientFilters>(defaultClientFilters);
+    const [tableLoading, setTableLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [shouldLoad, setShouldLoad] = useState<boolean>(false);
 
-    const handleOpenModal = (id: number | null) => {
+    const handleOpenModal = (id: number | null, day: DayEnum, hour: HoursEnum) => {
+        setLoading(true);
+        setShouldLoad(isCurrentTimeCell(day, hour));
+
         if (id === null) return;
 
         fetchClientsFor(id, filters.branches).then(res => {
@@ -32,6 +39,7 @@ const GroupScheduleTable: React.FC = () => {
             }));
 
             setClients(newClients);
+            setLoading(false);
         });
         setModalOpen(true);
     };
@@ -80,8 +88,8 @@ const GroupScheduleTable: React.FC = () => {
     };
 
     const fetchData = async () => {
+        setTableLoading(true);
         try {
-
             const response = await authClient.request(`groups?branches=${filters.branches}`, HttpMethod.GET);
             if (response.status === 200) {
                 const fetchedData = response.data.data;
@@ -94,6 +102,7 @@ const GroupScheduleTable: React.FC = () => {
             setAlertMessage(`Error fetching data: ${error}`);
             setAlertOpen(true);
         }
+        setTableLoading(false);
     };
 
     useEffect(() => {
@@ -104,11 +113,8 @@ const GroupScheduleTable: React.FC = () => {
         fetchData().then(r => r);
     };
 
-    const getClassByBorder = (day: DayEnum, hour: HoursEnum) => {
-        const now = new Date();
-        const gmtPlus4Offset = 4 * 60; // GMT+4 offset in minutes
-        const localOffset = now.getTimezoneOffset(); // Current local offset from GMT
-        const gmtPlus4Time = new Date(now.getTime() + (gmtPlus4Offset + localOffset) * 60 * 1000); // Adjust to GMT+4
+    const isCurrentTimeCell = (day: DayEnum, hour: HoursEnum): boolean => {
+        const gmtPlus4Time = getCurrentTime()
 
         const currentDay: string = DayEnum[gmtPlus4Time
             .toLocaleString('en-US', {weekday: 'long'})
@@ -119,13 +125,11 @@ const GroupScheduleTable: React.FC = () => {
             .toString()
             .padStart(2, '0') + ':00';
 
-        const result = (currentDay === day && currentHour === hour) ? " highlight-cell" : "";
+        return currentDay === day && currentHour === hour;
+    }
 
-
-        if (result === " highlight-cell") {
-        }
-
-        return result
+    const getClassByCell = (day: DayEnum, hour: HoursEnum): string => {
+        return isCurrentTimeCell(day, hour) ? " highlight-cell" : "";
     };
 
     const handleBranchChange = (event: SelectChangeEvent<string[]>) => {
@@ -151,80 +155,85 @@ const GroupScheduleTable: React.FC = () => {
                 </FormControl>
 
             }
-                <div className="table-container">
-                    <table className="schedule-table">
-                        <thead>
-                        <tr>
-                            <th>დღე/დრო</th>
-                            {hours.map((hour) => (
-                                <th key={hour}>{hour}</th>
-                            ))}
-                            <th>ჯამში რაოდენობა</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {Object.keys(dayMap).map((day) => {
-                            const dayCounts = data[day as DayEnum];
-                            const dayMapValues = dayCounts?.map || {};
+            {tableLoading ? <LoadingPage label={"Loading Table Data..."}/> :
+                <>
+                    <div className="table-container">
+                        <table className="schedule-table">
+                            <thead>
+                            <tr>
+                                <th>დღე/დრო</th>
+                                {hours.map((hour) => (
+                                    <th key={hour}>{hour}</th>
+                                ))}
+                                <th>ჯამში რაოდენობა</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {Object.keys(dayMap).map((day) => {
+                                const dayCounts = data[day as DayEnum];
+                                const dayMapValues = dayCounts?.map || {};
 
-                            const daySum = Object.values(dayMapValues).reduce((acc, groupInfo) => acc + (groupInfo.count || 0), 0);
-                            return (
-                                <tr key={day}>
-                                    <td>{dayMap[day as DayEnum]}</td>
-                                    {hours.map((hour) => {
-                                        const groupInfo = dayMapValues[hour] || {groupId: null, count: 0};
-                                        const count = groupInfo.count || 0;
+                                const daySum = Object.values(dayMapValues).reduce((acc, groupInfo) => acc + (groupInfo.count || 0), 0);
+                                return (
+                                    <tr key={day}>
+                                        <td>{dayMap[day as DayEnum]}</td>
+                                        {hours.map((hour) => {
+                                            const groupInfo = dayMapValues[hour] || {groupId: null, count: 0};
+                                            const count = groupInfo.count || 0;
 
-                                        return (
-                                            <td
-                                                onClick={() => handleOpenModal(groupInfo.groupId)}
-                                                key={hour}
-                                                className={`${getCellClass(count, false)}${getClassByBorder(day as DayEnum, hour)}`}
-                                            >
-                                                {count}
-                                            </td>
-                                        );
-                                    })}
-                                    <td>{daySum}</td>
-                                </tr>
-                            );
-                        })}
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td>სულ რაოდენობა</td>
-                            {columnSums.map((total, index) => (
-                                <td key={index} className={getCellClass(total, true)}>
-                                    {total}
-                                </td>
-                            ))}
-                            <td>{columnSums.reduce((acc, total) => acc + total, 0)}</td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                    <Button
-                        variant="outlined"
-                        onClick={handleRefresh}
-                        sx={{
-                            position: "absolute",
-                            bottom: 20,
-                            right: 20,
-                            flexGrow: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            height: "50px",
-                        }}
-                    >
-                        <Refresh/>
-                    </Button>
-                    <AlertDialog
-                        title="Error"
-                        open={alertOpen}
-                        onClose={() => setAlertOpen(false)}
-                        message={alertMessage}
-                    />
-                </div>
-                <ClientModal open={isModalOpen} clients={clients} handleClose={handleCloseModal}/>
+                                            return (
+                                                <td
+                                                    onClick={() => handleOpenModal(groupInfo.groupId, day as DayEnum, hour)}
+                                                    key={hour}
+                                                    className={`${getCellClass(count, false)}${getClassByCell(day as DayEnum, hour)}`}
+                                                >
+                                                    {count}
+                                                </td>
+                                            );
+                                        })}
+                                        <td>{daySum}</td>
+                                    </tr>
+                                );
+                            })}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td>სულ რაოდენობა</td>
+                                {columnSums.map((total, index) => (
+                                    <td key={index} className={getCellClass(total, true)}>
+                                        {total}
+                                    </td>
+                                ))}
+                                <td>{columnSums.reduce((acc, total) => acc + total, 0)}</td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        <Button
+                            variant="outlined"
+                            onClick={handleRefresh}
+                            sx={{
+                                position: "absolute",
+                                bottom: 20,
+                                right: 20,
+                                flexGrow: 0,
+                                display: "flex",
+                                alignItems: "center",
+                                height: "50px",
+                            }}
+                        >
+                            <Refresh/>
+                        </Button>
+                        <AlertDialog
+                            title="Error"
+                            open={alertOpen}
+                            onClose={() => setAlertOpen(false)}
+                            message={alertMessage}
+                        />
+                    </div>
+                </>
+            }
+            <ClientModal loading={loading} open={isModalOpen} clients={clients} handleClose={handleCloseModal}
+                         shouldSave={shouldLoad}/>
         </>
     );
 };

@@ -93,7 +93,7 @@ const ClientsTable: React.FC = () => {
 
     useEffect(() => {
         fetchClients().then(r => r);
-    }, [page, rowsPerPage, filters, dialogFilters]);
+    }, [page, rowsPerPage]);
 
     const handleCloseAlert = () => {
         setAlertOpen(false);

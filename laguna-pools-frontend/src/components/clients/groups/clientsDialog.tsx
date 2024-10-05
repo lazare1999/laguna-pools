@@ -16,6 +16,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
 import authClient from '../../../api/api';
+import {getCurrentTime, getString} from "./utils";
+import LoadingPage from "../../common/loadingPage";
 
 interface Client {
     id: number;
@@ -27,6 +29,8 @@ interface ClientModalProps {
     clients: Client[];
     open: boolean;
     handleClose: () => void;
+    shouldSave: boolean;
+    loading: boolean;
 }
 
 const style = {
@@ -40,7 +44,7 @@ const style = {
     p: 4,
 };
 
-const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose}) => {
+const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, shouldSave, loading}) => {
     const [checkedClients, setCheckedClients] = useState<number[]>([]);
 
     useEffect(() => {
@@ -75,10 +79,12 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose}) =
             .map(client => client.id);
 
         try {
+            const time = getString(getCurrentTime());
+            console.log(time)
             if (checkedClientIds.length > 0) {
                 await authClient.request('attendances/clients/add', HttpMethod.POST, {
                     clientIds: checkedClientIds,
-                    time: new Date(),
+                    time: time,
                     attended: true,
                 });
             }
@@ -86,7 +92,7 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose}) =
             if (uncheckedClientIds.length > 0) {
                 await authClient.request('attendances/clients/add', HttpMethod.POST, {
                     clientIds: uncheckedClientIds,
-                    time: new Date(),
+                    time: time,
                     attended: false,
                 });
             }
@@ -103,43 +109,54 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose}) =
                 <Typography variant="h6" component="h2">
                     Select Clients
                 </Typography>
-                <List>
-                    {clients.map((client) => (
-                        <ListItem key={client.id}>
-                            <ListItemButton onClick={() => handleToggle(client.id)}>
-                                <ListItemText
-                                    primary={`${client.firstName} ${client.lastName}`}
-                                    secondary={`ID: ${client.id}`}
-                                />
-                                <ListItemSecondaryAction>
-                                    {checkedClients.includes(client.id) ? (
-                                        <IconButton
-                                            color="success"
-                                            onClick={() => handleToggle(client.id)}
-                                        >
-                                            <CheckIcon/>
-                                        </IconButton>
-                                    ) : (
-                                        <IconButton
-                                            color="secondary"
-                                            onClick={() => handleRemove(client.id)}
-                                        >
-                                            <ClearIcon/>
-                                        </IconButton>
-                                    )}
-                                </ListItemSecondaryAction>
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-                <Box textAlign="center" mt={2}>
-                    <Button variant="contained" sx={{marginRight: "10px"}} onClick={handleSave}>
-                        Save
-                    </Button>
-                    <Button variant="contained" onClick={handleClose}>
-                        Close
-                    </Button>
-                </Box>
+                <div style={{maxHeight: '400px', overflowY: 'auto'}}>
+                    <List>
+                        {loading ? (
+                            <ListItem>
+                                <LoadingPage label="Loading Data..."/>
+                            </ListItem>
+                        ) : (
+                            <>
+                                {clients.map((client) => (
+                                    <ListItem key={client.id}>
+                                        <ListItemButton onClick={() => handleToggle(client.id)}>
+                                            <ListItemText
+                                                primary={`${client.firstName} ${client.lastName}`}
+                                                secondary={`ID: ${client.id}`}
+                                            />
+                                            {shouldSave && (
+                                                <ListItemSecondaryAction>
+                                                    {checkedClients.includes(client.id) ? (
+                                                        <IconButton color="success"
+                                                                    onClick={() => handleToggle(client.id)}>
+                                                            <CheckIcon/>
+                                                        </IconButton>
+                                                    ) : (
+                                                        <IconButton color="secondary"
+                                                                    onClick={() => handleRemove(client.id)}>
+                                                            <ClearIcon/>
+                                                        </IconButton>
+                                                    )}
+                                                </ListItemSecondaryAction>
+                                            )}
+                                        </ListItemButton>
+                                    </ListItem>
+                                ))}
+                            </>
+                        )}
+                    </List>
+                </div>
+                {
+                    shouldSave && <Box textAlign="center" mt={2}>
+                        <Button variant="contained" sx={{marginRight: "10px"}} onClick={handleSave}>
+                            Save
+                        </Button>
+                        <Button variant="contained" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Box>
+                }
+
             </Box>
         </Modal>
     );
