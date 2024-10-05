@@ -119,7 +119,7 @@ const ActiveUsersTable: React.FC = () => {
 
     useEffect(() => {
         fetchUsers().then(r => r);
-    }, [page, rowsPerPage, filterText, isLocked, inActiveUsers, lastAuthDateFrom, lastAuthDateTo, selectedRoles, selectedBranches]);
+    }, [page, rowsPerPage, isLocked, inActiveUsers, lastAuthDateFrom, lastAuthDateTo, selectedRoles, selectedBranches]);
 
     const handleLock = (lockUser: User) => {
         setUsers(users.map(user => (user.userId === lockUser.userId ? lockUser : user)));

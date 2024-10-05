@@ -33,7 +33,6 @@ public class AttendanceEntity {
     private ClientsEntity client;
 
     public AttendanceEntity(AttendanceDTO attendance) {
-        this.id = attendance.getId();
         this.time = attendance.getTime();
         this.attended = attendance.isAttended();
         this.clientId = attendance.getClientId();
