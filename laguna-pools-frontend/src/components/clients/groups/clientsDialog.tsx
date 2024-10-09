@@ -80,7 +80,6 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, sh
 
         try {
             const time = getString(getCurrentTime());
-            console.log(time)
             if (checkedClientIds.length > 0) {
                 await authClient.request('attendances/clients/add', HttpMethod.POST, {
                     clientIds: checkedClientIds,

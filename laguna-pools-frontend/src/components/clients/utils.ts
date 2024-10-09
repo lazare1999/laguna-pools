@@ -9,11 +9,8 @@ const determineHoursEnum = (hour: number): HoursEnum => {
         throw new Error("Hour must be between 0 and 23.");
     }
 
-    console.log(hour);
-
     const formattedHour = hour.toString().padStart(2, '0');
 
-    console.log(formattedHour);
     return HoursEnum[`HOUR_${formattedHour}` as keyof typeof HoursEnum];
 };
 
@@ -35,13 +32,9 @@ export const getAttendancesListById = async (
             time: string;
             attended: boolean;
         }) => {
-            console.log(attendance.time);
             const dateTime = new Date(attendance.time);
-            console.log(dateTime);
             const day = dateTime.toLocaleDateString();
-            console.log(day);
             const hours: HoursEnum = determineHoursEnum(dateTime.getHours());
-            console.log(hours);
             return {
                 day,
                 time: hours,
