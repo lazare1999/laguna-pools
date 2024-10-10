@@ -1,27 +1,16 @@
 import React from "react";
-import {Doughnut, Line} from "react-chartjs-2";
-import {
-    ArcElement,
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LinearScale,
-    LineElement,
-    PointElement,
-    Title,
-    Tooltip
-} from 'chart.js';
+import {Bar, Doughnut} from "react-chartjs-2"; // Import Bar instead of Line
+import {ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js';
 import {GraphDataModel} from "../models/accounting/graphDataModel";
 
 ChartJS.register(
     CategoryScale,
     LinearScale,
-    PointElement,
-    LineElement,
+    ArcElement,
+    BarElement,
     Title,
     Tooltip,
-    Legend,
-    ArcElement
+    Legend
 );
 
 interface AccountingPageFiltersProps {
@@ -34,31 +23,28 @@ const AccountingPageGraphs: React.FC<AccountingPageFiltersProps> = ({data}) => {
     const monthlyIncomeData = aggregateMonthlyData(data.lineChartDataIncome, labels);
     const monthlyDebtsData = aggregateMonthlyData(data.lineChartDataDebts, labels);
 
-    const lineChartData = {
+    // Modify the lineChartData to fit a bar chart
+    const barChartData = {
         labels,
         datasets: [
             {
                 label: 'Income',
                 data: monthlyIncomeData,
-                fill: false,
                 backgroundColor: 'rgba(75, 192, 192, 0.6)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 2,
-                tension: 0.4,
             },
             {
                 label: 'Debts',
                 data: monthlyDebtsData,
-                fill: false,
                 backgroundColor: 'rgba(255, 99, 132, 0.6)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 2,
-                tension: 0.4,
             },
         ],
     };
 
-    const optionsL = {
+    const optionsB = {
         responsive: true,
         plugins: {
             legend: {
@@ -77,6 +63,7 @@ const AccountingPageGraphs: React.FC<AccountingPageFiltersProps> = ({data}) => {
                     display: true,
                     text: 'Amount',
                 },
+                beginAtZero: true, // Start y-axis at zero for better equalizer effect
             },
         },
     };
@@ -85,7 +72,7 @@ const AccountingPageGraphs: React.FC<AccountingPageFiltersProps> = ({data}) => {
         labels: ['Income', 'Debt'],
         datasets: [
             {
-                data: data.doughnutIncomeDebtTotal,
+                data: [data.doughnutIncomeTotal, data.doughnutDebtTotal],
                 backgroundColor: [
                     'rgba(75, 192, 192, 0.6)',
                     'rgba(255, 99, 132, 0.6)',
@@ -110,12 +97,12 @@ const AccountingPageGraphs: React.FC<AccountingPageFiltersProps> = ({data}) => {
     };
 
     return (
-        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 10}}>
             <div style={{width: '400px', height: '400px', marginRight: '40px'}}>
                 <Doughnut data={doughnutData} options={optionsD}/>
             </div>
             <div style={{width: '600px', height: '400px'}}>
-                <Line data={lineChartData} options={optionsL}/>
+                <Bar data={barChartData} options={optionsB}/> {/* Use Bar instead of Line */}
             </div>
         </div>
     );

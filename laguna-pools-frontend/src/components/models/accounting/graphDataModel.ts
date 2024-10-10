@@ -1,5 +1,6 @@
 export interface GraphDataModel {
-    doughnutIncomeDebtTotal: [number, number];
+    doughnutIncomeTotal: number;
+    doughnutDebtTotal: number;
     lineChartDataIncome: number[];
     lineChartDataDebts: number[];
     dateFrom: string;
@@ -7,7 +8,8 @@ export interface GraphDataModel {
 }
 
 export const defaultGraphDataModel: GraphDataModel = {
-    doughnutIncomeDebtTotal: [55, 45],
+    doughnutIncomeTotal: 55,
+    doughnutDebtTotal: 45,
     lineChartDataIncome: [45, 50, 55, 60, 40, 45, 50, 55, 60, 40],
     lineChartDataDebts: [13.5, 15, 16.5, 18, 12, 13.5, 15, 16.5, 18, 12],
     dateFrom: new Date(new Date().getFullYear(), 0, 1).toString(),

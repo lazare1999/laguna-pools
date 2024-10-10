@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {
     Box,
     Button,
+    Dialog,
+    DialogTitle,
     FormControl,
     InputLabel,
     SelectChangeEvent,
@@ -12,7 +14,7 @@ import {
     TableHead,
     TablePagination,
     TableRow,
-    TextField
+    TextField,
 } from "@mui/material";
 import BranchSelector from "../clients/branchSelector";
 import {UserApiService} from "../../api/userApiService";
@@ -23,21 +25,32 @@ import LoadingPage from "../common/loadingPage";
 import AccountingPageGraphs from "./accountingPageGraphs";
 import {format} from "date-fns";
 import {AccountingModel, defaultAccountingModel} from "../models/accounting/accountingModel";
+import EqualizerOutlinedIcon from '@mui/icons-material/EqualizerOutlined';
+import authClient from "../../api/api";
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import {AlertDialog} from "../../utils/alertsUtils";
 
 const COLUMNS = ["#", "Amount", "Date", "Type", "Client"];
 
+
+const filterFields = [
+    {label: "Day From", key: "dayFrom", type: "datetime-local"},
+    {label: "Day To", key: "dayTo", type: "datetime-local"},
+    {label: "Name", key: "name", type: "text"},
+    {label: "Lastname", key: "lastname", type: "text"},
+];
+
 const AccountingPage: React.FC = () => {
-
     const [accounting, setAccounting] = useState<AccountingModel>(defaultAccountingModel);
-
     const [filters, setFilters] = useState<AccountingFilters>(defaultAccountingFilters);
     const [userRoles, setUserRoles] = useState<string[]>([]);
     const [accountingLoading, setAccountingLoading] = useState<boolean>(false);
-
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [count, setCount] = useState<number>(0);
-
+    const [openGraphModal, setOpenGraphModal] = useState<boolean>(false);
+    const [alertOpen, setAlertOpen] = useState<boolean>(false);
+    const [alertMessage, setAlertMessage] = useState<string>("");
 
     useEffect(() => {
         fetchData().then(r => r);
@@ -58,7 +71,6 @@ const AccountingPage: React.FC = () => {
         }).catch(err => console.error(err));
     }, []);
 
-
     const hasRole = (role: string) => {
         return userRoles.includes(role);
     };
@@ -69,14 +81,30 @@ const AccountingPage: React.FC = () => {
             ...filters,
             branches: typeof value === "string" ? value.split(",") : value,
         });
-    }
+    };
 
     const fetchData = async () => {
         setAccountingLoading(true);
+        try {
+            const params: Record<string, any> = {
+                pageKey: page,
+                pageSize: rowsPerPage,
+                ...filters
+            };
+            const queryString = new URLSearchParams(params as any).toString();
+            const response = await authClient.request(`accounting?${queryString}`, HttpMethod.GET);
 
-        setCount(0)
-        setAccounting(defaultAccountingModel);
-
+            if (Array.isArray(response.data.content.accountingClient)) {
+                setAccounting(response.data.content);
+                setCount(response.data.total);
+            } else {
+                setAlertMessage('Network response was not ok');
+                setAlertOpen(true);
+            }
+        } catch (error) {
+            setAlertMessage(`Error fetching data: ${error}`);
+            setAlertOpen(true);
+        }
         setAccountingLoading(false);
     };
 
@@ -88,10 +116,19 @@ const AccountingPage: React.FC = () => {
         setFilters(defaultAccountingFilters);
     };
 
-    const handleFilterChange = (key: keyof typeof filters) =>
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-            setFilters({...filters, [key]: e.target.value});
-        };
+    const handleChange =
+        (key: keyof AccountingFilters) =>
+            (event: React.ChangeEvent<HTMLInputElement>) => {
+                setFilters({...filters, [key]: event.target.value});
+            };
+
+    const handleOpenGraphModal = () => {
+        setOpenGraphModal(true);
+    };
+
+    const handleCloseGraphModal = () => {
+        setOpenGraphModal(false);
+    };
 
     return (
         <>
@@ -105,34 +142,23 @@ const AccountingPage: React.FC = () => {
                         gap: 1,
                         flexWrap: 'wrap'
                     }}>
-                        <TextField
-                            label="Date From"
-                            type="date"
-                            variant="outlined"
-                            value={filters.dayFrom}
-                            onChange={handleFilterChange("dayFrom")}
-                            margin="normal"
-                            sx={{flexGrow: 1, height: 64}}
-                            slotProps={{
-                                inputLabel: {
-                                    shrink: true,
-                                }
-                            }}
-                        />
-                        <TextField
-                            label="Date To"
-                            type="date"
-                            variant="outlined"
-                            value={filters.dayTo}
-                            onChange={handleFilterChange("dayTo")}
-                            margin="normal"
-                            sx={{flexGrow: 1, height: 64}}
-                            slotProps={{
-                                inputLabel: {
-                                    shrink: true,
-                                }
-                            }}
-                        />
+                        {filterFields.map(({label, key, type}) => (
+                            <TextField
+                                label={label}
+                                type={type}
+                                variant="outlined"
+                                value={filters[key as keyof AccountingFilters]}
+                                onChange={handleChange(key as keyof AccountingFilters)}
+
+                                margin="normal"
+                                sx={{flexGrow: 1, height: 64}}
+                                slotProps={{
+                                    inputLabel: {
+                                        shrink: true,
+                                    }
+                                }}
+                            />
+                        ))}
 
                         {hasRole("ROLE_LAGUNA_ADMIN") &&
                             <FormControl sx={{flexGrow: 20}}>
@@ -141,9 +167,7 @@ const AccountingPage: React.FC = () => {
                                                 labelId={"branches-select-label-accounting-label-id"}
                                                 filters={filters} handleBranchChange={handleBranchChange}/>
                             </FormControl>
-
                         }
-
 
                         <Button
                             variant="outlined"
@@ -169,8 +193,19 @@ const AccountingPage: React.FC = () => {
                         >
                             <ClearAllIcon/>
                         </Button>
+                        <Button
+                            variant="outlined"
+                            onClick={handleOpenGraphModal}
+                            sx={{
+                                flexGrow: 0,
+                                display: "flex",
+                                alignItems: "center",
+                                height: "50px"
+                            }}
+                        >
+                            <EqualizerOutlinedIcon/>
+                        </Button>
                     </Box>
-                    <AccountingPageGraphs data={accounting.graphData}/>
                     <TableContainer>
                         <Table>
                             <TableHead>
@@ -187,7 +222,7 @@ const AccountingPage: React.FC = () => {
                                     accounting.accountingClient.map((a, index) => {
                                         const rowNumber = page * rowsPerPage + index + 1;
                                         return (
-                                            <TableRow style={{cursor: 'pointer'}}>
+                                            <TableRow key={a.id} style={{cursor: 'pointer'}}>
                                                 <TableCell>{rowNumber}</TableCell>
                                                 <TableCell>{a.amount}</TableCell>
                                                 <TableCell>{format(new Date(a.date), 'MMMM dd, yyyy')}</TableCell>
@@ -208,6 +243,22 @@ const AccountingPage: React.FC = () => {
                         page={page}
                         onPageChange={handlePageChange}
                         onRowsPerPageChange={handleRowsPerPageChange}
+                    />
+
+                    <Dialog
+                        open={openGraphModal}
+                        onClose={handleCloseGraphModal}
+                        maxWidth="md"
+                        fullWidth
+                    >
+                        <DialogTitle>Finances Graphs</DialogTitle>
+                        <AccountingPageGraphs data={accounting.graphData}/>
+                    </Dialog>
+                    <AlertDialog
+                        open={alertOpen}
+                        title="Error"
+                        message={alertMessage}
+                        onClose={() => setAlertOpen(false)}
                     />
                 </div>
             }
