@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * Created by Lazo on 10/10/24
  */
@@ -16,5 +18,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AccountingResponseDTO {
     private Long total;
-    private AccountingDTO content;
+    private List<AccountingClientDTO> content;
 }

@@ -1,7 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import {Bar, Doughnut} from "react-chartjs-2"; // Import Bar instead of Line
 import {ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js';
-import {GraphDataModel} from "../models/accounting/graphDataModel";
+import {defaultGraphDataModel} from "../models/accounting/graphDataModel";
 
 ChartJS.register(
     CategoryScale,
@@ -13,11 +13,9 @@ ChartJS.register(
     Legend
 );
 
-interface AccountingPageFiltersProps {
-    data: GraphDataModel;
-}
+const AccountingPageGraphs: React.FC = () => {
 
-const AccountingPageGraphs: React.FC<AccountingPageFiltersProps> = ({data}) => {
+    const [data, setData] = useState(defaultGraphDataModel);
     const labels = generateMonthlyLabels(data.dateFrom, data.dateTo);
 
     const monthlyIncomeData = aggregateMonthlyData(data.lineChartDataIncome, labels);

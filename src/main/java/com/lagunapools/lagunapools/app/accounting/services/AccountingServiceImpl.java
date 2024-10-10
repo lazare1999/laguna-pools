@@ -1,7 +1,10 @@
 package com.lagunapools.lagunapools.app.accounting.services;
 
 
-import com.lagunapools.lagunapools.app.accounting.models.*;
+import com.lagunapools.lagunapools.app.accounting.models.AccountingClientDTO;
+import com.lagunapools.lagunapools.app.accounting.models.AccountingResponseDTO;
+import com.lagunapools.lagunapools.app.accounting.models.AttendancesRequestDTO;
+import com.lagunapools.lagunapools.app.accounting.models.GraphDataDTO;
 import com.lagunapools.lagunapools.app.accounting.repository.AccountingEntity;
 import com.lagunapools.lagunapools.app.accounting.repository.AccountingRepository;
 import com.lagunapools.lagunapools.app.user.domains.AppUser;
@@ -87,9 +90,7 @@ public class AccountingServiceImpl implements AccountingService {
 
         List<AccountingClientDTO> list = page.stream().map(AccountingClientDTO::new).toList();
 
-        GraphDataDTO g = getGraphDataDTO(df, dt, list);
-
-        return new AccountingResponseDTO(page.getTotalElements(), new AccountingDTO(g, list));
+        return new AccountingResponseDTO(page.getTotalElements(), list);
     }
 
     private static @NotNull GraphDataDTO getGraphDataDTO(LocalDateTime df, LocalDateTime dt, List<AccountingClientDTO> list) {
@@ -134,25 +135,27 @@ public class AccountingServiceImpl implements AccountingService {
             current = current.plusMonths(1);
         }
 
-        Double doughnutDebtTotal = list.stream()
+        list.stream()
                 .map(AccountingClientDTO::getClient)
                 .distinct()
-                .mapToDouble(client -> {
+                .forEach(client -> {
                     LocalDate expDate = client.getExpDate();
                     if (expDate == null || LocalDate.now().isBefore(expDate)) {
-                        return 0.0;
+                        return; // Skip processing if expDate is null or in the future
                     }
                     double cost = client.getCost();
                     double monthsOfDebt = Period.between(expDate, LocalDate.now()).toTotalMonths();
                     double totalDebt = monthsOfDebt * cost;
                     double totalIncome = clientIncomeMap.getOrDefault(client.getId(), 0.0);
-                    return Math.max(totalDebt - totalIncome, 0.0);
-                })
-                .sum();
+                    double netDebt = Math.max(totalDebt - totalIncome, 0.0);
+
+                    // Here, you can do something with netDebt, like logging or storing it
+                    System.out.println("Net Debt for Client ID " + client.getId() + ": " + netDebt);
+                });
 
         return new GraphDataDTO(
                 doughnutIncomeTotal,
-                doughnutDebtTotal,
+                0.0,
                 lineChartDataIncome,
                 lineChartDataDebts,
                 df.toString(),

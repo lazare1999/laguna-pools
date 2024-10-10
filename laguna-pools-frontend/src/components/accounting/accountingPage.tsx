@@ -24,11 +24,11 @@ import ClearAllIcon from "@mui/icons-material/ClearAll";
 import LoadingPage from "../common/loadingPage";
 import AccountingPageGraphs from "./accountingPageGraphs";
 import {format} from "date-fns";
-import {AccountingModel, defaultAccountingModel} from "../models/accounting/accountingModel";
 import EqualizerOutlinedIcon from '@mui/icons-material/EqualizerOutlined';
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import {AlertDialog} from "../../utils/alertsUtils";
+import {AccountingClientModel} from "../models/accounting/accountingClientModel";
 
 const COLUMNS = ["#", "Amount", "Date", "Type", "Client"];
 
@@ -41,7 +41,7 @@ const filterFields = [
 ];
 
 const AccountingPage: React.FC = () => {
-    const [accounting, setAccounting] = useState<AccountingModel>(defaultAccountingModel);
+    const [accounting, setAccounting] = useState<AccountingClientModel[]>([]);
     const [filters, setFilters] = useState<AccountingFilters>(defaultAccountingFilters);
     const [userRoles, setUserRoles] = useState<string[]>([]);
     const [accountingLoading, setAccountingLoading] = useState<boolean>(false);
@@ -94,7 +94,7 @@ const AccountingPage: React.FC = () => {
             const queryString = new URLSearchParams(params as any).toString();
             const response = await authClient.request(`accounting?${queryString}`, HttpMethod.GET);
 
-            if (Array.isArray(response.data.content.accountingClient)) {
+            if (Array.isArray(response.data.content)) {
                 setAccounting(response.data.content);
                 setCount(response.data.total);
             } else {
@@ -219,7 +219,7 @@ const AccountingPage: React.FC = () => {
                             </TableHead>
                             <TableBody>
                                 {
-                                    accounting.accountingClient.map((a, index) => {
+                                    accounting.map((a, index) => {
                                         const rowNumber = page * rowsPerPage + index + 1;
                                         return (
                                             <TableRow key={a.id} style={{cursor: 'pointer'}}>
@@ -252,7 +252,7 @@ const AccountingPage: React.FC = () => {
                         fullWidth
                     >
                         <DialogTitle>Finances Graphs</DialogTitle>
-                        <AccountingPageGraphs data={accounting.graphData}/>
+                        <AccountingPageGraphs/>
                     </Dialog>
                     <AlertDialog
                         open={alertOpen}
