@@ -1,4 +1,4 @@
-import {HoursEnum} from "../../utils/enums/HoursEnum";
+import {HoursEnum} from "../../../utils/enums/HoursEnum";
 
 export interface Attendance {
     day: string;

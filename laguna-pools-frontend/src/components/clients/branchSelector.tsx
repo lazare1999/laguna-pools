@@ -1,6 +1,6 @@
 import {Checkbox, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent} from "@mui/material";
 import React, {useEffect, useState} from "react";
-import {BranchModel} from "../models/branchModel";
+import {BranchModel} from "../models/admin/branchModel";
 import {fetchBranchesList} from "../../utils/utils";
 
 interface BranchSelectorProps {

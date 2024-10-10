@@ -14,10 +14,10 @@ import {
 
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
-import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
-import authClient from '../../../api/api';
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import authClient from '../../api/api';
 import {getCurrentTime, getString} from "./utils";
-import LoadingPage from "../../common/loadingPage";
+import LoadingPage from "../common/loadingPage";
 
 interface Client {
     id: number;

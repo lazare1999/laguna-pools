@@ -1,5 +1,5 @@
 import {HoursEnum} from "../../utils/enums/HoursEnum";
-import {Attendance} from "../models/attnedance";
+import {Attendance} from "../models/attendances/attnedance";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
 import authClient from "../../api/api";

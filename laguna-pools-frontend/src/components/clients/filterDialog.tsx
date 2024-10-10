@@ -21,8 +21,8 @@ import {
     Typography,
 } from "@mui/material";
 import {Cancel, CheckCircle} from "@mui/icons-material";
-import {DialogFilters} from "../models/clientFilterModels";
-import {GroupModel} from "../models/GroupModel";
+import {DialogFilters} from "../models/clients/clientFilterModels";
+import {GroupModel} from "../models/groups/GroupModel";
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 

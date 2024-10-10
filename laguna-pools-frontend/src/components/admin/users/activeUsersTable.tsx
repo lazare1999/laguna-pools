@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import {Refresh} from "@mui/icons-material";
 import ActiveUserRow from "./activeUserRow";
-import {User} from "../../models/usersModel";
+import {User} from "../../models/admin/usersModel";
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
 import authClient from "../../../api/api";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -32,8 +32,8 @@ import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import LoadingPage from "../../common/loadingPage";
 import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
-import {TargetView} from "../../models/targetViewModel";
-import {BranchModel} from "../../models/branchModel";
+import {TargetView} from "../../models/admin/targetViewModel";
+import {BranchModel} from "../../models/admin/branchModel";
 import {fetchBranchesList, fetchRolesList} from "../../../utils/utils";
 
 const ITEM_HEIGHT = 48;

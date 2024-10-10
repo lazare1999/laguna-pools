@@ -17,10 +17,10 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import {Client} from "../models/clientsModel";
+import {Client} from "../models/clients/clientsModel";
 import {DayEnum} from "../../utils/enums/DayEnum";
 import {HoursEnum} from "../../utils/enums/HoursEnum";
-import {GroupModel} from "../models/GroupModel";
+import {GroupModel} from "../models/groups/GroupModel";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';

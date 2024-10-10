@@ -14,13 +14,14 @@ import {
     Tooltip
 } from "@mui/material";
 import {Delete, Edit, Save} from "@mui/icons-material";
-import {Client} from "../models/clientsModel";
+import {Client} from "../models/clients/clientsModel";
 import UnpublishedOutlinedIcon from '@mui/icons-material/UnpublishedOutlined';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
 import {DayEnum} from "../../utils/enums/DayEnum";
 import {HoursEnum} from "../../utils/enums/HoursEnum";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import ClientAttendancesDialog from "./clientAttendancesDialog";
@@ -515,6 +516,9 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                         </TableCell>
                         <TableCell align="center" sx={{width: "160px"}}>
                             {!hovered ? <ManageAccountsOutlinedIcon/> : <>
+                                <IconButton>
+                                    <AccountBalanceWalletOutlinedIcon/>
+                                </IconButton>
                                 <IconButton onClick={() => setIsModalOpen(true)}>
                                     <EditCalendarIcon/>
                                 </IconButton>

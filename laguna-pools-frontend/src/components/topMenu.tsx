@@ -6,6 +6,7 @@ import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import PoolOutlinedIcon from '@mui/icons-material/PoolOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import {UserApiService} from "../api/userApiService";
 
 interface TopMenuProps {
@@ -61,7 +62,12 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
                         onClick={() => selectHandler(Component.GROUPS)}>
                     Groups
                 </Button>
-                
+
+                <Button color="inherit" startIcon={<AccountBalanceOutlinedIcon/>}
+                        onClick={() => selectHandler(Component.ACCOUNTING)}>
+                    Finances
+                </Button>
+
                 <Box sx={{flexGrow: 1}}/>
                 <Button
                     color="inherit"

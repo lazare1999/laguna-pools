@@ -1,4 +1,4 @@
-import {GroupModel} from "./GroupModel";
+import {GroupModel} from "../groups/GroupModel";
 
 export interface Client {
     id: number;

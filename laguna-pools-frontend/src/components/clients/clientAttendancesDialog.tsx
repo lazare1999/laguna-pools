@@ -17,8 +17,8 @@ import {
     TextField
 } from '@mui/material';
 import {HoursEnum} from "../../utils/enums/HoursEnum";
-import {Client} from "../models/clientsModel";
-import {Attendance} from "../models/attnedance";
+import {Client} from "../models/clients/clientsModel";
+import {Attendance} from "../models/attendances/attnedance";
 import {addAttendance, getAttendancesListById} from "./utils";
 import LoadingPage from "../common/loadingPage";
 

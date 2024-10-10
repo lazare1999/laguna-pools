@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Chip, IconButton, TableCell, TableRow} from "@mui/material";
-import {User} from "../../models/usersModel";
+import {User} from "../../models/admin/usersModel";
 import {AlertDialog, Toast} from "../../../utils/alertsUtils";
 import EditUserDialog from "./editUserDialog";
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
@@ -10,8 +10,8 @@ import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined
 import {format} from "date-fns";
 import authClient from "../../../api/api";
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
-import {TargetView} from "../../models/targetViewModel";
-import {BranchModel} from "../../models/branchModel";
+import {TargetView} from "../../models/admin/targetViewModel";
+import {BranchModel} from "../../models/admin/branchModel";
 
 interface UserRowProps {
     user: User;

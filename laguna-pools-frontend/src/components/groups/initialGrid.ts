@@ -1,5 +1,5 @@
-import {DayEnum} from "../../../utils/enums/DayEnum";
-import {HoursEnum} from "../../../utils/enums/HoursEnum";
+import {DayEnum} from "../../utils/enums/DayEnum";
+import {HoursEnum} from "../../utils/enums/HoursEnum";
 
 export interface GroupInfo {
     groupId: number | null;

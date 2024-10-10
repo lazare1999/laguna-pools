@@ -21,14 +21,14 @@ import {
 } from "@mui/material";
 import {ClearAll, Refresh} from "@mui/icons-material";
 import LoadingPage from "../common/loadingPage";
-import {AttendancesModel} from "../models/AttendancesModel";
+import {AttendancesModel} from "../models/attendances/attendancesModel";
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import {HoursEnum} from "../../utils/enums/HoursEnum";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import BranchSelector from "../clients/branchSelector";
-import {DaysFilterModel, defaultDaysFilters} from "../models/daysFilterModel";
+import {DaysFilterModel, defaultDaysFilters} from "../models/admin/daysFilterModel";
 
 const COLUMNS = ["#", "Client", "Time", "Attended"];
 

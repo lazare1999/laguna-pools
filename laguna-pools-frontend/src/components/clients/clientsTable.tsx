@@ -19,12 +19,17 @@ import {
 } from "@mui/material";
 import ClientRow from "./clientRow";
 import AddClientDialog from "./addClientDialog";
-import {Client} from "../models/clientsModel";
+import {Client} from "../models/clients/clientsModel";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import {Refresh} from "@mui/icons-material";
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import FilterDialog from "./filterDialog";
-import {ClientFilters, defaultClientFilters, defaultDialogFilters, DialogFilters} from "../models/clientFilterModels";
+import {
+    ClientFilters,
+    defaultClientFilters,
+    defaultDialogFilters,
+    DialogFilters
+} from "../models/clients/clientFilterModels";
 import LoadingPage from "../common/loadingPage";
 import {Toast} from "../../utils/alertsUtils";
 import {UserApiService} from "../../api/userApiService";
