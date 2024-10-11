@@ -1,5 +1,3 @@
-import {TransactionEnum} from "../../../utils/enums/TransactionEnum";
-
 export interface AccountingFilters {
     dayTo: string;
     dayFrom: string;
@@ -12,7 +10,7 @@ export interface AccountingFilters {
 export const defaultAccountingFilters: AccountingFilters = {
     dayTo: '',
     dayFrom: '',
-    type: TransactionEnum.CASH,
+    type: '',
     branches: [],
     name: '',
     lastname: '',

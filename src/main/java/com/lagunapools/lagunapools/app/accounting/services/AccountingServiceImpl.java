@@ -1,12 +1,11 @@
 package com.lagunapools.lagunapools.app.accounting.services;
 
 
-import com.lagunapools.lagunapools.app.accounting.models.AccountingClientDTO;
-import com.lagunapools.lagunapools.app.accounting.models.AccountingResponseDTO;
-import com.lagunapools.lagunapools.app.accounting.models.AttendancesRequestDTO;
-import com.lagunapools.lagunapools.app.accounting.models.GraphDataDTO;
+import com.lagunapools.lagunapools.app.accounting.models.*;
 import com.lagunapools.lagunapools.app.accounting.repository.AccountingEntity;
 import com.lagunapools.lagunapools.app.accounting.repository.AccountingRepository;
+import com.lagunapools.lagunapools.app.clients.repository.ClientsEntity;
+import com.lagunapools.lagunapools.app.clients.repository.ClientsRepository;
 import com.lagunapools.lagunapools.app.user.domains.AppUser;
 import com.lagunapools.lagunapools.app.user.repository.UserRepository;
 import com.lagunapools.lagunapools.app.user.services.MyUserDetailsService;
@@ -17,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,6 +26,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUser;
+import static com.lagunapools.lagunapools.utils.ResponseUtils.badRequestResponse;
+import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
 
 /**
  * Created by Lazo on 10/10/24
@@ -39,8 +41,10 @@ public class AccountingServiceImpl implements AccountingService {
     private final UserRepository userRepository;
     private final MyUserDetailsService userDetailsService;
 
+    private final ClientsRepository clientsRepository;
+
     @Override
-    public AccountingResponseDTO attendances(AttendancesRequestDTO request) {
+    public AccountingResponseDTO getAccounting(AttendancesRequestDTO request) {
         if (request.getPageKey() == null || request.getPageSize() == null)
             return new AccountingResponseDTO();
 
@@ -82,7 +86,7 @@ public class AccountingServiceImpl implements AccountingService {
                         builder.lessThanOrEqualTo(root.get("date"), dt));
             }
 
-            if (request.getType() != null)
+            if (StringUtils.isNotEmpty(request.getType()))
                 predicate = builder.and(predicate, builder.equal(root.get("type"), request.getType()));
 
             return predicate;
@@ -91,6 +95,19 @@ public class AccountingServiceImpl implements AccountingService {
         List<AccountingClientDTO> list = page.stream().map(AccountingClientDTO::new).toList();
 
         return new AccountingResponseDTO(page.getTotalElements(), list);
+    }
+
+    @Override
+    public ResponseEntity<?> addAccounting(AddAccountingRequestDTO request) {
+        try {
+            AccountingEntity accounting = new AccountingEntity(request);
+            ClientsEntity client = clientsRepository.findById(request.getClientId()).orElseThrow();
+            accounting.setClient(client);
+            accountingRepository.save(accounting);
+        } catch (Exception e) {
+            badRequestResponse(e.getStackTrace());
+        }
+        return okResponse("Accounting added!");
     }
 
     private static @NotNull GraphDataDTO getGraphDataDTO(LocalDateTime df, LocalDateTime dt, List<AccountingClientDTO> list) {

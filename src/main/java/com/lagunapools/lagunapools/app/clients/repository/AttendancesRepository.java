@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
 public interface AttendancesRepository extends JpaRepository<AttendanceEntity, Long>, JpaSpecificationExecutor<AttendanceEntity> {
     Page<AttendanceEntity> findAllByClientId(Long clientId, Pageable pageable);
 
-
 }

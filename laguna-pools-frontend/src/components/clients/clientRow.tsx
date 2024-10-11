@@ -21,13 +21,14 @@ import {DayEnum} from "../../utils/enums/DayEnum";
 import {HoursEnum} from "../../utils/enums/HoursEnum";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import ClientAttendancesDialog from "./clientAttendancesDialog";
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import FinancesDialog from "./financesDialog";
 
 interface ClientRowProps {
     client: Client;
@@ -41,7 +42,12 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
     const [editableClient, setEditableClient] = useState<Client>(client);
     const [dayHourPairs, setDayHourPairs] = useState(editableClient.groups);
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditCalendarModalOpen, setIsEditCalendarModalOpen] = useState(false);
+    const [isFinanceModalOpen, setFinanceModalOpen] = useState<boolean>(false);
+
+    const financeModalCloseHandler = () => {
+        setFinanceModalOpen(false);
+    }
 
     const [hovered, setHovered] = useState(false);
 
@@ -54,7 +60,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
     };
 
     const modalCloseHandler = () => {
-        setIsModalOpen(false);
+        setIsEditCalendarModalOpen(false);
     }
 
     const handleEditClick = () => {
@@ -516,10 +522,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                         </TableCell>
                         <TableCell align="center" sx={{width: "160px"}}>
                             {!hovered ? <ManageAccountsOutlinedIcon/> : <>
-                                <IconButton>
-                                    <AccountBalanceWalletOutlinedIcon/>
+                                <IconButton onClick={() => setFinanceModalOpen(true)}>
+                                    <LocalAtmIcon/>
                                 </IconButton>
-                                <IconButton onClick={() => setIsModalOpen(true)}>
+                                <IconButton onClick={() => setIsEditCalendarModalOpen(true)}>
                                     <EditCalendarIcon/>
                                 </IconButton>
                                 <IconButton onClick={handleEditClick}>
@@ -536,7 +542,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
             </TableRow>
 
             <ClientAttendancesDialog client={client}
-                                     isModalOpen={isModalOpen} modalCloseHandler={modalCloseHandler}/>
+                                     isModalOpen={isEditCalendarModalOpen} modalCloseHandler={modalCloseHandler}/>
+
+            <FinancesDialog client={client}
+                            isModalOpen={isFinanceModalOpen} modalCloseHandler={financeModalCloseHandler}/>
         </>
     );
 };

@@ -1,6 +1,7 @@
 package com.lagunapools.lagunapools.app.accounting.repository;
 
 
+import com.lagunapools.lagunapools.app.accounting.models.AddAccountingRequestDTO;
 import com.lagunapools.lagunapools.app.clients.repository.ClientsEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -46,6 +47,13 @@ public class AccountingEntity {
         this.amount = amount;
         this.date = LocalDateTime.now();
         this.type = type;
+    }
+
+    public AccountingEntity(AddAccountingRequestDTO accounting) {
+        this.clientId = accounting.getClientId();
+        this.amount = accounting.getAmount();
+        this.date = LocalDateTime.now();
+        this.type = accounting.getType();
     }
 
 
