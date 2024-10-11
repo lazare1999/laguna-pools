@@ -7,4 +7,5 @@ export interface AccountingClientModel {
     date: string;
     type: TransactionEnum;
     client: Client;
+    note: string;
 }

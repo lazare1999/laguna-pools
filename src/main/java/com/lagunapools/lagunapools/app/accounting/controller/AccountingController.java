@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Created by Lazo on 10/10/24
  */
@@ -32,5 +34,9 @@ public class AccountingController {
         return accountingService.addAccounting(request);
     }
 
+    @GetMapping("calc_income")
+    public ResponseEntity<?> calcIncome(@RequestParam List<String> branches) {
+        return accountingService.calcIncome(branches);
+    }
 
 }

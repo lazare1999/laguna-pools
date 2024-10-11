@@ -1,4 +1,4 @@
 export enum TransactionEnum {
-    CASH = 'cash',
-    CARD = 'card'
+    CASH = 'Cash',
+    CARD = 'Card'
 }

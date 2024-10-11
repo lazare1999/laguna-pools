@@ -35,6 +35,9 @@ public class AccountingEntity {
     @Column(name = "type")
     private String type;
 
+    @Column(name = "note")
+    private String note;
+
     @Column(name = "client_id", insertable = false, updatable = false)
     private Long clientId;
 
@@ -42,18 +45,12 @@ public class AccountingEntity {
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private ClientsEntity client;
 
-    public AccountingEntity(Double amount, String type, Long clientId) {
-        this.clientId = clientId;
-        this.amount = amount;
-        this.date = LocalDateTime.now();
-        this.type = type;
-    }
-
     public AccountingEntity(AddAccountingRequestDTO accounting) {
         this.clientId = accounting.getClientId();
         this.amount = accounting.getAmount();
         this.date = LocalDateTime.now();
         this.type = accounting.getType();
+        this.note = accounting.getNote();
     }
 
 

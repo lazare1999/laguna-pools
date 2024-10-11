@@ -24,7 +24,7 @@
 }
 
 .schedule-table th {
-    background-color: #007BFF;
+    background-color: #3f43b5; /* Changed to custom primary color */
     color: white;
     font-weight: bold;
     text-transform: uppercase;
@@ -36,12 +36,12 @@
 }
 
 .cell-blue {
-    background-color: #007BFF;
+    background-color: #3f43b5; /* Changed to custom primary color */
     color: white;
 }
 
 .cell-blue:hover {
-    background-color: #0056b3;
+    background-color: #2d30a0; /* Slightly darker shade for hover */
     color: #e0e0e0;
 }
 
@@ -64,7 +64,6 @@
     background-color: #c82333;
     color: #f8f9fa;
 }
-
 
 tfoot {
     font-weight: bold;

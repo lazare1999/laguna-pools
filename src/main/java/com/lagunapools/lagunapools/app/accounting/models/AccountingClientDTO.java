@@ -24,6 +24,7 @@ public class AccountingClientDTO {
     private LocalDateTime date;
     private String type;
     private ClientDTO client;
+    private String note;
 
     public AccountingClientDTO(AccountingEntity accountingEntity) {
         this.id = accountingEntity.getId();
@@ -31,5 +32,6 @@ public class AccountingClientDTO {
         this.date = accountingEntity.getDate();
         this.type = accountingEntity.getType();
         this.client = new ClientDTO(accountingEntity.getClient());
+        this.note = accountingEntity.getNote();
     }
 }

@@ -27,10 +27,11 @@ import {format} from "date-fns";
 import EqualizerOutlinedIcon from '@mui/icons-material/EqualizerOutlined';
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
-import {AlertDialog} from "../../utils/alertsUtils";
+import {AlertDialog, Toast} from "../../utils/alertsUtils";
 import {AccountingClientModel} from "../models/accounting/accountingClientModel";
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 
-const COLUMNS = ["#", "Amount", "Date", "Type", "Client"];
+const COLUMNS = ["#", "Amount", "Date", "Type", "Client", "Note"];
 
 
 const filterFields = [
@@ -51,6 +52,8 @@ const AccountingPage: React.FC = () => {
     const [openGraphModal, setOpenGraphModal] = useState<boolean>(false);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
+    const [toastOpen, setToastOpen] = useState<boolean>(false);
+    const [toastMessage, setToastMessage] = useState<string>("");
 
     useEffect(() => {
         fetchData().then(r => r);
@@ -130,6 +133,24 @@ const AccountingPage: React.FC = () => {
         setOpenGraphModal(false);
     };
 
+    const handleCalculateTodayIncome = async () => {
+        try {
+            const params: Record<string, any> = {
+                branches: filters.branches
+            };
+            const queryString = new URLSearchParams(params as any).toString();
+            const response = await authClient.request(`accounting/calc_income?${queryString}`, HttpMethod.GET);
+
+            if (response.status === 200) {
+                setToastMessage(response.data);
+                setToastOpen(true);
+            }
+        } catch (error) {
+            setAlertMessage(`Error fetching data: ${error}`);
+            setAlertOpen(true);
+        }
+    };
+
     return (
         <>
             {accountingLoading ? <LoadingPage label={"Loading Table Data..."}/> :
@@ -205,6 +226,18 @@ const AccountingPage: React.FC = () => {
                         >
                             <EqualizerOutlinedIcon/>
                         </Button>
+                        <Button
+                            variant="outlined"
+                            onClick={handleCalculateTodayIncome}
+                            sx={{
+                                flexGrow: 0,
+                                display: "flex",
+                                alignItems: "center",
+                                height: "50px"
+                            }}
+                        >
+                            <AccessTimeOutlinedIcon/>
+                        </Button>
                     </Box>
                     <TableContainer>
                         <Table>
@@ -228,6 +261,7 @@ const AccountingPage: React.FC = () => {
                                                 <TableCell>{format(new Date(a.date), 'MMMM dd, yyyy')}</TableCell>
                                                 <TableCell>{a.type}</TableCell>
                                                 <TableCell>{`${a.client.firstName} ${a.client.lastName}`}</TableCell>
+                                                <TableCell>{a.note}</TableCell>
                                             </TableRow>
                                         );
                                     })
@@ -259,6 +293,12 @@ const AccountingPage: React.FC = () => {
                         title="Error"
                         message={alertMessage}
                         onClose={() => setAlertOpen(false)}
+                    />
+                    <Toast
+                        open={toastOpen}
+                        message={toastMessage}
+                        onClose={() => setToastOpen(false)}
+                        options={{autoHideDuration: 6000}}
                     />
                 </div>
             }

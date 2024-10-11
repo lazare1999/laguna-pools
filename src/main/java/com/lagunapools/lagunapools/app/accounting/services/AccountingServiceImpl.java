@@ -110,6 +110,11 @@ public class AccountingServiceImpl implements AccountingService {
         return okResponse("Accounting added!");
     }
 
+    @Override
+    public ResponseEntity<?> calcIncome(List<String> branches) {
+        return okResponse(accountingRepository.findTodayTotalAmount(branches));
+    }
+
     private static @NotNull GraphDataDTO getGraphDataDTO(LocalDateTime df, LocalDateTime dt, List<AccountingClientDTO> list) {
         if (df == null && dt == null) {
             df = LocalDateTime.now().minusDays(1);
