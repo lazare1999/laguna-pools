@@ -1,0 +1,65 @@
+import React, {useState} from 'react';
+import {fetchExcelFile} from "../../utils/excel";
+import {Button} from '@mui/material';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import {FILTER_BUTTON_STYLES} from "../../utils/constants";
+
+export interface Client {
+    id: number;
+    firstName: string;
+    lastName: string;
+    age: string;
+    cost: number;
+    expDate: string;
+    doctorCheckTill: string;
+    phoneNumber: string;
+    idStatus: boolean;
+    contractStatus: boolean;
+    notes: string;
+    parent: string;
+}
+
+interface ExcelImportProps {
+    clientsListHandler: (clients: Client[]) => void;
+}
+
+const ExcelImport: React.FC = () => {
+    const [clients, setClients] = useState<Client[]>([]);
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+
+        if (file) {
+            try {
+                const parsedClients = await fetchExcelFile(file);
+                setClients(parsedClients);
+            } catch (error) {
+                console.error('Error reading Excel file:', error);
+            }
+        }
+    };
+
+    return (
+        <div>
+            <input
+                type="file"
+                accept=".xlsx, .xls"
+                onChange={handleFileUpload}
+                style={{display: 'none'}} // Hide the input element
+                id="file-upload"
+            />
+
+            <label htmlFor="file-upload">
+                <Button
+                    variant="outlined"
+                    sx={FILTER_BUTTON_STYLES}
+                    component="span"
+                >
+                    <UploadFileIcon/>
+                </Button>
+            </label>
+        </div>
+    );
+};
+
+export default ExcelImport;

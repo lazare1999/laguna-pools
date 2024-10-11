@@ -36,9 +36,10 @@ import {UserApiService} from "../../api/userApiService";
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import {FILTER_BUTTON_STYLES} from "../../utils/constants";
 import {getAllFilteredClientsGrid, getClients} from "./utils";
-import {exportTableToExcel} from "../../utils/exportExcel";
+import {exportTableToExcel} from "../../utils/excel";
 import PlaylistRemoveOutlinedIcon from '@mui/icons-material/PlaylistRemoveOutlined';
 import BranchSelector from "./branchSelector";
+import ExcelImport from "./excelImport";
 
 const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Cost", "Notes", "Actions"];
 
@@ -243,6 +244,14 @@ const ClientsTable: React.FC = () => {
                     >
                         <DownloadOutlinedIcon/>
                     </Button>
+                    {/*<Button*/}
+                    {/*    variant="outlined"*/}
+                    {/*    onClick={() => fetchExcelFile()}*/}
+                    {/*    sx={FILTER_BUTTON_STYLES}*/}
+                    {/*>*/}
+                    {/*    <AddCircleIcon/>*/}
+                    {/*</Button>*/}
+                    <ExcelImport/>
                     <Button
                         variant="outlined"
                         onClick={handleClearAll}

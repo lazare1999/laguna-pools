@@ -40,10 +40,10 @@ const AccountingRow: React.FC<AccountingRowProps> = ({
             <TableCell>{accountingData.type}</TableCell>
             <TableCell>{`${accountingData.client.firstName} ${accountingData.client.lastName}`}</TableCell>
             <TableCell>{accountingData.note}</TableCell>
-            <TableCell align="center" sx={{width: "160px"}}>
+            <TableCell align="center" sx={{width: "160px", height: "37px"}}>
                 {!hovered ? <ManageAccountsOutlinedIcon/> : <>
                     <IconButton onClick={() => GeneratePDF(accountingData)}>
-                        <PictureAsPdfIcon color={"error"}/>
+                        <PictureAsPdfIcon fontSize="small" color={"error"}/>
                     </IconButton>
                 </>
                 }

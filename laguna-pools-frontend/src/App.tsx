@@ -107,7 +107,7 @@ const App = () => {
             roleRequired: 'ROLE_LAGUNA_ADMIN',
         },
         {
-            label: 'Day\'s',
+            label: 'Days',
             icon: <CalendarMonthOutlinedIcon/>,
             onClick: () => selectHandler(Component.DAYS),
             roleRequired: 'ROLE_LAGUNA_ADMIN',
