@@ -1,7 +1,10 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Bar, Doughnut} from "react-chartjs-2"; // Import Bar instead of Line
 import {ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js';
 import {defaultGraphDataModel} from "../models/accounting/graphDataModel";
+import authClient from "../../api/api";
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import {AlertDialog} from "../../utils/alertsUtils";
 
 ChartJS.register(
     CategoryScale,
@@ -13,7 +16,12 @@ ChartJS.register(
     Legend
 );
 
-const AccountingPageGraphs: React.FC = () => {
+interface AccountingPageGraphsProps {
+    dayFrom: string
+    dayTo: string
+}
+
+const AccountingPageGraphs: React.FC<AccountingPageGraphsProps> = ({dayFrom, dayTo}: AccountingPageGraphsProps) => {
 
     const [data, setData] = useState(defaultGraphDataModel);
     const labels = generateMonthlyLabels(data.dateFrom, data.dateTo);
@@ -21,7 +29,32 @@ const AccountingPageGraphs: React.FC = () => {
     const monthlyIncomeData = aggregateMonthlyData(data.lineChartDataIncome, labels);
     const monthlyDebtsData = aggregateMonthlyData(data.lineChartDataDebts, labels);
 
-    // Modify the lineChartData to fit a bar chart
+    const [alertOpen, setAlertOpen] = useState<boolean>(false);
+    const [alertMessage, setAlertMessage] = useState<string>("");
+
+    const fetchStats = async () => {
+        try {
+            const params: Record<string, any> = {
+                dayFrom: dayFrom,
+                dayTo: dayTo,
+            };
+            const queryString = new URLSearchParams(params as any).toString();
+            const response = await authClient.request(`accounting/stats?${queryString}`, HttpMethod.GET);
+
+            if (response.status === 200) {
+                setData(response.data);
+            }
+        } catch (error) {
+            setAlertMessage(`Error fetching data: ${error}`);
+            setAlertOpen(true);
+        }
+    };
+
+    useEffect(() => {
+        fetchStats().then(r => r);
+    }, []);
+
+
     const barChartData = {
         labels,
         datasets: [
@@ -61,7 +94,7 @@ const AccountingPageGraphs: React.FC = () => {
                     display: true,
                     text: 'Amount',
                 },
-                beginAtZero: true, // Start y-axis at zero for better equalizer effect
+                beginAtZero: true,
             },
         },
     };
@@ -102,11 +135,16 @@ const AccountingPageGraphs: React.FC = () => {
             <div style={{width: '600px', height: '400px'}}>
                 <Bar data={barChartData} options={optionsB}/> {/* Use Bar instead of Line */}
             </div>
+            <AlertDialog
+                open={alertOpen}
+                title="Error"
+                message={alertMessage}
+                onClose={() => setAlertOpen(false)}
+            />
         </div>
     );
 };
 
-// Helper function to generate monthly labels based on the provided date range
 const generateMonthlyLabels = (startDate: string, endDate: string): string[] => {
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -119,11 +157,9 @@ const generateMonthlyLabels = (startDate: string, endDate: string): string[] => 
     return labels;
 };
 
-// Helper function to aggregate data by month
 const aggregateMonthlyData = (data: number[], labels: string[]): number[] => {
     const monthlyData: number[] = new Array(labels.length).fill(0);
 
-    // Assuming the data aligns with the labels, you can customize this logic as needed
     for (let i = 0; i < data.length; i++) {
         const monthIndex = Math.floor(i / (data.length / labels.length));
         if (monthIndex < monthlyData.length) {
