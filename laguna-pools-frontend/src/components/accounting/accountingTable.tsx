@@ -22,7 +22,6 @@ import {Refresh} from "@mui/icons-material";
 import PlaylistRemoveOutlinedIcon from "@mui/icons-material/PlaylistRemoveOutlined";
 import LoadingPage from "../common/loadingPage";
 import AccountingPageGraphs from "./accountingPageGraphs";
-import {format} from "date-fns";
 import EqualizerOutlinedIcon from '@mui/icons-material/EqualizerOutlined';
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
@@ -30,8 +29,9 @@ import {AlertDialog, Toast} from "../../utils/alertsUtils";
 import {AccountingClientModel} from "../models/accounting/accountingClientModel";
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import CustomDialogTitle from "../common/lagunaDialog";
+import AccountingRow from "./accountingRow";
 
-const COLUMNS = ["#", "Amount", "Date", "Type", "Client", "Note"];
+const COLUMNS = ["#", "Amount", "Date", "Type", "Client", "Note", "Actions"];
 
 
 const filterFields = [
@@ -255,14 +255,10 @@ const AccountingTable: React.FC = () => {
                                     accounting.map((a, index) => {
                                         const rowNumber = page * rowsPerPage + index + 1;
                                         return (
-                                            <TableRow key={a.id} style={{cursor: 'pointer'}}>
-                                                <TableCell>{rowNumber}</TableCell>
-                                                <TableCell>{a.amount}</TableCell>
-                                                <TableCell>{format(new Date(a.date), 'MMMM dd, yyyy')}</TableCell>
-                                                <TableCell>{a.type}</TableCell>
-                                                <TableCell>{`${a.client.firstName} ${a.client.lastName}`}</TableCell>
-                                                <TableCell>{a.note}</TableCell>
-                                            </TableRow>
+                                            <AccountingRow
+                                                rowNumber={rowNumber}
+                                                accountingData={a}
+                                            />
                                         );
                                     })
                                 }
