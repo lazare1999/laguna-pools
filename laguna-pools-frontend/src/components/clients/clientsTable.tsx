@@ -244,13 +244,6 @@ const ClientsTable: React.FC = () => {
                     >
                         <DownloadOutlinedIcon/>
                     </Button>
-                    {/*<Button*/}
-                    {/*    variant="outlined"*/}
-                    {/*    onClick={() => fetchExcelFile()}*/}
-                    {/*    sx={FILTER_BUTTON_STYLES}*/}
-                    {/*>*/}
-                    {/*    <AddCircleIcon/>*/}
-                    {/*</Button>*/}
                     <ExcelImport/>
                     <Button
                         variant="outlined"

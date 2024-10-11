@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {fetchExcelFile} from "../../utils/excel";
 import {Button} from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import {FILTER_BUTTON_STYLES} from "../../utils/constants";
+import ApiService from "../../api/api";
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
 export interface Client {
     id: number;
@@ -19,20 +21,17 @@ export interface Client {
     parent: string;
 }
 
-interface ExcelImportProps {
-    clientsListHandler: (clients: Client[]) => void;
-}
-
 const ExcelImport: React.FC = () => {
-    const [clients, setClients] = useState<Client[]>([]);
-
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
 
         if (file) {
             try {
                 const parsedClients = await fetchExcelFile(file);
-                setClients(parsedClients);
+
+                ApiService.request("clients/list", HttpMethod.POST, parsedClients).catch(err => console.error(err));
+
+
             } catch (error) {
                 console.error('Error reading Excel file:', error);
             }

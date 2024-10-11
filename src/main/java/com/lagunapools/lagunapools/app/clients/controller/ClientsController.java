@@ -1,5 +1,6 @@
 package com.lagunapools.lagunapools.app.clients.controller;
 
+import com.lagunapools.lagunapools.app.clients.models.AddClientsListRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsResponseDTO;
 import com.lagunapools.lagunapools.app.clients.models.ClientDTO;
@@ -29,6 +30,11 @@ public class ClientsController {
     @PostMapping
     public ResponseEntity<?> addClient(@RequestBody ClientDTO client) {
         return clientsService.addClient(client);
+    }
+
+    @PostMapping("list")
+    public ResponseEntity<?> addClientsList(@RequestBody AddClientsListRequestDTO clients) {
+        return clientsService.addClientsList(clients);
     }
 
     @GetMapping

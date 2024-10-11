@@ -2,6 +2,7 @@ package com.lagunapools.lagunapools.app.clients.service;
 
 import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
 import com.lagunapools.lagunapools.app.branches.repository.BranchRepository;
+import com.lagunapools.lagunapools.app.clients.models.AddClientsListRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsResponseDTO;
 import com.lagunapools.lagunapools.app.clients.models.ClientDTO;
@@ -231,6 +232,17 @@ public class ClientsServiceImpl implements ClientsService {
     @Cacheable(value = "groupsList")
     public List<GroupDTO> listGroups() {
         return GroupMapper.toDTOs(groupRepository.findAll());
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> addClientsList(AddClientsListRequestDTO clients) {
+        try {
+            clients.getClients().forEach(this::addClient);
+        } catch (Exception e) {
+            return badRequestResponse(e.getStackTrace());
+        }
+        return okResponse("Clients added");
     }
 
 }
