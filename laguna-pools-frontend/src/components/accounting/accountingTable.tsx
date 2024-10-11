@@ -3,7 +3,6 @@ import {
     Box,
     Button,
     Dialog,
-    DialogTitle,
     FormControl,
     InputLabel,
     SelectChangeEvent,
@@ -20,7 +19,7 @@ import BranchSelector from "../clients/branchSelector";
 import {UserApiService} from "../../api/userApiService";
 import {AccountingFilters, defaultAccountingFilters} from "../models/accounting/accountingFilterModel";
 import {Refresh} from "@mui/icons-material";
-import ClearAllIcon from "@mui/icons-material/ClearAll";
+import PlaylistRemoveOutlinedIcon from "@mui/icons-material/PlaylistRemoveOutlined";
 import LoadingPage from "../common/loadingPage";
 import AccountingPageGraphs from "./accountingPageGraphs";
 import {format} from "date-fns";
@@ -30,6 +29,7 @@ import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import {AlertDialog, Toast} from "../../utils/alertsUtils";
 import {AccountingClientModel} from "../models/accounting/accountingClientModel";
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import CustomDialogTitle from "../common/lagunaDialog";
 
 const COLUMNS = ["#", "Amount", "Date", "Type", "Client", "Note"];
 
@@ -41,7 +41,7 @@ const filterFields = [
     {label: "Lastname", key: "lastname", type: "text"},
 ];
 
-const AccountingPage: React.FC = () => {
+const AccountingTable: React.FC = () => {
     const [accounting, setAccounting] = useState<AccountingClientModel[]>([]);
     const [filters, setFilters] = useState<AccountingFilters>(defaultAccountingFilters);
     const [userRoles, setUserRoles] = useState<string[]>([]);
@@ -212,7 +212,7 @@ const AccountingPage: React.FC = () => {
                                 height: "50px"
                             }}
                         >
-                            <ClearAllIcon/>
+                            <PlaylistRemoveOutlinedIcon/>
                         </Button>
                         <Button
                             variant="outlined"
@@ -285,7 +285,7 @@ const AccountingPage: React.FC = () => {
                         maxWidth="md"
                         fullWidth
                     >
-                        <DialogTitle>Finances Graphs</DialogTitle>
+                        <CustomDialogTitle>Finances Graphs</CustomDialogTitle>
                         <AccountingPageGraphs/>
                     </Dialog>
                     <AlertDialog
@@ -306,4 +306,4 @@ const AccountingPage: React.FC = () => {
     );
 };
 
-export default AccountingPage;
+export default AccountingTable;

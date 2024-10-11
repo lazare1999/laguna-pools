@@ -7,7 +7,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
     FormControl,
     FormControlLabel,
     Grid,
@@ -25,6 +24,7 @@ import {DialogFilters} from "../models/clients/clientFilterModels";
 import {GroupModel} from "../models/groups/GroupModel";
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import CustomDialogTitle from "../common/lagunaDialog";
 
 interface FilterDialogProps {
     open: boolean;
@@ -113,7 +113,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth>
-            <DialogTitle>Filter Clients</DialogTitle>
+            <CustomDialogTitle>Filter Clients</CustomDialogTitle>
             <DialogContent>
                 <Grid container spacing={2}>
                     {filterFields.map(({label, key, type}) => (

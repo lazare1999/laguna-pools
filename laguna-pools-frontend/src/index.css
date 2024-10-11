@@ -12,3 +12,92 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.table-container {
+    margin: 20px auto;
+    max-width: 90%;
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.schedule-table th,
+.schedule-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.schedule-table th {
+    background: linear-gradient(to bottom, #3f43b5, #6f74d5);
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.schedule-table tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.cell-blue {
+    background: linear-gradient(to bottom, #3f43b5, #6f74d5);
+    color: white;
+}
+
+.cell-blue:hover {
+    background: linear-gradient(to bottom, #2d30a0, #585fdb);
+    color: #e0e0e0;
+}
+
+.cell-yellow {
+    background-color: #FFC107;
+    color: black;
+}
+
+.cell-yellow:hover {
+    background-color: #e0a800;
+    color: #333333;
+}
+
+.cell-red {
+    background-color: #DC3545;
+    color: white;
+}
+
+.cell-red:hover {
+    background-color: #c82333;
+    color: #f8f9fa;
+}
+
+tfoot {
+    font-weight: bold;
+}
+
+.highlight-cell {
+    position: relative;
+    z-index: 1;
+}
+
+.highlight-cell::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: rgba(0, 255, 166, 0.5);
+    border-radius: 4px;
+    z-index: -1;
+    filter: blur(4px);
+}

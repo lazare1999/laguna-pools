@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {DayEnum} from "../../utils/enums/DayEnum";
 import {HoursEnum} from "../../utils/enums/HoursEnum";
-import './groupScheduleTable.css';
 import {AlertDialog} from "../../utils/alertsUtils";
 import {Button, FormControl, InputLabel, SelectChangeEvent} from "@mui/material";
 import {Refresh} from "@mui/icons-material";

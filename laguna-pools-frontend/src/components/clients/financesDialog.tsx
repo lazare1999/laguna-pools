@@ -4,7 +4,6 @@ import {
     Box,
     Dialog,
     DialogContent,
-    DialogTitle,
     FormControl,
     FormHelperText,
     IconButton,
@@ -17,6 +16,7 @@ import ForwardIcon from '@mui/icons-material/Forward';
 import ApiService from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import {TransactionEnum} from "../../utils/enums/TransactionEnum";
+import CustomDialogTitle from "../common/lagunaDialog";
 
 interface FinancesDialogProps {
     client: Client;
@@ -72,8 +72,8 @@ const FinancesDialog: React.FC<FinancesDialogProps> = ({client, isModalOpen, mod
 
     return (
         <Dialog open={isModalOpen} onClose={modalCloseHandler} fullWidth maxWidth="sm">
-            <DialogTitle sx={{backgroundColor: 'primary.main', color: 'white'}}>Add Transaction</DialogTitle>
-            <DialogContent sx={{padding: '24px', marginTop: 2}}>
+            <CustomDialogTitle>Add Transaction</CustomDialogTitle>
+            <DialogContent sx={{padding: '24px'}}>
                 <Box
                     sx={{
                         display: 'flex',
@@ -111,7 +111,7 @@ const FinancesDialog: React.FC<FinancesDialogProps> = ({client, isModalOpen, mod
                             <MenuItem value={TransactionEnum.CASH}>Cash</MenuItem>
                             <MenuItem value={TransactionEnum.CARD}>Card</MenuItem>
                         </Select>
-                        {typeError && <FormHelperText>required.</FormHelperText>}
+                        {typeError && <FormHelperText>required</FormHelperText>}
                     </FormControl>
 
                     <TextField

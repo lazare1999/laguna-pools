@@ -9,7 +9,7 @@ import BranchesControlPage from "../components/admin/branches/branchesControlPag
 import MoveBackWrapper from "../components/admin/moveBack";
 import GroupScheduleTable from "../components/groups/groupScheduleTable";
 import DaysTable from "../components/days/daysTable";
-import AccountingPage from "../components/accounting/accountingPage";
+import AccountingTable from "../components/accounting/accountingTable";
 
 interface ComponentMapperProps {
     currentComponent: Component
@@ -45,7 +45,7 @@ const ComponentMapper: React.FC<ComponentMapperProps> = ({
         case Component.DAYS:
             return <DaysTable/>
         case Component.ACCOUNTING:
-            return <AccountingPage/>
+            return <AccountingTable/>
         default:
             return null;
     }

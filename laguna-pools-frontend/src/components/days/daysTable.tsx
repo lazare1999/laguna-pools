@@ -19,7 +19,7 @@ import {
     TableRow,
     TextField,
 } from "@mui/material";
-import {ClearAll, Refresh} from "@mui/icons-material";
+import {Refresh} from "@mui/icons-material";
 import LoadingPage from "../common/loadingPage";
 import {AttendancesModel} from "../models/attendances/attendancesModel";
 import authClient from "../../api/api";
@@ -29,6 +29,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import BranchSelector from "../clients/branchSelector";
 import {DaysFilterModel, defaultDaysFilters} from "../models/admin/daysFilterModel";
+import PlaylistRemoveOutlinedIcon from "@mui/icons-material/PlaylistRemoveOutlined";
 
 const COLUMNS = ["#", "Client", "Time", "Attended"];
 
@@ -185,7 +186,7 @@ const DaysTable: React.FC = () => {
 
                     <Button variant="outlined" onClick={handleClearAll}
                             sx={{display: "flex", alignItems: "center", height: "50px"}}>
-                        <ClearAll/>
+                        <PlaylistRemoveOutlinedIcon/>
                     </Button>
                 </Box>
 

@@ -48,13 +48,13 @@ public class AccountingCustomRepositoryImpl implements AccountingCustomRepositor
         Predicate predicate = cb.between(root.get("date"), startOfDay, endOfDay);
 
         if (isAdmin && !branches.isEmpty()) {
-            predicate = cb.and(predicate, root.get("branch").get("branchName").in(branches));
+            predicate = cb.and(predicate, root.get("client").get("branch").get("branchName").in(branches));
         } else if (!isAdmin) {
             Optional<AppUser> currentUserOpt = userRepository.findById(getCurrentApplicationUser().getUserId());
             if (currentUserOpt.isPresent()) {
                 AppUser currentUser = currentUserOpt.get();
                 String userBranchName = currentUser.getBranch().getBranchName();
-                predicate = cb.and(predicate, cb.equal(root.get("branch").get("branchName"), userBranchName));
+                predicate = cb.and(predicate, cb.equal(root.get("client").get("branch").get("branchName"), userBranchName));
             }
         }
 

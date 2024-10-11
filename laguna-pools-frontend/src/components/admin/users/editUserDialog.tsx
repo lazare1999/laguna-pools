@@ -5,7 +5,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
     FormControl,
     FormControlLabel,
     FormGroup,
@@ -23,6 +22,7 @@ import authClient from "../../../api/api";
 import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
 import {TargetView} from "../../models/admin/targetViewModel";
 import {BranchModel} from "../../models/admin/branchModel";
+import CustomDialogTitle from "../../common/lagunaDialog";
 
 interface EditUserDialogProps {
     open: boolean;
@@ -132,7 +132,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({open, user, onClose, onS
 
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Edit User</DialogTitle>
+            <CustomDialogTitle>Edit User</CustomDialogTitle>
             <DialogContent>
                 <TextField
                     label="Username"

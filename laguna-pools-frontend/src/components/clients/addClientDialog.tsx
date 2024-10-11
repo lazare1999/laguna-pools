@@ -6,7 +6,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
     FormControl,
     FormControlLabel,
     Grid,
@@ -28,6 +27,7 @@ import {Box} from "@mui/system";
 import Divider from '@mui/material/Divider';
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import CustomDialogTitle from "../common/lagunaDialog";
 
 interface AddClientDialogProps {
     open: boolean;
@@ -146,7 +146,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
     };
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle><PersonAddAltIcon color={"success"}/></DialogTitle>
+            <CustomDialogTitle><PersonAddAltIcon color={"success"}/></CustomDialogTitle>
             <Snackbar
                 open={alertOpen}
                 autoHideDuration={6000}
