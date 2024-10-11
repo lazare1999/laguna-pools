@@ -1,7 +1,10 @@
 package com.lagunapools.lagunapools.app.accounting.services;
 
 
-import com.lagunapools.lagunapools.app.accounting.models.*;
+import com.lagunapools.lagunapools.app.accounting.models.AccountingClientDTO;
+import com.lagunapools.lagunapools.app.accounting.models.AccountingResponseDTO;
+import com.lagunapools.lagunapools.app.accounting.models.AddAccountingRequestDTO;
+import com.lagunapools.lagunapools.app.accounting.models.AttendancesRequestDTO;
 import com.lagunapools.lagunapools.app.accounting.repository.AccountingEntity;
 import com.lagunapools.lagunapools.app.accounting.repository.AccountingRepository;
 import com.lagunapools.lagunapools.app.clients.repository.ClientsEntity;
@@ -13,17 +16,14 @@ import com.lagunapools.lagunapools.utils.LazoUtils;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUser;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.badRequestResponse;
@@ -114,76 +114,5 @@ public class AccountingServiceImpl implements AccountingService {
     public ResponseEntity<?> calcIncome(List<String> branches) {
         return okResponse(accountingRepository.findTodayTotalAmount(branches));
     }
-
-    private static @NotNull GraphDataDTO getGraphDataDTO(LocalDateTime df, LocalDateTime dt, List<AccountingClientDTO> list) {
-        if (df == null && dt == null) {
-            df = LocalDateTime.now().minusDays(1);
-            dt = LocalDateTime.now();
-        } else if (df == null) {
-            df = dt.minusDays(1);
-        } else if (dt == null) {
-            dt = LocalDateTime.now().plusDays(1);
-        }
-
-        List<Double> lineChartDataIncome = new ArrayList<>();
-        List<Double> lineChartDataDebts = new ArrayList<>();
-
-        Double doughnutIncomeTotal = list.stream()
-                .mapToDouble(AccountingClientDTO::getAmount)
-                .sum();
-
-        Map<Long, Double> clientIncomeMap = list.stream()
-                .collect(Collectors.groupingBy(
-                        l -> l.getClient().getId(),
-                        Collectors.summingDouble(AccountingClientDTO::getAmount)
-                ));
-
-        Map<LocalDate, Double> monthlyIncomeMap = new HashMap<>();
-
-        LocalDateTime finalDf = df;
-        LocalDateTime finalDt = dt;
-        list.stream()
-                .filter(l -> !l.getDate().isBefore(finalDf) && !l.getDate().isAfter(finalDt))
-                .forEach(l -> {
-                    LocalDate date = l.getDate().toLocalDate().withDayOfMonth(1);
-                    monthlyIncomeMap.merge(date, l.getAmount(), Double::sum);
-                });
-
-        LocalDate current = df.toLocalDate().withDayOfMonth(1);
-        LocalDate end = dt.toLocalDate().withDayOfMonth(1);
-
-        while (!current.isAfter(end)) {
-            lineChartDataIncome.add(monthlyIncomeMap.getOrDefault(current, 0.0));
-            current = current.plusMonths(1);
-        }
-
-        list.stream()
-                .map(AccountingClientDTO::getClient)
-                .distinct()
-                .forEach(client -> {
-                    LocalDate expDate = client.getExpDate();
-                    if (expDate == null || LocalDate.now().isBefore(expDate)) {
-                        return; // Skip processing if expDate is null or in the future
-                    }
-                    double cost = client.getCost();
-                    double monthsOfDebt = Period.between(expDate, LocalDate.now()).toTotalMonths();
-                    double totalDebt = monthsOfDebt * cost;
-                    double totalIncome = clientIncomeMap.getOrDefault(client.getId(), 0.0);
-                    double netDebt = Math.max(totalDebt - totalIncome, 0.0);
-
-                    // Here, you can do something with netDebt, like logging or storing it
-                    System.out.println("Net Debt for Client ID " + client.getId() + ": " + netDebt);
-                });
-
-        return new GraphDataDTO(
-                doughnutIncomeTotal,
-                0.0,
-                lineChartDataIncome,
-                lineChartDataDebts,
-                df.toString(),
-                dt.toString()
-        );
-    }
-
 }
 

@@ -282,7 +282,7 @@ const AccountingTable: React.FC = () => {
                         fullWidth
                     >
                         <CustomDialogTitle>Finances Graphs</CustomDialogTitle>
-                        <AccountingPageGraphs/>
+                        <AccountingPageGraphs dayFrom={filters.dayFrom} dayTo={filters.dayTo}/>
                     </Dialog>
                     <AlertDialog
                         open={alertOpen}
