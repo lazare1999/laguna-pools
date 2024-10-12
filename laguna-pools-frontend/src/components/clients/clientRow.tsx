@@ -163,6 +163,34 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
         return {};
     };
 
+    const styles = {
+        Individual: {
+            background: '#3f43b5',
+            color: 'white',
+        },
+        Sport: {
+            background: 'rgba(234,118,118,0.8)',
+            color: 'white',
+        },
+        Special: {
+            background: 'rgba(244,219,105,0.93)',
+            color: 'black',
+        },
+    };
+
+    const getTypesRowStyle = (condition: keyof typeof styles) => {
+        const commonStyle = {
+            borderRadius: '8px',
+            padding: '8px',
+            marginBottom: 2,
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
+        };
+
+        return styles[condition] ? {...styles[condition], ...commonStyle} : commonStyle;
+    };
+
+    const typesRowStyle = getTypesRowStyle(client.type as keyof typeof styles);
+
     const getRowStyle = (condition: string) => {
         const styles = {
             expired: {
@@ -463,7 +491,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                     <strong>Phone:</strong> {client.phoneNumber}
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <strong>Type:</strong> {client.type}
+                                     <span style={typesRowStyle}>
+                                        <strong>Type:</strong>
+                                        <span> {client.type}</span>
+                                    </span>
                                 </Grid>
                             </Grid>
                         </TableCell>

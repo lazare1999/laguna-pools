@@ -1,4 +1,5 @@
 import {GroupModel} from "../groups/GroupModel";
+import {TYPES} from "../../clients/constants";
 
 export interface Client {
     id: number;
@@ -12,6 +13,6 @@ export interface Client {
     idStatus: boolean;
     contractStatus: boolean;
     notes: string;
-    type: string;
+    type: typeof TYPES[number];
     groups: GroupModel[];
 }
