@@ -30,6 +30,7 @@ import {AccountingClientModel} from "../models/accounting/accountingClientModel"
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import CustomDialogTitle from "../common/lagunaDialog";
 import AccountingRow from "./accountingRow";
+import {Client} from "../models/clients/clientsModel";
 
 const COLUMNS = ["#", "Amount", "Date", "Type", "Client", "Note", "Actions"];
 
@@ -151,6 +152,10 @@ const AccountingTable: React.FC = () => {
         }
     };
 
+    const handleDelete = (aToDelete: AccountingClientModel) => {
+        setAccounting(accounting.filter(ac => ac !== aToDelete));
+    };
+
     return (
         <>
             {accountingLoading ? <LoadingPage label={"Loading Table Data..."}/> :
@@ -214,18 +219,20 @@ const AccountingTable: React.FC = () => {
                         >
                             <PlaylistRemoveOutlinedIcon/>
                         </Button>
-                        <Button
-                            variant="outlined"
-                            onClick={handleOpenGraphModal}
-                            sx={{
-                                flexGrow: 0,
-                                display: "flex",
-                                alignItems: "center",
-                                height: "50px"
-                            }}
-                        >
-                            <EqualizerOutlinedIcon/>
-                        </Button>
+                        {hasRole("ROLE_LAGUNA_ADMIN") &&
+                            <Button
+                                variant="outlined"
+                                onClick={handleOpenGraphModal}
+                                sx={{
+                                    flexGrow: 0,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    height: "50px"
+                                }}
+                            >
+                                <EqualizerOutlinedIcon/>
+                            </Button>
+                        }
                         <Button
                             variant="outlined"
                             onClick={handleCalculateTodayIncome}
@@ -258,6 +265,8 @@ const AccountingTable: React.FC = () => {
                                             <AccountingRow
                                                 rowNumber={rowNumber}
                                                 accountingData={a}
+                                                userRoles={userRoles}
+                                                onDelete={handleDelete}
                                             />
                                         );
                                     })
