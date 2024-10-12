@@ -20,7 +20,7 @@ public class AllClientsRequestDTO implements Serializable {
     private String name;
     private String lastName;
     private String phone;
-    private String parent;
+    private String type;
     private LocalDate birthDayFrom;
     private LocalDate birthDayTo;
     private LocalDate expDayFrom;

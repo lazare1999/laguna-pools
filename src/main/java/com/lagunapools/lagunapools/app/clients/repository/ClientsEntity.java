@@ -35,7 +35,7 @@ public class ClientsEntity {
     private Boolean idStatus;
     private Boolean contractStatus;
     private String notes;
-    private String parent;
+    private String type;
     private String createdBy;
     private String updatedBy;
 
@@ -67,7 +67,7 @@ public class ClientsEntity {
         this.idStatus = client.getIdStatus();
         this.contractStatus = client.getContractStatus();
         this.notes = client.getNotes();
-        this.parent = client.getParent();
+        this.type = client.getType();
         this.createdBy = username;
         this.updatedBy = username;
         this.groups = GroupMapper.toEntities(client.getGroups());

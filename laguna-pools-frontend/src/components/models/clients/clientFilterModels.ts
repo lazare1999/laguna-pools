@@ -14,7 +14,7 @@ export interface DialogFilters {
     contractStatus: boolean;
     idStatus: boolean;
     phone: string;
-    parent: string;
+    type: string;
     birthDayFrom: string;
     birthDayTo: string;
     expDayFrom: string;
@@ -31,7 +31,7 @@ export const defaultDialogFilters: DialogFilters = {
     contractStatus: false,
     idStatus: false,
     phone: '',
-    parent: '',
+    type: '',
     birthDayFrom: '',
     birthDayTo: '',
     expDayFrom: '',

@@ -274,9 +274,9 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                 <Grid item xs={6}>
                                     <TextField
                                         sx={{marginBottom: 1}}
-                                        label="Parent"
-                                        value={editableClient.parent}
-                                        onChange={(e) => handleInputChange("parent", e.target.value)}
+                                        label="Type"
+                                        value={editableClient.type}
+                                        onChange={(e) => handleInputChange("type", e.target.value)}
                                         fullWidth
                                     />
                                 </Grid>
@@ -448,7 +448,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                     <strong>Phone:</strong> {client.phoneNumber}
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <strong>Parent:</strong> {client.parent}
+                                    <strong>Type:</strong> {client.type}
                                 </Grid>
                             </Grid>
                         </TableCell>

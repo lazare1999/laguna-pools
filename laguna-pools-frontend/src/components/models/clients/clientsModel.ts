@@ -12,6 +12,6 @@ export interface Client {
     idStatus: boolean;
     contractStatus: boolean;
     notes: string;
-    parent: string;
+    type: string;
     groups: GroupModel[];
 }

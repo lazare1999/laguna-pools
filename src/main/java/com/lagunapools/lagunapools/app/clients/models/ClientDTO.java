@@ -29,7 +29,7 @@ public class ClientDTO {
     private Boolean idStatus;
     private Boolean contractStatus;
     private String notes;
-    private String parent;
+    private String type;
     private List<GroupDTO> groups;
 
     public ClientDTO(ClientsEntity client) {
@@ -44,7 +44,7 @@ public class ClientDTO {
         this.idStatus = client.getIdStatus();
         this.contractStatus = client.getContractStatus();
         this.notes = client.getNotes();
-        this.parent = client.getParent();
+        this.type = client.getType();
         this.groups = GroupMapper.toDTOs(client.getGroups());
     }
 }

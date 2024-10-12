@@ -28,6 +28,7 @@ import Divider from '@mui/material/Divider';
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import CustomDialogTitle from "../common/lagunaDialog";
+import {TYPES} from "./constants";
 
 interface AddClientDialogProps {
     open: boolean;
@@ -44,7 +45,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                                                              openToastHandler,
                                                              toastMessageHandler
                                                          }) => {
-    const [newClient, setNewClient] = useState<Client>({cost: 0} as Client);
+    const [newClient, setNewClient] = useState<Client>({cost: 0, type: "Individual"} as Client);
     const [dayHourPairs, setDayHourPairs] = useState<GroupModel[]>([{
         id: 0,
         day: DayEnum.SUNDAY,
@@ -293,14 +294,25 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                     value={newClient.notes}
                     onChange={(e) => handleInputChange("notes", e.target.value)}
                 />
-                <TextField
-                    label="Parent"
-                    variant="outlined"
+                <FormControl
                     fullWidth
-                    margin="normal"
-                    value={newClient.parent}
-                    onChange={(e) => handleInputChange("parent", e.target.value)}
-                />
+                    variant="outlined"
+                >
+                    <InputLabel>Type</InputLabel>
+                    <Select
+                        value={newClient.type}
+                        onChange={(e) => handleInputChange("type", e.target.value)}
+                        label="Type"
+                        fullWidth
+                        variant="outlined"
+                    >
+                        {TYPES.map((type) => (
+                            <MenuItem key={type} value={type}>
+                                {type}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
                 <Typography variant="h6">
                     Groups
                 </Typography>

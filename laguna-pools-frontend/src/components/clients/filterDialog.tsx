@@ -36,7 +36,7 @@ interface FilterDialogProps {
 
 const filterFields = [
     {label: "Phone", key: "phone", type: "text"},
-    {label: "Parent", key: "parent", type: "text"},
+    {label: "Type", key: "type", type: "text"},
     {label: "Birth Day From", key: "birthDayFrom", type: "date"},
     {label: "Birth Day To", key: "birthDayTo", type: "date"},
     {label: "Exp. Day From", key: "expDayFrom", type: "date"},

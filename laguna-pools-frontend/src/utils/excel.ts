@@ -43,7 +43,7 @@ export interface Client {
     idStatus: boolean;
     contractStatus: boolean;
     notes: string;
-    parent: string;
+    type: string;
 }
 
 export const fetchExcelFile = async (file: File): Promise<Client[]> => {
@@ -71,7 +71,7 @@ export const fetchExcelFile = async (file: File): Promise<Client[]> => {
                     phoneNumber: row[6] as string,
                     idStatus: Boolean(row[7]),
                     contractStatus: Boolean(row[8]),
-                    parent: row[9] as string,
+                    type: row[9] as string,
                     notes: row[10] as string,
                     groups: []
                 }));

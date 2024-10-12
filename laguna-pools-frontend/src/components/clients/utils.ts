@@ -86,7 +86,7 @@ const getUserRowFromResponse = (client: any) => {
         client.phoneNumber,
         client.idStatus,
         client.contractStatus,
-        client.parent,
+        client.type,
         groups,
         client.notes
     ]
@@ -108,7 +108,7 @@ export const getAllFilteredClientsGrid = async (filters: any) => {
         "Cost", "Phone",
         "Id Status",
         "Contract",
-        "Parent",
+        "Type",
         "Groups",
         "Notes"]].concat(clientsArrays);
 }

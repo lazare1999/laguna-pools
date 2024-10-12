@@ -9,13 +9,13 @@ const GeneratePDF = (accountingData: AccountingClientModel) => {
     const formattedDate = format(new Date(date), 'MMMM dd, yyyy');
     const phoneNumber = client.phoneNumber || "N/A";
     const noteContent = note || "No notes available";
-    const parentName = client.parent || "N/A";
+    const typeName = client.type || "N/A";
 
     const doc = new jsPDF();
 
     doc.setFontSize(18);
     doc.text("Accounting Client Report", 10, 10);
-    
+
     doc.setFontSize(12);
     doc.text(`Client Name: ${client.firstName} ${client.lastName}`, 10, 20);
     doc.text(`Phone Number: ${phoneNumber}`, 10, 30);
@@ -34,7 +34,7 @@ const GeneratePDF = (accountingData: AccountingClientModel) => {
         ["Doctor Check Till", client.doctorCheckTill],
         ["ID Status", client.idStatus ? "Active" : "Inactive"],
         ["Contract Status", client.contractStatus ? "Active" : "Inactive"],
-        ["Parent", parentName],
+        ["Type", typeName],
         ["Notes", client.notes || "N/A"]
     ];
 
