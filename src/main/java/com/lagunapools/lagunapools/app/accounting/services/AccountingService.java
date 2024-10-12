@@ -13,4 +13,6 @@ public interface AccountingService {
     ResponseEntity<?> addAccounting(AddAccountingRequestDTO request);
 
     ResponseEntity<?> calcIncome(List<String> branches);
+
+    ResponseEntity<?> deleteTransaction(Long id);
 }

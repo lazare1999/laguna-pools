@@ -39,4 +39,9 @@ public class AccountingController {
         return accountingService.calcIncome(branches);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteTransaction(@RequestParam Long id) {
+        return accountingService.deleteTransaction(id);
+    }
+
 }
