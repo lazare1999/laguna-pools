@@ -6,21 +6,6 @@ import {FILTER_BUTTON_STYLES} from "../../utils/constants";
 import ApiService from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
-export interface Client {
-    id: number;
-    firstName: string;
-    lastName: string;
-    age: string;
-    cost: number;
-    expDate: string;
-    doctorCheckTill: string;
-    phoneNumber: string;
-    idStatus: boolean;
-    contractStatus: boolean;
-    notes: string;
-    parent: string;
-}
-
 const ExcelImport: React.FC = () => {
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
