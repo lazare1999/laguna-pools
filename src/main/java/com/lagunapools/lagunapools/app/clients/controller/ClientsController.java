@@ -32,7 +32,7 @@ public class ClientsController {
         return clientsService.addClient(client);
     }
 
-    @PostMapping("list")
+    @PostMapping("/list")
     public ResponseEntity<?> addClientsList(@RequestBody AddClientsListRequestDTO clients) {
         return clientsService.addClientsList(clients);
     }

@@ -28,9 +28,9 @@ const ExcelImport: React.FC = () => {
         if (file) {
             try {
                 const parsedClients = await fetchExcelFile(file);
-
-                ApiService.request("clients/list", HttpMethod.POST, parsedClients).catch(err => console.error(err));
-
+                ApiService.request("clients/list", HttpMethod.POST,
+                    {clients: parsedClients}
+                ).catch(err => console.error(err));
 
             } catch (error) {
                 console.error('Error reading Excel file:', error);

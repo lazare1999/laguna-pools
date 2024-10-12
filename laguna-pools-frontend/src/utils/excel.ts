@@ -57,21 +57,24 @@ export const fetchExcelFile = async (file: File): Promise<Client[]> => {
             const worksheet = workbook.Sheets[sheetName];
             const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, {header: 1}); // Row-based data
 
-            const clients: Client[] = jsonData.slice(1).map(row => ({
-                id: null,
-                firstName: row[0] as string,
-                lastName: row[1] as string,
-                age: row[2] as string,
-                expDate: row[3] as string,
-                doctorCheckTill: row[4] as string,
-                cost: parseFloat(row[5] as string),
-                phoneNumber: row[6] as string,
-                idStatus: Boolean(row[7]),
-                contractStatus: Boolean(row[8]),
-                parent: row[9] as string,
-                notes: row[10] as string,
-                groups: []
-            }));
+            const clients: Client[] = jsonData
+                .slice(1)
+                .filter(row => row[0]) // Skip rows where the first column is empty
+                .map(row => ({
+                    id: null,
+                    firstName: row[0] as string,
+                    lastName: row[1] as string,
+                    age: row[2] as string,
+                    expDate: row[3] as string,
+                    doctorCheckTill: row[4] as string,
+                    cost: parseFloat(row[5] as string),
+                    phoneNumber: row[6] as string,
+                    idStatus: Boolean(row[7]),
+                    contractStatus: Boolean(row[8]),
+                    parent: row[9] as string,
+                    notes: row[10] as string,
+                    groups: []
+                }));
 
             resolve(clients);
         };
@@ -79,4 +82,4 @@ export const fetchExcelFile = async (file: File): Promise<Client[]> => {
         reader.onerror = reject;
         reader.readAsArrayBuffer(file);
     });
-}
+};
