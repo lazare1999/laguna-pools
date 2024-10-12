@@ -7,14 +7,19 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
+    FormControl,
     FormControlLabel,
     Grid,
+    InputLabel,
+    MenuItem,
+    Select,
     TextField,
     Typography,
 } from "@mui/material";
 import {Cancel, CheckCircle} from "@mui/icons-material";
 import {DialogFilters} from "../models/clients/clientFilterModels";
 import CustomDialogTitle from "../common/lagunaDialog";
+import {TYPES} from "./constants";
 
 interface FilterDialogProps {
     open: boolean;
@@ -26,7 +31,6 @@ interface FilterDialogProps {
 
 const filterFields = [
     {label: "First Name", key: "name", type: "text"},
-    {label: "Type", key: "type", type: "text"},
     {label: "Birth Day From", key: "birthDayFrom", type: "date"},
     {label: "Birth Day To", key: "birthDayTo", type: "date"},
     {label: "Exp. Day From", key: "expDayFrom", type: "date"},
@@ -63,6 +67,10 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
         onClose();
     };
 
+    const handleInputChange = (key: keyof DialogFilters, value: string | boolean | number) => {
+        setFilters({...filters, [key]: value});
+    };
+
     return (
         <Dialog open={open} onClose={onClose} fullWidth>
             <CustomDialogTitle>Filter Clients</CustomDialogTitle>
@@ -85,6 +93,28 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                             />
                         </Grid>
                     ))}
+                    <Grid item xs={12}>
+                        <FormControl
+                            margin="dense"
+                            fullWidth
+                            variant="outlined"
+                        >
+                            <InputLabel>Type</InputLabel>
+                            <Select
+                                label="Type"
+                                value={filters.type}
+                                onChange={(e) => handleInputChange("type", e.target.value)}
+                                fullWidth
+                                MenuProps={{PaperProps: {style: {maxHeight: 200}}}}
+                            >
+                                {TYPES.map((type) => (
+                                    <MenuItem key={type} value={type}>
+                                        {type}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
                     {["idStatus", "contractStatus"].map((status) => (
                         <Grid item xs={6} key={status}>
                             <Card variant="outlined" sx={{boxShadow: 3, borderRadius: 2}}>

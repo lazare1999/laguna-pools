@@ -81,7 +81,7 @@ public class ClientsServiceImpl implements ClientsService {
                 predicate = builder.and(predicate, builder.like(root.get("phoneNumber"), "%" + request.getPhone() + "%"));
 
             if (StringUtils.isNotEmpty(request.getType()))
-                predicate = builder.and(predicate, builder.like(root.get("parent"), "%" + request.getType() + "%"));
+                predicate = builder.and(predicate, builder.equal(root.get("type"), request.getType()));
 
             if (request.getBirthDayFrom() != null && request.getBirthDayTo() != null) {
                 predicate = builder.and(predicate,
