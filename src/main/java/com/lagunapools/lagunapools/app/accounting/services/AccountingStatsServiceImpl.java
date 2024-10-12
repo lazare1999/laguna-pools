@@ -135,9 +135,9 @@ public class AccountingStatsServiceImpl implements AccountingStatsService {
             return 0.0;
         }
 
-        double cost = client.getCost();
+        double debt = client.getDebt();
         double monthsOfDebt = Period.between(expDate, LocalDate.now()).toTotalMonths();
-        double totalDebt = monthsOfDebt * cost;
+        double totalDebt = monthsOfDebt * debt;
 
         double totalIncome = clientIncomeMap.getOrDefault(client.getId(), 0.0);
         return Math.max(totalDebt - totalIncome, 0.0);

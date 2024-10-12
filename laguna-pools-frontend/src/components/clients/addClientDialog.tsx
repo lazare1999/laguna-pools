@@ -22,7 +22,6 @@ import {HoursEnum} from "../../utils/enums/HoursEnum";
 import {GroupModel} from "../models/groups/GroupModel";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
-import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import {Box} from "@mui/system";
 import Divider from '@mui/material/Divider';
 import authClient from "../../api/api";
@@ -45,7 +44,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                                                              openToastHandler,
                                                              toastMessageHandler
                                                          }) => {
-    const [newClient, setNewClient] = useState<Client>({cost: 0, type: "Individual"} as Client);
+    const [newClient, setNewClient] = useState<Client>({debt: 0, type: "Individual"} as Client);
     const [dayHourPairs, setDayHourPairs] = useState<GroupModel[]>([{
         id: 0,
         day: DayEnum.SUNDAY,
@@ -147,7 +146,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
     };
     return (
         <Dialog open={open} onClose={onClose}>
-            <CustomDialogTitle><PersonAddAltIcon color={"success"}/></CustomDialogTitle>
+            <CustomDialogTitle>Add Client</CustomDialogTitle>
             <Snackbar
                 open={alertOpen}
                 autoHideDuration={6000}
@@ -274,13 +273,13 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                     </Grid>
                     <Grid item xs={4}>
                         <TextField
-                            label="Cost"
+                            label="Debt"
                             type="number"
                             variant="outlined"
                             fullWidth
                             margin="normal"
-                            value={newClient.cost}
-                            onChange={(e) => handleInputChange("cost", +e.target.value)}
+                            value={newClient.debt}
+                            onChange={(e) => handleInputChange("debt", +e.target.value)}
                         />
                     </Grid>
                 </Grid>

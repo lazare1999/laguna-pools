@@ -22,7 +22,7 @@ public class ClientDTO {
     private String firstName;
     private String lastName;
     private LocalDate age;
-    private Double cost;
+    private Double debt;
     private LocalDate expDate;
     private LocalDate doctorCheckTill;
     private String phoneNumber;
@@ -37,7 +37,7 @@ public class ClientDTO {
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.age = client.getAge();
-        this.cost = client.getCost();
+        this.debt = client.getDebt();
         this.expDate = client.getExpDate();
         this.doctorCheckTill = client.getDoctorCheckTill();
         this.phoneNumber = client.getPhoneNumber();

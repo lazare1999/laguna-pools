@@ -36,7 +36,7 @@ export interface Client {
     firstName: string;
     lastName: string;
     age: string;
-    cost: number;
+    debt: number;
     expDate: string;
     doctorCheckTill: string;
     phoneNumber: string;
@@ -67,7 +67,7 @@ export const fetchExcelFile = async (file: File): Promise<Client[]> => {
                     age: row[2] as string,
                     expDate: row[3] as string,
                     doctorCheckTill: row[4] as string,
-                    cost: parseFloat(row[5] as string),
+                    debt: parseFloat(row[5] as string),
                     phoneNumber: row[6] as string,
                     idStatus: Boolean(row[7]),
                     contractStatus: Boolean(row[8]),

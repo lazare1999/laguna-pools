@@ -6,7 +6,7 @@ export interface Client {
     firstName: string;
     lastName: string;
     age: string;
-    cost: number;
+    debt: number;
     expDate: string;
     doctorCheckTill: string;
     phoneNumber: string;

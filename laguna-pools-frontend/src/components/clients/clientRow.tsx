@@ -241,6 +241,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
         return 'valid';
     };
 
+    const handleTransactionSuccess = (updatedClient: Client) => {
+        onUpdate(updatedClient);
+    };
+
     return (
         <>
             <TableRow
@@ -450,10 +454,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                         <TableCell>
                             <TextField
                                 sx={{marginBottom: 1}}
-                                label="Cost"
+                                label="Debt"
                                 type="number"
-                                value={editableClient.cost}
-                                onChange={(e) => handleInputChange("cost", parseFloat(e.target.value))}
+                                value={editableClient.debt}
+                                onChange={(e) => handleInputChange("debt", parseFloat(e.target.value))}
                                 fullWidth
                             />
                         </TableCell>
@@ -548,11 +552,18 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                 ))
                             )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell style={{
+                            borderRadius: '8px',
+                            padding: '8px',
+                            marginBottom: '16px',
+                            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
+                            background: client.debt < 0 ? 'rgba(124,244,105,0.93)' : 'rgba(234,118,118,0.8)',
+                            color: client.debt < 0 ? 'black' : 'white',
+                        }}>
                             {new Intl.NumberFormat('ka-GE', {
                                 style: 'currency',
                                 currency: 'GEL'
-                            }).format(client.cost)}
+                            }).format(client.debt)}
                         </TableCell>
                         <TableCell>
                             <Tooltip title={client.notes} placement="top" arrow>
@@ -591,7 +602,8 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                      isModalOpen={isEditCalendarModalOpen} modalCloseHandler={modalCloseHandler}/>
 
             <FinancesDialog client={client}
-                            isModalOpen={isFinanceModalOpen} modalCloseHandler={financeModalCloseHandler}/>
+                            isModalOpen={isFinanceModalOpen} modalCloseHandler={financeModalCloseHandler}
+                            onTransactionSuccess={handleTransactionSuccess}/>
         </>
     );
 };

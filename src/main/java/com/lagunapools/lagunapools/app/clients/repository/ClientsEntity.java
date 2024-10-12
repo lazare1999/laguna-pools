@@ -28,7 +28,7 @@ public class ClientsEntity {
     private String firstName;
     private String lastName;
     private LocalDate age;
-    private Double cost;
+    private Double debt;
     private LocalDate expDate;
     private LocalDate doctorCheckTill;
     private String phoneNumber;
@@ -60,7 +60,7 @@ public class ClientsEntity {
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.age = client.getAge();
-        this.cost = client.getCost() == null ? 0.0 : client.getCost();
+        this.debt = client.getDebt() == null ? 0.0 : client.getDebt();
         this.expDate = client.getExpDate();
         this.doctorCheckTill = client.getDoctorCheckTill();
         this.phoneNumber = client.getPhoneNumber();

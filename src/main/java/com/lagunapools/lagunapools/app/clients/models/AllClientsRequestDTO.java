@@ -29,8 +29,8 @@ public class AllClientsRequestDTO implements Serializable {
     private LocalDate docDayTo;
     private Boolean idStatus;
     private Boolean contractStatus;
-    private Double costFrom;
-    private Double costTo;
+    private Double debtFrom;
+    private Double debtTo;
     private String notes;
     private String day;
     private String hour;

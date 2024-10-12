@@ -37,8 +37,8 @@ const filterFields = [
     {label: "Exp. Day To", key: "expDayTo", type: "date"},
     {label: "Doc. Day From", key: "docDayFrom", type: "date"},
     {label: "Doc. Day To", key: "docDayTo", type: "date"},
-    {label: "Cost From", key: "costFrom", type: "number"},
-    {label: "Cost To", key: "costTo", type: "number"},
+    {label: "Debt From", key: "debtFrom", type: "number"},
+    {label: "Debt To", key: "debtTo", type: "number"},
     {label: "Notes", key: "notes", type: "text"},
 ];
 

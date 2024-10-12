@@ -29,7 +29,7 @@ const GeneratePDF = (accountingData: AccountingClientModel) => {
     const columns = ["Field", "Value"];
     const rows = [
         ["Birthday", client.age],
-        ["Cost", client.cost.toString()],
+        ["Debt", client.debt.toString()],
         ["Expiration Date", client.expDate],
         ["Doctor Check Till", client.doctorCheckTill],
         ["ID Status", client.idStatus ? "Active" : "Inactive"],

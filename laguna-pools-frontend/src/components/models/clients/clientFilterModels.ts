@@ -25,8 +25,8 @@ export interface DialogFilters {
     expDayTo: string;
     docDayFrom: string;
     docDayTo: string;
-    costFrom: number;
-    costTo: number;
+    debtFrom: number;
+    debtTo: number;
     notes: string;
 }
 
@@ -41,7 +41,7 @@ export const defaultDialogFilters: DialogFilters = {
     expDayTo: '',
     docDayFrom: '',
     docDayTo: '',
-    costFrom: 0.0,
-    costTo: 0.0,
+    debtFrom: 0.0,
+    debtTo: 0.0,
     notes: ''
 };

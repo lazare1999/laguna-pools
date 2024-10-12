@@ -45,7 +45,7 @@ import ExcelImport from "./excelImport";
 import {HoursEnum} from "../../utils/enums/HoursEnum";
 import {DayEnum} from "../../utils/enums/DayEnum";
 
-const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Cost", "Notes", "Actions"];
+const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Debt", "Notes", "Actions"];
 
 const ClientsTable: React.FC = () => {
     const [page, setPage] = useState<number>(0);

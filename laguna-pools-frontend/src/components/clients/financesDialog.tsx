@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {Client} from "../models/clients/clientsModel";
 import {
+    Alert,
     Box,
     Dialog,
     DialogContent,
@@ -10,10 +11,11 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    Snackbar,
     TextField
 } from "@mui/material";
 import ForwardIcon from '@mui/icons-material/Forward';
-import ApiService from "../../api/api";
+import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import {TransactionEnum} from "../../utils/enums/TransactionEnum";
 import CustomDialogTitle from "../common/lagunaDialog";
@@ -22,15 +24,25 @@ interface FinancesDialogProps {
     client: Client;
     isModalOpen: boolean;
     modalCloseHandler: () => void;
+    onTransactionSuccess: (updatedClient: Client) => void;
 }
 
-const FinancesDialog: React.FC<FinancesDialogProps> = ({client, isModalOpen, modalCloseHandler}) => {
+const FinancesDialog: React.FC<FinancesDialogProps> = ({
+                                                           client,
+                                                           isModalOpen,
+                                                           modalCloseHandler,
+                                                           onTransactionSuccess
+                                                       }) => {
     const [type, setType] = useState('');
     const [amount, setAmount] = useState<number>(0);
     const [note, setNote] = useState("");
 
     const [amountError, setAmountError] = useState(false);
     const [typeError, setTypeError] = useState(false);
+
+    const [alertMessage, setAlertMessage] = useState<string | null>(null);
+    const [alertOpen, setAlertOpen] = useState<boolean>(false);
+    const [severity, setSeverity] = useState<"info" | "success" | "error" | "warning" | undefined>("info");
 
     const handleNoteChange = (value: string) => {
         setNote(value);
@@ -58,7 +70,7 @@ const FinancesDialog: React.FC<FinancesDialogProps> = ({client, isModalOpen, mod
             return;
         }
 
-        ApiService.request("accounting", HttpMethod.POST,
+        authClient.request("accounting", HttpMethod.POST,
             {
                 clientId: client.id,
                 amount: amount,
@@ -66,8 +78,21 @@ const FinancesDialog: React.FC<FinancesDialogProps> = ({client, isModalOpen, mod
                 note: note
             }
         )
-            .then(() => modalCloseHandler())
-            .catch(err => console.log(err));
+            .then((response) => {
+                onTransactionSuccess(response.data);
+                setAlertMessage("Transaction added!");
+                setSeverity("success");
+                setAlertOpen(true);
+            })
+            .catch(err => {
+                setAlertMessage(`Error fetching data: ${err}`);
+                setSeverity("error");
+                setAlertOpen(true);
+            });
+    };
+
+    const handleCloseAlert = () => {
+        setAlertOpen(false);
     };
 
     return (
@@ -128,6 +153,16 @@ const FinancesDialog: React.FC<FinancesDialogProps> = ({client, isModalOpen, mod
                     </IconButton>
                 </Box>
             </DialogContent>
+            <Snackbar
+                open={alertOpen}
+                autoHideDuration={6000}
+                onClose={handleCloseAlert}
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+            >
+                <Alert onClose={handleCloseAlert} severity={severity}>
+                    {alertMessage}
+                </Alert>
+            </Snackbar>
         </Dialog>
     );
 };
