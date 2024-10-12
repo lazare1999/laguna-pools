@@ -29,6 +29,7 @@ import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import FinancesDialog from "./financesDialog";
+import {TYPES} from "./constants";
 
 interface ClientRowProps {
     client: Client;
@@ -272,13 +273,27 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <TextField
-                                        sx={{marginBottom: 1}}
-                                        label="Type"
-                                        value={editableClient.type}
-                                        onChange={(e) => handleInputChange("type", e.target.value)}
+                                    <FormControl
                                         fullWidth
-                                    />
+                                        variant="outlined"
+                                    >
+                                        <InputLabel>Type</InputLabel>
+                                        <Select
+                                            sx={{marginBottom: 1}}
+                                            label="Type"
+                                            value={editableClient.type}
+                                            onChange={(e) => handleInputChange("type", e.target.value)}
+                                            fullWidth
+                                        >
+
+                                            {TYPES.map((type) => (
+                                                <MenuItem key={type} value={type}>
+                                                    {type}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+
                                 </Grid>
                             </Grid>
                         </TableCell>
