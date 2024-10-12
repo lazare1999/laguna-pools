@@ -146,8 +146,11 @@ public class ClientsServiceImpl implements ClientsService {
                 }
             }
 
-            if (request.getSelectedGroups() != null && !request.getSelectedGroups().isEmpty())
-                predicate = builder.and(predicate, builder.in(root.get("groups").get("id")).value(request.getSelectedGroups()));
+            if (StringUtils.isNotEmpty(request.getDay()))
+                predicate = builder.and(predicate, builder.equal(root.get("groups").get("day"), request.getDay()));
+
+            if (StringUtils.isNotEmpty(request.getHour()))
+                predicate = builder.and(predicate, builder.equal(root.get("groups").get("hour"), request.getHour()));
 
             if (StringUtils.isNotEmpty(request.getNotes()))
                 predicate = builder.and(predicate, builder.like(root.get("notes"), "%" + request.getNotes() + "%"));

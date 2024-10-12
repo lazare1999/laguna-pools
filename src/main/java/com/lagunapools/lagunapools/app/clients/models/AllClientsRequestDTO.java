@@ -31,6 +31,7 @@ public class AllClientsRequestDTO implements Serializable {
     private Boolean contractStatus;
     private Double costFrom;
     private Double costTo;
-    private List<Long> selectedGroups;
     private String notes;
+    private String day;
+    private String hour;
 }

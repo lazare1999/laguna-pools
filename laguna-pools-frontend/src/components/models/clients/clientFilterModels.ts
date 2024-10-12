@@ -1,19 +1,23 @@
 export interface ClientFilters {
-    name: string;
+    phone: string;
     lastName: string;
+    day: string;
+    hour: string;
     branches: string[];
 }
 
 export const defaultClientFilters: ClientFilters = {
-    name: '',
+    phone: '',
     lastName: '',
+    day: '',
+    hour: '',
     branches: []
 };
 
 export interface DialogFilters {
+    name: string;
     contractStatus: boolean;
     idStatus: boolean;
-    phone: string;
     type: string;
     birthDayFrom: string;
     birthDayTo: string;
@@ -23,14 +27,13 @@ export interface DialogFilters {
     docDayTo: string;
     costFrom: number;
     costTo: number;
-    selectedGroups: string[];
     notes: string;
 }
 
 export const defaultDialogFilters: DialogFilters = {
+    name: '',
     contractStatus: false,
     idStatus: false,
-    phone: '',
     type: '',
     birthDayFrom: '',
     birthDayTo: '',
@@ -40,6 +43,5 @@ export const defaultDialogFilters: DialogFilters = {
     docDayTo: '',
     costFrom: 0.0,
     costTo: 0.0,
-    selectedGroups: [],
     notes: ''
 };
