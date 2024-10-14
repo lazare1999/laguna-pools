@@ -2,7 +2,7 @@ import React from 'react';
 import {fetchExcelFile} from "../../utils/excel";
 import {Button} from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import {FILTER_BUTTON_STYLES} from "../../utils/constants";
+import {TABLE_BUTTON_STYLES} from "../../utils/constants";
 import ApiService from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
@@ -36,7 +36,7 @@ const ExcelImport: React.FC = () => {
             <label htmlFor="file-upload">
                 <Button
                     variant="outlined"
-                    sx={FILTER_BUTTON_STYLES}
+                    sx={TABLE_BUTTON_STYLES}
                     component="span"
                 >
                     <UploadFileIcon/>

@@ -15,7 +15,7 @@ const determineHoursEnum = (hour: number): HoursEnum => {
 };
 
 export const getAttendancesListById = async (
-    id: number,
+    id: number | null,
     page: number,
     rowsPerPage: number
 ): Promise<{ attendances: Attendance[]; total: number }> => {
@@ -51,7 +51,7 @@ export const getAttendancesListById = async (
     return {attendances: [], total: 0};
 };
 
-export const addAttendance = async (clientId: number, day: string, hour: HoursEnum, attended: boolean) => {
+export const addAttendance = async (clientId: number | null, day: string, hour: HoursEnum, attended: boolean) => {
     const time = `${day}T${hour}:00`;
     return authClient.request("attendances", HttpMethod.POST, {
         clientId: clientId,

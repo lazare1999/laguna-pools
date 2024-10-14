@@ -36,7 +36,7 @@ import LoadingPage from "../common/loadingPage";
 import {Toast} from "../../utils/alertsUtils";
 import {UserApiService} from "../../api/userApiService";
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
-import {FILTER_BUTTON_STYLES} from "../../utils/constants";
+import {TABLE_BUTTON_STYLES} from "../../utils/constants";
 import {getAllFilteredClientsGrid, getClients} from "./utils";
 import {exportTableToExcel} from "../../utils/excel";
 import PlaylistRemoveOutlinedIcon from '@mui/icons-material/PlaylistRemoveOutlined';
@@ -252,28 +252,28 @@ const ClientsTable: React.FC = () => {
                         id={"clients-table-add-client-id"}
                         variant="outlined"
                         onClick={handleOpenDialog}
-                        sx={FILTER_BUTTON_STYLES}
+                        sx={TABLE_BUTTON_STYLES}
                     >
                         <PersonAddAltIcon/>
                     </Button>
                     <Button
                         variant="outlined"
                         onClick={handleRefresh}
-                        sx={FILTER_BUTTON_STYLES}
+                        sx={TABLE_BUTTON_STYLES}
                     >
                         <Refresh/>
                     </Button>
                     <Button
                         variant="outlined"
                         onClick={handleOpenFilterDialog}
-                        sx={FILTER_BUTTON_STYLES}
+                        sx={TABLE_BUTTON_STYLES}
                     >
                         <FilterAltOutlinedIcon/>
                     </Button>
                     <Button
                         variant="outlined"
                         onClick={exportClients}
-                        sx={FILTER_BUTTON_STYLES}
+                        sx={TABLE_BUTTON_STYLES}
                     >
                         <DownloadOutlinedIcon/>
                     </Button>
@@ -281,7 +281,7 @@ const ClientsTable: React.FC = () => {
                     <Button
                         variant="outlined"
                         onClick={handleClearAll}
-                        sx={FILTER_BUTTON_STYLES}
+                        sx={TABLE_BUTTON_STYLES}
                     >
                         <PlaylistRemoveOutlinedIcon/>
                     </Button>

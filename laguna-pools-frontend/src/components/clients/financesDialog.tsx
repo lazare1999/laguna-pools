@@ -24,7 +24,7 @@ interface FinancesDialogProps {
     client: Client;
     isModalOpen: boolean;
     modalCloseHandler: () => void;
-    onTransactionSuccess: (updatedClient: Client) => void;
+    onTransactionSuccess: ((updatedClient: Client) => void) | null;
 }
 
 const FinancesDialog: React.FC<FinancesDialogProps> = ({
@@ -79,15 +79,20 @@ const FinancesDialog: React.FC<FinancesDialogProps> = ({
             }
         )
             .then((response) => {
-                onTransactionSuccess(response.data);
-                setAlertMessage("Transaction added!");
-                setSeverity("success");
-                setAlertOpen(true);
+                if (onTransactionSuccess) {
+                    onTransactionSuccess(response.data);
+                    setAlertMessage("Transaction added!");
+                    setSeverity("success");
+                    setAlertOpen(true);
+
+                }
+                modalCloseHandler();
             })
             .catch(err => {
                 setAlertMessage(`Error fetching data: ${err}`);
                 setSeverity("error");
                 setAlertOpen(true);
+                modalCloseHandler();
             });
     };
 

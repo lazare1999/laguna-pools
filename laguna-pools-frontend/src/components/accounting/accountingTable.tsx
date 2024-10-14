@@ -30,7 +30,11 @@ import {AccountingClientModel} from "../models/accounting/accountingClientModel"
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import CustomDialogTitle from "../common/lagunaDialog";
 import AccountingRow from "./accountingRow";
-import {Client} from "../models/clients/clientsModel";
+import {Client, DEFAULT_CLIENT} from "../models/clients/clientsModel";
+import {TABLE_BUTTON_STYLES} from "../../utils/constants";
+
+import AddIcon from '@mui/icons-material/Add';
+import FinancesDialog from "../clients/financesDialog";
 
 const COLUMNS = ["#", "Amount", "Date", "Type", "Client", "Note", "Actions"];
 
@@ -55,10 +59,16 @@ const AccountingTable: React.FC = () => {
     const [alertMessage, setAlertMessage] = useState<string>("");
     const [toastOpen, setToastOpen] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<string>("");
+    const [isAddAccountingDialogOpen, setAddAccountingDialogOpen] = useState<boolean>(false);
 
     useEffect(() => {
         fetchData().then(r => r);
     }, [page, rowsPerPage]);
+
+    const accountingDialogOpenHandler = () => {
+        setAddAccountingDialogOpen(false);
+        fetchData().then(r => r);
+    }
 
     const handlePageChange = (_: unknown, newPage: number) => {
         setPage(newPage);
@@ -194,28 +204,25 @@ const AccountingTable: React.FC = () => {
                                                 filters={filters} handleBranchChange={handleBranchChange}/>
                             </FormControl>
                         }
+                        <Button
+                            variant="outlined"
+                            onClick={() => setAddAccountingDialogOpen(true)}
+                            sx={TABLE_BUTTON_STYLES}
+                        >
+                            <AddIcon/>
+                        </Button>
 
                         <Button
                             variant="outlined"
                             onClick={handleRefresh}
-                            sx={{
-                                flexGrow: 0,
-                                display: "flex",
-                                alignItems: "center",
-                                height: "50px"
-                            }}
+                            sx={TABLE_BUTTON_STYLES}
                         >
                             <Refresh/>
                         </Button>
                         <Button
                             variant="outlined"
                             onClick={handleClearAll}
-                            sx={{
-                                flexGrow: 0,
-                                display: "flex",
-                                alignItems: "center",
-                                height: "50px"
-                            }}
+                            sx={TABLE_BUTTON_STYLES}
                         >
                             <PlaylistRemoveOutlinedIcon/>
                         </Button>
@@ -223,12 +230,7 @@ const AccountingTable: React.FC = () => {
                             <Button
                                 variant="outlined"
                                 onClick={handleOpenGraphModal}
-                                sx={{
-                                    flexGrow: 0,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    height: "50px"
-                                }}
+                                sx={TABLE_BUTTON_STYLES}
                             >
                                 <EqualizerOutlinedIcon/>
                             </Button>
@@ -236,12 +238,7 @@ const AccountingTable: React.FC = () => {
                         <Button
                             variant="outlined"
                             onClick={handleCalculateTodayIncome}
-                            sx={{
-                                flexGrow: 0,
-                                display: "flex",
-                                alignItems: "center",
-                                height: "50px"
-                            }}
+                            sx={TABLE_BUTTON_STYLES}
                         >
                             <AccessTimeOutlinedIcon/>
                         </Button>
@@ -307,6 +304,11 @@ const AccountingTable: React.FC = () => {
                     />
                 </div>
             }
+            <FinancesDialog isModalOpen={isAddAccountingDialogOpen}
+                            modalCloseHandler={accountingDialogOpenHandler}
+                            client={DEFAULT_CLIENT}
+                            onTransactionSuccess={null}
+            />
         </>
     );
 };

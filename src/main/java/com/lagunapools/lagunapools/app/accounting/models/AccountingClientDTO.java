@@ -31,7 +31,9 @@ public class AccountingClientDTO {
         this.amount = accountingEntity.getAmount();
         this.date = accountingEntity.getDate();
         this.type = accountingEntity.getType();
-        this.client = new ClientDTO(accountingEntity.getClient());
+        if (accountingEntity.getClient() != null)
+            this.client = new ClientDTO(accountingEntity.getClient());
+        else this.client = null;
         this.note = accountingEntity.getNote();
     }
 }

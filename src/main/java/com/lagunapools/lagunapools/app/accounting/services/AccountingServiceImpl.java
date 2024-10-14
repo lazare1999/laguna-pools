@@ -101,15 +101,18 @@ public class AccountingServiceImpl implements AccountingService {
     public ResponseEntity<?> addAccounting(AddAccountingRequestDTO request) {
         try {
             AccountingEntity accounting = new AccountingEntity(request);
-            ClientsEntity client = clientsRepository.findById(request.getClientId()).orElseThrow();
+            if (request.getClientId() != null) {
+                ClientsEntity client = clientsRepository.findById(request.getClientId()).orElseThrow();
 
-            if (client.getDebt() != null && request.getAmount() != null)
-                client.setDebt(client.getDebt() - request.getAmount());
+                if (client.getDebt() != null && request.getAmount() != null)
+                    client.setDebt(client.getDebt() - request.getAmount());
 
-            accounting.setClient(client);
+                accounting.setClient(client);
+            }
+
             accountingRepository.save(accounting);
 
-            return okResponse(client);
+            return okResponse(accounting);
         } catch (Exception e) {
             return badRequestResponse(e.getStackTrace());
         }

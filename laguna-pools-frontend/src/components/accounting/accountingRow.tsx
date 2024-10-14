@@ -61,7 +61,9 @@ const AccountingRow: React.FC<AccountingRowProps> = ({
             <TableCell>{accountingData.amount}</TableCell>
             <TableCell>{format(new Date(accountingData.date), 'MMMM dd, yyyy')}</TableCell>
             <TableCell>{accountingData.type}</TableCell>
-            <TableCell>{`${accountingData.client.firstName} ${accountingData.client.lastName}`}</TableCell>
+            <TableCell>
+                {accountingData.client ? (`${accountingData.client.firstName} ${accountingData.client.lastName}`) : ""}
+            </TableCell>
             <TableCell>{accountingData.note}</TableCell>
             <TableCell align="center" sx={{width: "160px", height: "37px"}}>
                 {!hovered ? <ManageAccountsOutlinedIcon/> : <>

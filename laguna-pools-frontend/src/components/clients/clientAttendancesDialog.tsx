@@ -62,7 +62,7 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
             });
     }, [isModalOpen, page, rowsPerPage]);
 
-    const handleHourChange = (index: number, value: HoursEnum) => {
+    const handleHourChange = (index: number | null, value: HoursEnum) => {
         setNewAttendance(prevState => {
             if (prevState == null) {
                 return {

@@ -22,7 +22,7 @@ import LoadingPage from "../common/loadingPage";
 import CustomDialogTitle from "../common/lagunaDialog";
 
 interface Client {
-    id: number;
+    id: number | null;
     firstName: string;
     lastName: string;
 }
@@ -36,7 +36,7 @@ interface ClientModalProps {
 }
 
 const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, shouldSave, loading}) => {
-    const [checkedClients, setCheckedClients] = useState<number[]>([]);
+    const [checkedClients, setCheckedClients] = useState<(number | null)[]>([]);
 
     useEffect(() => {
         if (open) {
@@ -45,7 +45,7 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, sh
     }, [clients, open]);
 
 
-    const handleToggle = (id: number) => {
+    const handleToggle = (id: number | null) => {
         const currentIndex = checkedClients.indexOf(id);
         const newChecked = [...checkedClients];
 
@@ -58,7 +58,7 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, sh
         setCheckedClients(newChecked);
     };
 
-    const handleRemove = (id: number) => {
+    const handleRemove = (id: number | null) => {
         setCheckedClients((prevChecked) => prevChecked.filter((clientId) => clientId !== id));
     };
 

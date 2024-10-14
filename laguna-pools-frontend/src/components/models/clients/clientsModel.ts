@@ -2,7 +2,7 @@ import {GroupModel} from "../groups/GroupModel";
 import {TYPES} from "../../clients/constants";
 
 export interface Client {
-    id: number;
+    id: number | null;
     firstName: string;
     lastName: string;
     age: string;
@@ -15,4 +15,20 @@ export interface Client {
     notes: string;
     type: typeof TYPES[number];
     groups: GroupModel[];
+}
+
+export const DEFAULT_CLIENT = {
+    id: null,
+    firstName: "",
+    lastName: "",
+    age: "",
+    debt: 0,
+    expDate: "",
+    doctorCheckTill: "",
+    phoneNumber: "",
+    idStatus: false,
+    contractStatus: false,
+    notes: "",
+    type: "guest",
+    groups: []
 }
