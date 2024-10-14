@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef } from 'react';
 import {AppBar, Box, Button, Toolbar} from '@mui/material';
 import {ExitToApp} from '@mui/icons-material';
 import {Component} from '../utils/componentsEnum';
@@ -17,6 +17,7 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
     const [anchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const [userRoles, setUserRoles] = useState<string[]>([]);
+    const effectRan = useRef(false);
 
     const hasRole = (role: string) => {
         return userRoles.includes(role);
@@ -26,10 +27,18 @@ const TopMenu: React.FC<TopMenuProps> = ({selectHandler, onLogout}) => {
         selectHandler(Component.CONTROL_PANEL);
     };
 
+
+
     useEffect(() => {
-        UserApiService.getRoles().then(r => {
-            setUserRoles(r.data.roles);
-        }).catch(err => console.error(err));
+        if (effectRan.current === false) {
+            UserApiService.getRoles().then(r => {
+                setUserRoles(r.data.roles);
+            }).catch(err => console.error(err));
+
+            return () => {
+                effectRan.current = true;
+            };
+        }
     }, []);
 
     return (
