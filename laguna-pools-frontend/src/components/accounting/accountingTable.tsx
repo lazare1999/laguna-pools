@@ -22,7 +22,6 @@ import {Refresh} from "@mui/icons-material";
 import PlaylistRemoveOutlinedIcon from "@mui/icons-material/PlaylistRemoveOutlined";
 import LoadingPage from "../common/loadingPage";
 import AccountingPageGraphs from "./accountingPageGraphs";
-import EqualizerOutlinedIcon from '@mui/icons-material/EqualizerOutlined';
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import {AlertDialog, Toast} from "../../utils/alertsUtils";
@@ -226,15 +225,15 @@ const AccountingTable: React.FC = () => {
                         >
                             <PlaylistRemoveOutlinedIcon/>
                         </Button>
-                        {hasRole("ROLE_LAGUNA_ADMIN") &&
-                            <Button
-                                variant="outlined"
-                                onClick={handleOpenGraphModal}
-                                sx={TABLE_BUTTON_STYLES}
-                            >
-                                <EqualizerOutlinedIcon/>
-                            </Button>
-                        }
+                        {/*{hasRole("ROLE_LAGUNA_ADMIN") &&*/}
+                        {/*    <Button*/}
+                        {/*        variant="outlined"*/}
+                        {/*        onClick={handleOpenGraphModal}*/}
+                        {/*        sx={TABLE_BUTTON_STYLES}*/}
+                        {/*    >*/}
+                        {/*        <EqualizerOutlinedIcon/>*/}
+                        {/*    </Button>*/}
+                        {/*}*/}
                         <Button
                             variant="outlined"
                             onClick={handleCalculateTodayIncome}
