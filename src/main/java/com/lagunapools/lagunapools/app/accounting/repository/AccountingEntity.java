@@ -38,6 +38,9 @@ public class AccountingEntity {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "branch_name")
+    private String branchName;
+
     @Column(name = "client_id", insertable = false, updatable = false)
     private Long clientId;
 

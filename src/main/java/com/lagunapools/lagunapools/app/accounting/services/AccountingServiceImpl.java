@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUser;
+import static com.lagunapools.lagunapools.utils.LazoUtils.getCurrentApplicationUserId;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.badRequestResponse;
 import static com.lagunapools.lagunapools.utils.ResponseUtils.okResponse;
 
@@ -58,12 +59,12 @@ public class AccountingServiceImpl implements AccountingService {
             Predicate predicate = builder.conjunction();
 
             if (isAdmin && !request.getBranches().isEmpty()) {
-                predicate = builder.and(predicate, builder.in(root.get("client").get("branch").get("branchName")).value(request.getBranches()));
+                predicate = builder.and(predicate, builder.in(root.get("branchName")).value(request.getBranches()));
             } else if (!isAdmin) {
                 Optional<AppUser> currentUserOpt = userRepository.findById(getCurrentApplicationUser().getUserId());
                 if (currentUserOpt.isPresent()) {
                     AppUser currentUser = currentUserOpt.get();
-                    predicate = builder.and(predicate, builder.equal(root.get("client").get("branch").get("branchName"), currentUser.getBranch().getBranchName()));
+                    predicate = builder.and(predicate, builder.equal(root.get("branchName"), currentUser.getBranch().getBranchName()));
                 }
             }
 
@@ -99,6 +100,9 @@ public class AccountingServiceImpl implements AccountingService {
 
     @Override
     public ResponseEntity<?> addAccounting(AddAccountingRequestDTO request) {
+        if (userDetailsService.userIsAdmin())
+            return badRequestResponse("Admin can not add transaction");
+
         try {
             AccountingEntity accounting = new AccountingEntity(request);
             if (request.getClientId() != null) {
@@ -108,10 +112,13 @@ public class AccountingServiceImpl implements AccountingService {
                     client.setDebt(client.getDebt() - request.getAmount());
 
                 accounting.setClient(client);
+
             }
 
-            accountingRepository.save(accounting);
+            var usr = userRepository.findById(getCurrentApplicationUserId()).orElseThrow();
+            accounting.setBranchName(usr.getBranch().getBranchName());
 
+            accountingRepository.save(accounting);
             return okResponse(accounting);
         } catch (Exception e) {
             return badRequestResponse(e.getStackTrace());
