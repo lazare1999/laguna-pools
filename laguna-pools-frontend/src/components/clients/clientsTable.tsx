@@ -184,6 +184,13 @@ const ClientsTable: React.FC = () => {
         exportTableToExcel(result, "clients" + new Date())
     }
 
+    const handleDayChange = (event: any) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            day: event.target.value,
+        }));
+    };
+
     const handleTimeChange = (event: any) => {
         setFilters(prevFilters => ({
             ...prevFilters,
@@ -221,7 +228,7 @@ const ClientsTable: React.FC = () => {
                     <FormControl sx={{flexGrow: 5, minWidth: 150}}>
                         <InputLabel id="clients-day-select-label">Day</InputLabel>
                         <Select labelId="clients-day-select-label" id="clients-day-select" value={filters.day}
-                                onChange={handleTimeChange} label="Day">
+                                onChange={handleDayChange} label="Day">
                             {Object.values(DayEnum).map((day) => (
                                 <MenuItem key={day} value={day}>
                                     {day}
