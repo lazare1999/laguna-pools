@@ -80,11 +80,7 @@ const FinancesDialog: React.FC<FinancesDialogProps> = ({
         )
             .then((response) => {
                 if (onTransactionSuccess) {
-                    onTransactionSuccess(response.data);
-                    setAlertMessage("Transaction added!");
-                    setSeverity("success");
-                    setAlertOpen(true);
-
+                    onTransactionSuccess(response.data.client);
                 }
                 modalCloseHandler();
             })

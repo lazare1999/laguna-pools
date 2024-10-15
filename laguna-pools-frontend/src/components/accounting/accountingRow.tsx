@@ -42,12 +42,16 @@ const AccountingRow: React.FC<AccountingRowProps> = ({
         if (!window.confirm(`Are you sure you want to delete order?`))
             return;
 
-        const endpoint = `/accounting?id=${accountingData.id}`;
-        await authClient.request(endpoint, HttpMethod.DELETE).then(r => {
-            if (r.status === 200) {
-                onDelete(accountingData);
-            }
-        });
+        try {
+            const endpoint = `/accounting?id=${accountingData.id}`;
+            await authClient.request(endpoint, HttpMethod.DELETE).then(r => {
+                if (r.status === 200) {
+                    onDelete(accountingData);
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
     };
 
     return (

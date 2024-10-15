@@ -541,7 +541,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                             </Grid>
                         </TableCell>
                         <TableCell
-                            style={{backgroundColor: client.groups.length === 0 ? 'rgba(234,118,118,0.8)' : 'transparent'}}>
+                            style={{backgroundColor: (client.groups?.length ?? 0) === 0 ? 'rgba(234,118,118,0.8)' : 'transparent'}}>
                             {client.groups.length === 0 ? (
                                 <span>No groups available</span>
                             ) : (

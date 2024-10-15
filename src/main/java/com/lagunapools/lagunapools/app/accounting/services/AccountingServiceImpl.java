@@ -125,14 +125,26 @@ public class AccountingServiceImpl implements AccountingService {
 
     @Override
     public ResponseEntity<?> deleteTransaction(Long id) {
-        if (id == null)
-            return badRequestResponse("Invalid transaction id");
+        if (id == null) {
+            return badRequestResponse("Invalid transaction ID");
+        }
 
-        if (accountingRepository.findById(id).isPresent())
-            accountingRepository.deleteById(id);
+        var transaction = accountingRepository.findById(id);
+        if (transaction.isEmpty()) {
+            return badRequestResponse("Transaction not found");
+        }
 
-        return okResponse("Transaction with id " + id + " deleted!");
+        AccountingEntity accounting = transaction.get();
+        ClientsEntity client = accounting.getClient();
 
+        if (client != null) {
+            var clientRecord = clientsRepository.findById(client.getId());
+            clientRecord.ifPresent(c -> c.setDebt(c.getDebt() + accounting.getAmount()));
+        }
+
+        accountingRepository.deleteById(id);
+        return okResponse("Transaction with ID " + id + " deleted!");
     }
+
 }
 
