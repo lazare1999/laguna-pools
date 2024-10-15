@@ -16,7 +16,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import {Refresh} from "@mui/icons-material";
 import authClient from '../../../api/api';
 import {HttpMethod} from '../../../utils/enums/httpMethodEnum';
-import {BranchModel} from "../../models/branchModel";
+import {BranchModel} from "../../models/admin/branchModel";
 import LoadingPage from "../../common/loadingPage";
 
 const BranchesControlPage: React.FC = () => {

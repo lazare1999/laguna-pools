@@ -7,8 +7,9 @@ import ActiveUsersTable from "../components/admin/users/activeUsersTable";
 import AdminControlPanel from "../components/admin/controlPanel";
 import BranchesControlPage from "../components/admin/branches/branchesControlPage";
 import MoveBackWrapper from "../components/admin/moveBack";
-import GroupScheduleTable from "../components/clients/groups/groupScheduleTable";
+import GroupScheduleTable from "../components/groups/groupScheduleTable";
 import DaysTable from "../components/days/daysTable";
+import AccountingTable from "../components/accounting/accountingTable";
 
 interface ComponentMapperProps {
     currentComponent: Component
@@ -43,6 +44,8 @@ const ComponentMapper: React.FC<ComponentMapperProps> = ({
             return <MoveBackWrapper onBack={moveToControlPanel}><BranchesControlPage/></MoveBackWrapper>
         case Component.DAYS:
             return <DaysTable/>
+        case Component.ACCOUNTING:
+            return <AccountingTable/>
         default:
             return null;
     }

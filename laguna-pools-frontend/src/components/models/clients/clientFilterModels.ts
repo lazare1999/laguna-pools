@@ -1,45 +1,47 @@
 export interface ClientFilters {
-    name: string;
+    phone: string;
     lastName: string;
+    day: string;
+    hour: string;
     branches: string[];
 }
 
 export const defaultClientFilters: ClientFilters = {
-    name: '',
+    phone: '',
     lastName: '',
+    day: '',
+    hour: '',
     branches: []
 };
 
 export interface DialogFilters {
+    name: string;
     contractStatus: boolean;
     idStatus: boolean;
-    phone: string;
-    parent: string;
+    type: string;
     birthDayFrom: string;
     birthDayTo: string;
     expDayFrom: string;
     expDayTo: string;
     docDayFrom: string;
     docDayTo: string;
-    costFrom: number;
-    costTo: number;
-    selectedGroups: string[];
+    debtFrom: number;
+    debtTo: number;
     notes: string;
 }
 
 export const defaultDialogFilters: DialogFilters = {
+    name: '',
     contractStatus: false,
     idStatus: false,
-    phone: '',
-    parent: '',
+    type: '',
     birthDayFrom: '',
     birthDayTo: '',
     expDayFrom: '',
     expDayTo: '',
     docDayFrom: '',
     docDayTo: '',
-    costFrom: 0.0,
-    costTo: 0.0,
-    selectedGroups: [],
+    debtFrom: 0.0,
+    debtTo: 0.0,
     notes: ''
 };

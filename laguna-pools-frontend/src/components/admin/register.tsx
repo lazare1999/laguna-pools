@@ -19,8 +19,8 @@ import {AlertDialog, Toast} from "../../utils/alertsUtils";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import PasswordField from "../common/passwordTextBox";
 import {PASSWORD_ERROR_TEXT, STRONG_PASSWORD_REGEX} from "../../utils/constants";
-import {TargetView} from "../models/targetViewModel";
-import {BranchModel} from "../models/branchModel";
+import {TargetView} from "../models/admin/targetViewModel";
+import {BranchModel} from "../models/admin/branchModel";
 import {fetchBranchesList, fetchRolesList} from "../../utils/utils";
 import BoxWrapper from "../common/border";
 

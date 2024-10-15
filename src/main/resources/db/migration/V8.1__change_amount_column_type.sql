@@ -1,0 +1,2 @@
+ALTER TABLE accounting.accounting
+    ALTER COLUMN amount TYPE DOUBLE PRECISION USING amount::DOUBLE PRECISION;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {
     Button,
     Card,
@@ -7,24 +7,19 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
     FormControl,
     FormControlLabel,
     Grid,
     InputLabel,
-    ListItemText,
     MenuItem,
-    OutlinedInput,
     Select,
-    SelectChangeEvent,
     TextField,
     Typography,
 } from "@mui/material";
 import {Cancel, CheckCircle} from "@mui/icons-material";
-import {DialogFilters} from "../models/clientFilterModels";
-import {GroupModel} from "../models/GroupModel";
-import authClient from "../../api/api";
-import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import {DialogFilters} from "../models/clients/clientFilterModels";
+import CustomDialogTitle from "../common/lagunaDialog";
+import {TYPES} from "./constants";
 
 interface FilterDialogProps {
     open: boolean;
@@ -35,16 +30,15 @@ interface FilterDialogProps {
 }
 
 const filterFields = [
-    {label: "Phone", key: "phone", type: "text"},
-    {label: "Parent", key: "parent", type: "text"},
+    {label: "First Name", key: "name", type: "text"},
     {label: "Birth Day From", key: "birthDayFrom", type: "date"},
     {label: "Birth Day To", key: "birthDayTo", type: "date"},
     {label: "Exp. Day From", key: "expDayFrom", type: "date"},
     {label: "Exp. Day To", key: "expDayTo", type: "date"},
     {label: "Doc. Day From", key: "docDayFrom", type: "date"},
     {label: "Doc. Day To", key: "docDayTo", type: "date"},
-    {label: "Cost From", key: "costFrom", type: "number"},
-    {label: "Cost To", key: "costTo", type: "number"},
+    {label: "Debt From", key: "debtFrom", type: "number"},
+    {label: "Debt To", key: "debtTo", type: "number"},
     {label: "Notes", key: "notes", type: "text"},
 ];
 
@@ -55,50 +49,12 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                                                        filters,
                                                        setFilters,
                                                    }) => {
-    const [groups, setGroups] = useState<GroupModel[]>([]);
-    const [searchInput, setSearchInput] = useState('');
-
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchInput(e.target.value.toLowerCase());
-    };
-
-    const filteredGroups = groups.filter(
-        (g) =>
-            g.day.toLowerCase().includes(searchInput) ||
-            g.hour.toLowerCase().includes(searchInput)
-    );
-
-    useEffect(() => {
-        const fetchGroups = async () => {
-            try {
-                const response = await authClient.request(
-                    "clients/list_groups",
-                    HttpMethod.GET
-                );
-                setGroups(response.data);
-            } catch (error) {
-                console.error("Error fetching groups:", error);
-            }
-        };
-        fetchGroups().then(r => r);
-    }, []);
 
     const handleChange =
         (key: keyof DialogFilters) =>
             (event: React.ChangeEvent<HTMLInputElement>) => {
                 setFilters({...filters, [key]: event.target.value});
             };
-
-    const handleGroupChange = (event: SelectChangeEvent<typeof filters.selectedGroups>) => {
-        const {value} = event.target;
-
-        const newSelectedGroups = typeof value === "string" ? value.split(",") : value;
-
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            selectedGroups: newSelectedGroups,
-        }));
-    };
 
     const handleStatusChange =
         (key: "idStatus" | "contractStatus") =>
@@ -111,9 +67,13 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
         onClose();
     };
 
+    const handleInputChange = (key: keyof DialogFilters, value: string | boolean | number) => {
+        setFilters({...filters, [key]: value});
+    };
+
     return (
         <Dialog open={open} onClose={onClose} fullWidth>
-            <DialogTitle>Filter Clients</DialogTitle>
+            <CustomDialogTitle>Filter Clients</CustomDialogTitle>
             <DialogContent>
                 <Grid container spacing={2}>
                     {filterFields.map(({label, key, type}) => (
@@ -133,6 +93,28 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                             />
                         </Grid>
                     ))}
+                    <Grid item xs={12}>
+                        <FormControl
+                            margin="dense"
+                            fullWidth
+                            variant="outlined"
+                        >
+                            <InputLabel>Type</InputLabel>
+                            <Select
+                                label="Type"
+                                value={filters.type}
+                                onChange={(e) => handleInputChange("type", e.target.value)}
+                                fullWidth
+                                MenuProps={{PaperProps: {style: {maxHeight: 200}}}}
+                            >
+                                {TYPES.map((type) => (
+                                    <MenuItem key={type} value={type}>
+                                        {type}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
                     {["idStatus", "contractStatus"].map((status) => (
                         <Grid item xs={6} key={status}>
                             <Card variant="outlined" sx={{boxShadow: 3, borderRadius: 2}}>
@@ -157,61 +139,6 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                             </Card>
                         </Grid>
                     ))}
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel id="groups-select-label">Groups</InputLabel>
-                            <Select
-                                labelId="groups-select-label"
-                                id="groups-select"
-                                multiple
-                                value={filters.selectedGroups}
-                                onChange={handleGroupChange}
-                                input={<OutlinedInput id="groups-select-label-input" label="Groups"/>}
-                                renderValue={(selected) =>
-                                    selected
-                                        .map((id) => {
-                                            const group = groups.find((g) => String(g.id) === id);
-                                            return group ? `${group.day} - ${group.hour}` : '';
-                                        })
-                                        .join(', ')
-                                }
-                                MenuProps={{
-                                    PaperProps: {
-                                        style: {
-                                            maxHeight: 48 * 4.5 + 8,
-                                            width: 250,
-                                        },
-                                    },
-                                }}
-                            >
-                                <MenuItem>
-                                    <TextField
-                                        fullWidth
-                                        placeholder="Search groups"
-                                        value={searchInput}
-                                        onChange={handleSearchChange}
-                                    />
-                                </MenuItem>
-
-                                {filteredGroups.length > 0 ? (
-                                    filteredGroups.map((g) => (
-                                        <MenuItem
-                                            key={g.id}
-                                            value={String(g.id)}
-                                            disableRipple
-                                        >
-                                            <Checkbox
-                                                checked={filters.selectedGroups.includes(String(g.id))}/>
-                                            <ListItemText
-                                                primary={`${g.day} - ${g.hour}`}/>
-                                        </MenuItem>
-                                    ))
-                                ) : (
-                                    <MenuItem disabled>No groups found</MenuItem>
-                                )}
-                            </Select>
-                        </FormControl>
-                    </Grid>
                 </Grid>
             </DialogContent>
             <DialogActions>

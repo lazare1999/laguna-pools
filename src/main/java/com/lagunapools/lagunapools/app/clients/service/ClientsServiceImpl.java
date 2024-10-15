@@ -2,6 +2,7 @@ package com.lagunapools.lagunapools.app.clients.service;
 
 import com.lagunapools.lagunapools.app.branches.repository.BranchEntity;
 import com.lagunapools.lagunapools.app.branches.repository.BranchRepository;
+import com.lagunapools.lagunapools.app.clients.models.AddClientsListRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsResponseDTO;
 import com.lagunapools.lagunapools.app.clients.models.ClientDTO;
@@ -79,8 +80,8 @@ public class ClientsServiceImpl implements ClientsService {
             if (StringUtils.isNotEmpty(request.getPhone()))
                 predicate = builder.and(predicate, builder.like(root.get("phoneNumber"), "%" + request.getPhone() + "%"));
 
-            if (StringUtils.isNotEmpty(request.getParent()))
-                predicate = builder.and(predicate, builder.like(root.get("parent"), "%" + request.getParent() + "%"));
+            if (StringUtils.isNotEmpty(request.getType()))
+                predicate = builder.and(predicate, builder.equal(root.get("type"), request.getType()));
 
             if (request.getBirthDayFrom() != null && request.getBirthDayTo() != null) {
                 predicate = builder.and(predicate,
@@ -127,26 +128,29 @@ public class ClientsServiceImpl implements ClientsService {
             if (request.getContractStatus() != null && request.getContractStatus())
                 predicate = builder.and(predicate, builder.equal(root.get("contractStatus"), request.getContractStatus()));
 
-            Double costFrom = request.getCostFrom();
-            Double costTo = request.getCostTo();
-            if (costFrom != null && costTo != null) {
-                if (costFrom.equals(costTo) && costFrom != 0.0) {
+            Double debtFrom = request.getDebtFrom();
+            Double debtTo = request.getDebtTo();
+            if (debtFrom != null && debtTo != null) {
+                if (debtFrom.equals(debtTo) && debtFrom != 0.0) {
                     predicate = builder.and(predicate,
-                            builder.equal(root.get("cost"), costFrom));
-                } else if (costFrom != 0.0 && costTo != 0.0) {
+                            builder.equal(root.get("debt"), debtFrom));
+                } else if (debtFrom != 0.0 && debtTo != 0.0) {
                     predicate = builder.and(predicate,
-                            builder.between(root.get("cost"), costFrom, costTo));
-                } else if (costFrom != 0.0) {
+                            builder.between(root.get("debt"), debtFrom, debtTo));
+                } else if (debtFrom != 0.0) {
                     predicate = builder.and(predicate,
-                            builder.greaterThanOrEqualTo(root.get("cost"), costFrom));
-                } else if (costTo != 0.0) {
+                            builder.greaterThanOrEqualTo(root.get("debt"), debtFrom));
+                } else if (debtTo != 0.0) {
                     predicate = builder.and(predicate,
-                            builder.lessThanOrEqualTo(root.get("cost"), costTo));
+                            builder.lessThanOrEqualTo(root.get("debt"), debtTo));
                 }
             }
 
-            if (request.getSelectedGroups() != null && !request.getSelectedGroups().isEmpty())
-                predicate = builder.and(predicate, builder.in(root.get("groups").get("id")).value(request.getSelectedGroups()));
+            if (StringUtils.isNotEmpty(request.getDay()))
+                predicate = builder.and(predicate, builder.equal(root.get("groups").get("day"), request.getDay()));
+
+            if (StringUtils.isNotEmpty(request.getHour()))
+                predicate = builder.and(predicate, builder.equal(root.get("groups").get("hour"), request.getHour()));
 
             if (StringUtils.isNotEmpty(request.getNotes()))
                 predicate = builder.and(predicate, builder.like(root.get("notes"), "%" + request.getNotes() + "%"));
@@ -231,6 +235,17 @@ public class ClientsServiceImpl implements ClientsService {
     @Cacheable(value = "groupsList")
     public List<GroupDTO> listGroups() {
         return GroupMapper.toDTOs(groupRepository.findAll());
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> addClientsList(AddClientsListRequestDTO clients) {
+        try {
+            clients.getClients().forEach(this::addClient);
+        } catch (Exception e) {
+            return badRequestResponse(e.getStackTrace());
+        }
+        return okResponse("Clients added");
     }
 
 }

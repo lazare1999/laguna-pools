@@ -1,6 +1,6 @@
-import authClient from "../../../api/api";
-import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
-import {defaultClientFilters, defaultDialogFilters} from "../../models/clientFilterModels";
+import authClient from "../../api/api";
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import {defaultClientFilters, defaultDialogFilters} from "../models/clients/clientFilterModels";
 
 export const fetchClientsFor = (id: number, branches: string[]) => {
 

@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from '@mui/material';
+import {Button, Dialog, DialogActions, DialogContent, TextField} from '@mui/material';
 import {Box} from '@mui/system';
 import authenticateUtils from "../api/authenticateUtils";
 import {AlertDialog} from "../utils/alertsUtils";
 import {USERNAME} from "../utils/constants";
+import CustomDialogTitle from "./common/lagunaDialog";
 
 interface PasswordDialogProps {
     open: boolean;
@@ -48,9 +49,9 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({open, onClose, setOpenSe
             fullWidth
             maxWidth="xs"
         >
-            <DialogTitle id="password-dialog-title" sx={{textAlign: 'center'}}>
+            <CustomDialogTitle id="password-dialog-title" sx={{textAlign: 'center'}}>
                 Re-enter Password
-            </DialogTitle>
+            </CustomDialogTitle>
             <Box component="form" onSubmit={handleSubmit} sx={{mt: 1}}>
                 <DialogContent>
                     <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>

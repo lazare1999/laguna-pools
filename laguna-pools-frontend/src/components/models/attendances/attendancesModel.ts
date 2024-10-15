@@ -1,4 +1,4 @@
-import {Client} from "./clientsModel";
+import {Client} from "../clients/clientsModel";
 
 export interface AttendancesModel {
     id: number;

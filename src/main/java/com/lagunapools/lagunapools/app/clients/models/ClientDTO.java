@@ -22,14 +22,14 @@ public class ClientDTO {
     private String firstName;
     private String lastName;
     private LocalDate age;
-    private Double cost;
+    private Double debt;
     private LocalDate expDate;
     private LocalDate doctorCheckTill;
     private String phoneNumber;
     private Boolean idStatus;
     private Boolean contractStatus;
     private String notes;
-    private String parent;
+    private String type;
     private List<GroupDTO> groups;
 
     public ClientDTO(ClientsEntity client) {
@@ -37,14 +37,14 @@ public class ClientDTO {
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.age = client.getAge();
-        this.cost = client.getCost();
+        this.debt = client.getDebt();
         this.expDate = client.getExpDate();
         this.doctorCheckTill = client.getDoctorCheckTill();
         this.phoneNumber = client.getPhoneNumber();
         this.idStatus = client.getIdStatus();
         this.contractStatus = client.getContractStatus();
         this.notes = client.getNotes();
-        this.parent = client.getParent();
+        this.type = client.getType();
         this.groups = GroupMapper.toDTOs(client.getGroups());
     }
 }

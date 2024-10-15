@@ -2,25 +2,27 @@ import React, {useEffect, useState} from 'react';
 import {
     Box,
     Button,
+    Dialog,
+    DialogContent,
+    Grid,
     IconButton,
     List,
     ListItem,
     ListItemButton,
     ListItemSecondaryAction,
     ListItemText,
-    Modal,
-    Typography,
 } from '@mui/material';
 
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
-import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
-import authClient from '../../../api/api';
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import authClient from '../../api/api';
 import {getCurrentTime, getString} from "./utils";
-import LoadingPage from "../../common/loadingPage";
+import LoadingPage from "../common/loadingPage";
+import CustomDialogTitle from "../common/lagunaDialog";
 
 interface Client {
-    id: number;
+    id: number | null;
     firstName: string;
     lastName: string;
 }
@@ -33,19 +35,8 @@ interface ClientModalProps {
     loading: boolean;
 }
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4,
-};
-
 const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, shouldSave, loading}) => {
-    const [checkedClients, setCheckedClients] = useState<number[]>([]);
+    const [checkedClients, setCheckedClients] = useState<(number | null)[]>([]);
 
     useEffect(() => {
         if (open) {
@@ -54,7 +45,7 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, sh
     }, [clients, open]);
 
 
-    const handleToggle = (id: number) => {
+    const handleToggle = (id: number | null) => {
         const currentIndex = checkedClients.indexOf(id);
         const newChecked = [...checkedClients];
 
@@ -67,7 +58,7 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, sh
         setCheckedClients(newChecked);
     };
 
-    const handleRemove = (id: number) => {
+    const handleRemove = (id: number | null) => {
         setCheckedClients((prevChecked) => prevChecked.filter((clientId) => clientId !== id));
     };
 
@@ -103,12 +94,10 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, sh
     }
 
     return (
-        <Modal open={open} onClose={handleClose}>
-            <Box sx={style}>
-                <Typography variant="h6" component="h2">
-                    Select Clients
-                </Typography>
-                <div style={{maxHeight: '400px', overflowY: 'auto'}}>
+        <Dialog open={open} onClose={handleClose} fullWidth>
+            <CustomDialogTitle>Select Clients</CustomDialogTitle>
+            <DialogContent>
+                <Grid style={{height: '40%', overflowY: 'auto', width: '100%'}}>
                     <List>
                         {loading ? (
                             <ListItem>
@@ -144,7 +133,7 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, sh
                             </>
                         )}
                     </List>
-                </div>
+                </Grid>
                 {
                     shouldSave && <Box textAlign="center" mt={2}>
                         <Button variant="contained" sx={{marginRight: "10px"}} onClick={handleSave}>
@@ -155,9 +144,8 @@ const ClientModal: React.FC<ClientModalProps> = ({clients, open, handleClose, sh
                         </Button>
                     </Box>
                 }
-
-            </Box>
-        </Modal>
+            </DialogContent>
+        </Dialog>
     );
 };
 

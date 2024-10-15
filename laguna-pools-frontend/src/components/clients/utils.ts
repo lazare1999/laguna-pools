@@ -1,5 +1,5 @@
 import {HoursEnum} from "../../utils/enums/HoursEnum";
-import {Attendance} from "../models/attnedance";
+import {Attendance} from "../models/attendances/attnedance";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
 import authClient from "../../api/api";
@@ -15,7 +15,7 @@ const determineHoursEnum = (hour: number): HoursEnum => {
 };
 
 export const getAttendancesListById = async (
-    id: number,
+    id: number | null,
     page: number,
     rowsPerPage: number
 ): Promise<{ attendances: Attendance[]; total: number }> => {
@@ -51,7 +51,7 @@ export const getAttendancesListById = async (
     return {attendances: [], total: 0};
 };
 
-export const addAttendance = async (clientId: number, day: string, hour: HoursEnum, attended: boolean) => {
+export const addAttendance = async (clientId: number | null, day: string, hour: HoursEnum, attended: boolean) => {
     const time = `${day}T${hour}:00`;
     return authClient.request("attendances", HttpMethod.POST, {
         clientId: clientId,
@@ -82,11 +82,11 @@ const getUserRowFromResponse = (client: any) => {
         client.age,
         client.expDate,
         client.doctorCheckTill,
-        client.cost,
+        client.debt,
         client.phoneNumber,
         client.idStatus,
         client.contractStatus,
-        client.parent,
+        client.type,
         groups,
         client.notes
     ]
@@ -105,10 +105,11 @@ export const getAllFilteredClientsGrid = async (filters: any) => {
         "Birthday",
         "Expiration",
         "Doctor check",
-        "Cost", "Phone",
+        "Debt",
+        "Phone",
         "Id Status",
         "Contract",
-        "Parent",
+        "Type",
         "Groups",
         "Notes"]].concat(clientsArrays);
 }

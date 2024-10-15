@@ -6,7 +6,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
     FormControl,
     FormControlLabel,
     Grid,
@@ -17,17 +16,18 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import {Client} from "../models/clientsModel";
+import {Client} from "../models/clients/clientsModel";
 import {DayEnum} from "../../utils/enums/DayEnum";
 import {HoursEnum} from "../../utils/enums/HoursEnum";
-import {GroupModel} from "../models/GroupModel";
+import {GroupModel} from "../models/groups/GroupModel";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
-import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import {Box} from "@mui/system";
 import Divider from '@mui/material/Divider';
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import CustomDialogTitle from "../common/lagunaDialog";
+import {TYPES} from "./constants";
 
 interface AddClientDialogProps {
     open: boolean;
@@ -44,7 +44,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                                                              openToastHandler,
                                                              toastMessageHandler
                                                          }) => {
-    const [newClient, setNewClient] = useState<Client>({cost: 0} as Client);
+    const [newClient, setNewClient] = useState<Client>({debt: 0, type: "Individual"} as Client);
     const [dayHourPairs, setDayHourPairs] = useState<GroupModel[]>([{
         id: 0,
         day: DayEnum.SUNDAY,
@@ -146,7 +146,7 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
     };
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle><PersonAddAltIcon color={"success"}/></DialogTitle>
+            <CustomDialogTitle>Add Client</CustomDialogTitle>
             <Snackbar
                 open={alertOpen}
                 autoHideDuration={6000}
@@ -273,13 +273,13 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                     </Grid>
                     <Grid item xs={4}>
                         <TextField
-                            label="Cost"
+                            label="Debt"
                             type="number"
                             variant="outlined"
                             fullWidth
                             margin="normal"
-                            value={newClient.cost}
-                            onChange={(e) => handleInputChange("cost", +e.target.value)}
+                            value={newClient.debt}
+                            onChange={(e) => handleInputChange("debt", +e.target.value)}
                         />
                     </Grid>
                 </Grid>
@@ -293,14 +293,25 @@ const AddClientDialog: React.FC<AddClientDialogProps> = ({
                     value={newClient.notes}
                     onChange={(e) => handleInputChange("notes", e.target.value)}
                 />
-                <TextField
-                    label="Parent"
-                    variant="outlined"
+                <FormControl
                     fullWidth
-                    margin="normal"
-                    value={newClient.parent}
-                    onChange={(e) => handleInputChange("parent", e.target.value)}
-                />
+                    variant="outlined"
+                >
+                    <InputLabel>Type</InputLabel>
+                    <Select
+                        value={newClient.type}
+                        onChange={(e) => handleInputChange("type", e.target.value)}
+                        label="Type"
+                        fullWidth
+                        variant="outlined"
+                    >
+                        {TYPES.map((type) => (
+                            <MenuItem key={type} value={type}>
+                                {type}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
                 <Typography variant="h6">
                     Groups
                 </Typography>

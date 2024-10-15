@@ -1,5 +1,6 @@
 package com.lagunapools.lagunapools.app.clients.service;
 
+import com.lagunapools.lagunapools.app.clients.models.AddClientsListRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsRequestDTO;
 import com.lagunapools.lagunapools.app.clients.models.AllClientsResponseDTO;
 import com.lagunapools.lagunapools.app.clients.models.ClientDTO;
@@ -19,4 +20,6 @@ public interface ClientsService {
     ResponseEntity<?> deleteClient(Long clientId);
 
     List<GroupDTO> listGroups();
+
+    ResponseEntity<?> addClientsList(AddClientsListRequestDTO clients);
 }

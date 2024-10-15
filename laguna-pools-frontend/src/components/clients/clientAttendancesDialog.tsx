@@ -2,11 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {
     Button,
     Checkbox,
+    Dialog,
+    DialogContent,
     FormControl,
     FormControlLabel,
+    Grid,
     InputLabel,
     MenuItem,
-    Modal,
     Select,
     Table,
     TableBody,
@@ -17,10 +19,16 @@ import {
     TextField
 } from '@mui/material';
 import {HoursEnum} from "../../utils/enums/HoursEnum";
-import {Client} from "../models/clientsModel";
-import {Attendance} from "../models/attnedance";
+import {Client} from "../models/clients/clientsModel";
+import {Attendance} from "../models/attendances/attnedance";
 import {addAttendance, getAttendancesListById} from "./utils";
 import LoadingPage from "../common/loadingPage";
+import CustomDialogTitle from "../common/lagunaDialog";
+import AddIcon from '@mui/icons-material/Add';
+import SaveIcon from '@mui/icons-material/Save';
+import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
+import UnpublishedOutlinedIcon from "@mui/icons-material/UnpublishedOutlined";
+import {Box} from "@mui/system";
 
 interface ClientAttendancesDialogProps {
     client: Client;
@@ -54,7 +62,7 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
             });
     }, [isModalOpen, page, rowsPerPage]);
 
-    const handleHourChange = (index: number, value: HoursEnum) => {
+    const handleHourChange = (index: number | null, value: HoursEnum) => {
         setNewAttendance(prevState => {
             if (prevState == null) {
                 return {
@@ -122,119 +130,145 @@ const ClientAttendancesDialog: React.FC<ClientAttendancesDialogProps> = ({
 
     return (
         <div>
-            <Modal open={isModalOpen} onClose={handleCloseModal}>
-                <div style={{padding: '20px', backgroundColor: 'white', margin: '7% auto', width: '50%'}}>
-                    <Button onClick={handleAddNewRow} variant="outlined" style={{marginBottom: '20px'}}>
-                        + Add Attendance
-                    </Button>
-
-                    <div style={{maxHeight: '600px', overflowY: 'auto'}}>
-                        <Table stickyHeader>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Day</TableCell>
-                                    <TableCell>Time</TableCell>
-                                    <TableCell>Attended</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {loading ? (
+            <Dialog open={isModalOpen} onClose={handleCloseModal}>
+                <CustomDialogTitle>Attendances</CustomDialogTitle>
+                <DialogContent>
+                    <Grid>
+                        <Grid>
+                            <Table stickyHeader>
+                                <TableHead>
                                     <TableRow>
-                                        <TableCell colSpan={3} align="center">
-                                            <LoadingPage label="Loading Data..."/>
-                                        </TableCell>
+                                        <TableCell>Day</TableCell>
+                                        <TableCell>Time</TableCell>
+                                        <TableCell>Attended</TableCell>
                                     </TableRow>
-                                ) : <>
-                                    {attendances
-                                        .map((attendance, index) => (
-                                            <TableRow key={index} style={getRowStyle(attendance.attended)}>
-                                                <TableCell>{attendance.day}</TableCell>
-                                                <TableCell>{attendance.time}</TableCell>
-                                                <TableCell>{attendance.attended ? 'Yes' : 'No'}</TableCell>
-                                            </TableRow>
-                                        ))}
-
-                                    {newAttendance && (
+                                </TableHead>
+                                <TableBody>
+                                    {loading ? (
                                         <TableRow>
-                                            <TableCell>
-                                                <TextField
-                                                    required
-                                                    label="Day"
-                                                    type="date"
-                                                    value={newAttendance.day}
-                                                    slotProps={{
-                                                        inputLabel: {
-                                                            shrink: true,
-                                                        }
-                                                    }}
-                                                    onChange={(e) => setNewAttendance({
-                                                        ...newAttendance,
-                                                        day: e.target.value
-                                                    })}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <FormControl
-                                                    id={`select-hour-client-${client.id}`}
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    margin="normal"
-                                                >
-                                                    <InputLabel id={`hour-select-label-${client.id}`}>Hour</InputLabel>
-                                                    <Select
-                                                        required
-                                                        labelId={`hour-select-label-${client.id}`}
-                                                        value={newAttendance.time || ""}
-                                                        onChange={(e) => handleHourChange(client.id, e.target.value as HoursEnum)}
-                                                        label="Hour"
-                                                    >
-                                                        {Object.values(HoursEnum).map((hour) => (
-                                                            <MenuItem id={`menu-item-hour-${hour}`} key={hour}
-                                                                      value={hour}>
-                                                                {hour}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
-
-                                            </TableCell>
-                                            <TableCell>
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            checked={newAttendance.attended}
-                                                            onChange={(e) => handleCheckboxChange(e.target.checked)}
-                                                        />
-                                                    }
-                                                    label="Attended"
-                                                />
+                                            <TableCell colSpan={3} align="center">
+                                                <LoadingPage label="Loading Data..."/>
                                             </TableCell>
                                         </TableRow>
-                                    )}
-                                </>}
+                                    ) : <>
+                                        {attendances
+                                            .map((attendance, index) => (
+                                                <TableRow key={index}>
+                                                    <TableCell>{attendance.day}</TableCell>
+                                                    <TableCell>{attendance.time}</TableCell>
+                                                    <TableCell>
 
-                            </TableBody>
-                        </Table>
-                    </div>
+                                                        {attendance.attended ? (
+                                                            <TaskAltOutlinedIcon color="success"
+                                                                                 style={{
+                                                                                     verticalAlign: "middle",
+                                                                                     marginLeft: 1
+                                                                                 }}/>
+                                                        ) : (
+                                                            <UnpublishedOutlinedIcon color="error"
+                                                                                     style={{
+                                                                                         verticalAlign: "middle",
+                                                                                         marginLeft: 1
+                                                                                     }}/>
+                                                        )}
 
-                    {
-                        newAttendance &&
-                        <Button sx={{marginTop: "1%"}} onClick={handleSaveAttendance} variant="contained">
-                            Save
-                        </Button>
-                    }
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
 
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        count={total}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                </div>
-            </Modal>
+                                        {newAttendance && (
+                                            <TableRow>
+                                                <TableCell>
+                                                    <TextField
+                                                        required
+                                                        label="Day"
+                                                        type="date"
+                                                        margin="normal"
+                                                        value={newAttendance.day}
+                                                        slotProps={{
+                                                            inputLabel: {
+                                                                shrink: true,
+                                                            }
+                                                        }}
+                                                        onChange={(e) => setNewAttendance({
+                                                            ...newAttendance,
+                                                            day: e.target.value
+                                                        })}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <FormControl
+                                                        id={`select-hour-client-${client.id}`}
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        margin="normal"
+                                                    >
+                                                        <InputLabel
+                                                            id={`hour-select-label-${client.id}`}>Hour</InputLabel>
+                                                        <Select
+                                                            required
+                                                            labelId={`hour-select-label-${client.id}`}
+                                                            value={newAttendance.time || ""}
+                                                            onChange={(e) => handleHourChange(client.id, e.target.value as HoursEnum)}
+                                                            label="Hour"
+                                                        >
+                                                            {Object.values(HoursEnum).map((hour) => (
+                                                                <MenuItem id={`menu-item-hour-${hour}`} key={hour}
+                                                                          value={hour}>
+                                                                    {hour}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </Select>
+                                                    </FormControl>
+
+                                                </TableCell>
+                                                <TableCell>
+                                                    <FormControlLabel
+                                                        control={
+                                                            <Checkbox
+                                                                checked={newAttendance.attended}
+                                                                onChange={(e) => handleCheckboxChange(e.target.checked)}
+                                                            />
+                                                        }
+                                                        label=""
+                                                    />
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </>}
+
+                                </TableBody>
+                            </Table>
+                        </Grid>
+                        <Box sx={{display: 'flex', justifyContent: 'space-between', marginTop: '1%'}}>
+                            <Button
+                                onClick={handleAddNewRow}
+                                variant="outlined"
+                            >
+                                <AddIcon/>
+                            </Button>
+
+                            {newAttendance && (
+                                <Button
+                                    onClick={handleSaveAttendance}
+                                    variant="contained"
+                                >
+                                    <SaveIcon/>
+                                </Button>
+                            )}
+                        </Box>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={total}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    </Grid>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

@@ -9,6 +9,13 @@ import PasswordDialog from "./components/reLoginDialog";
 import LoadingPageProgress from "./components/common/loadingPage";
 import authClient from "./api/api";
 import {HttpMethod} from "./utils/enums/httpMethodEnum";
+import {createTheme, ThemeProvider} from "@mui/material";
+import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import PoolOutlinedIcon from '@mui/icons-material/PoolOutlined';
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
+
 
 const App = () => {
     const [select, setSelect] = useState<Component>(Component.LOGIN);
@@ -81,20 +88,64 @@ const App = () => {
         }
     };
 
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#3f43b5',
+            },
+            secondary: {
+                main: '#6f74d5'
+            }
+        },
+    });
+
+    const menuItems = [
+        {
+            label: 'Dashboard',
+            icon: <ManageAccountsOutlinedIcon/>,
+            onClick: () => selectHandler(Component.CONTROL_PANEL),
+            roleRequired: 'ROLE_LAGUNA_ADMIN',
+        },
+        {
+            label: 'Days',
+            icon: <CalendarMonthOutlinedIcon/>,
+            onClick: () => selectHandler(Component.DAYS),
+            roleRequired: 'ROLE_LAGUNA_ADMIN',
+        },
+        {
+            label: 'Clients',
+            icon: <PoolOutlinedIcon/>,
+            onClick: () => selectHandler(Component.CLIENTS_TABLE),
+        },
+        {
+            label: 'Groups',
+            icon: <Diversity3OutlinedIcon/>,
+            onClick: () => selectHandler(Component.GROUPS),
+        },
+        {
+            label: 'Finances',
+            icon: <AccountBalanceOutlinedIcon/>,
+            onClick: () => selectHandler(Component.ACCOUNTING),
+        },
+    ];
+
     return (
-        <div className="App">
-            {loading ?
-                <LoadingPageProgress label={"Please wait while we load your page..."}/> :
-                <>
-                    <PasswordDialog onClose={closeDialogHandler} open={reLoginDialogOpen}
-                                    setOpenSessionWindow={open => setOpenSessionWindow(open)}/>
-                    {openSessionWindow &&
-                        <TopMenu selectHandler={selectHandler} onLogout={logOutHandler}/>}
-                    <ComponentMapper branchesHandler={branchesHandler} selectHandler={selectHandler}
-                                     currentComponent={select}
-                                     setOpenSessionWindow={setOpenSessionWindow}/>
-                </>}
-        </div>
+        <ThemeProvider theme={theme}>
+            <div className="App">
+                {loading ?
+                    <LoadingPageProgress label={"Please wait while we load your page..."}/> :
+                    <>
+                        <PasswordDialog onClose={closeDialogHandler} open={reLoginDialogOpen}
+                                        setOpenSessionWindow={open => setOpenSessionWindow(open)}/>
+                        {openSessionWindow &&
+                            <TopMenu menuItems={menuItems} onLogout={logOutHandler}/>}
+                        <ComponentMapper branchesHandler={branchesHandler} selectHandler={selectHandler}
+                                         currentComponent={select}
+                                         setOpenSessionWindow={setOpenSessionWindow}/>
+                    </>}
+            </div>
+        </ThemeProvider>
+
     );
 }
 

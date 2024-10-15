@@ -5,7 +5,9 @@ import {
     Button,
     FormControl,
     InputLabel,
+    MenuItem,
     Paper,
+    Select,
     SelectChangeEvent,
     Snackbar,
     Table,
@@ -19,23 +21,31 @@ import {
 } from "@mui/material";
 import ClientRow from "./clientRow";
 import AddClientDialog from "./addClientDialog";
-import {Client} from "../models/clientsModel";
+import {Client} from "../models/clients/clientsModel";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import {Refresh} from "@mui/icons-material";
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import FilterDialog from "./filterDialog";
-import {ClientFilters, defaultClientFilters, defaultDialogFilters, DialogFilters} from "../models/clientFilterModels";
+import {
+    ClientFilters,
+    defaultClientFilters,
+    defaultDialogFilters,
+    DialogFilters
+} from "../models/clients/clientFilterModels";
 import LoadingPage from "../common/loadingPage";
 import {Toast} from "../../utils/alertsUtils";
 import {UserApiService} from "../../api/userApiService";
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
-import {FILTER_BUTTON_STYLES} from "../../utils/constants";
+import {TABLE_BUTTON_STYLES} from "../../utils/constants";
 import {getAllFilteredClientsGrid, getClients} from "./utils";
-import {exportTableToExcel} from "../../utils/exportExcel";
+import {exportTableToExcel} from "../../utils/excel";
 import PlaylistRemoveOutlinedIcon from '@mui/icons-material/PlaylistRemoveOutlined';
 import BranchSelector from "./branchSelector";
+import ExcelImport from "./excelImport";
+import {HoursEnum} from "../../utils/enums/HoursEnum";
+import {DayEnum} from "../../utils/enums/DayEnum";
 
-const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Cost", "Notes", "Actions"];
+const COLUMNS = ["#", "Client", "Dates", "Statuses", "Groups", "Debt", "Notes", "Actions"];
 
 const ClientsTable: React.FC = () => {
     const [page, setPage] = useState<number>(0);
@@ -174,6 +184,13 @@ const ClientsTable: React.FC = () => {
         exportTableToExcel(result, "clients" + new Date())
     }
 
+    const handleTimeChange = (event: any) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            hour: event.target.value,
+        }));
+    };
+
     return (
         <>
             <Paper>
@@ -186,10 +203,10 @@ const ClientsTable: React.FC = () => {
                     flexWrap: 'wrap'
                 }}>
                     <TextField
-                        label="First Name"
+                        label="Phone"
                         variant="outlined"
-                        value={filters.name}
-                        onChange={handleFilterChange("name")}
+                        value={filters.phone}
+                        onChange={handleFilterChange("phone")}
                         margin="normal"
                         sx={{flexGrow: 5, height: 64}}
                     />
@@ -201,6 +218,28 @@ const ClientsTable: React.FC = () => {
                         margin="normal"
                         sx={{flexGrow: 5, height: 64}}
                     />
+                    <FormControl sx={{flexGrow: 5, minWidth: 150}}>
+                        <InputLabel id="clients-day-select-label">Day</InputLabel>
+                        <Select labelId="clients-day-select-label" id="clients-day-select" value={filters.day}
+                                onChange={handleTimeChange} label="Day">
+                            {Object.values(DayEnum).map((day) => (
+                                <MenuItem key={day} value={day}>
+                                    {day}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl sx={{flexGrow: 5, minWidth: 150}}>
+                        <InputLabel id="clients-time-select-label">Time</InputLabel>
+                        <Select labelId="clients-time-select-label" id="clients-time-select" value={filters.hour}
+                                onChange={handleTimeChange} label="Time">
+                            {Object.values(HoursEnum).map((hour) => (
+                                <MenuItem key={hour} value={hour}>
+                                    {hour}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     {hasRole("ROLE_LAGUNA_ADMIN") &&
                         <FormControl sx={{flexGrow: 20}}>
                             <InputLabel id="branches-select-label-client">Branches</InputLabel>
@@ -213,35 +252,36 @@ const ClientsTable: React.FC = () => {
                         id={"clients-table-add-client-id"}
                         variant="outlined"
                         onClick={handleOpenDialog}
-                        sx={FILTER_BUTTON_STYLES}
+                        sx={TABLE_BUTTON_STYLES}
                     >
                         <PersonAddAltIcon/>
                     </Button>
                     <Button
                         variant="outlined"
                         onClick={handleRefresh}
-                        sx={FILTER_BUTTON_STYLES}
+                        sx={TABLE_BUTTON_STYLES}
                     >
                         <Refresh/>
                     </Button>
                     <Button
                         variant="outlined"
                         onClick={handleOpenFilterDialog}
-                        sx={FILTER_BUTTON_STYLES}
+                        sx={TABLE_BUTTON_STYLES}
                     >
                         <FilterAltOutlinedIcon/>
                     </Button>
                     <Button
                         variant="outlined"
                         onClick={exportClients}
-                        sx={FILTER_BUTTON_STYLES}
+                        sx={TABLE_BUTTON_STYLES}
                     >
                         <DownloadOutlinedIcon/>
                     </Button>
+                    <ExcelImport/>
                     <Button
                         variant="outlined"
                         onClick={handleClearAll}
-                        sx={FILTER_BUTTON_STYLES}
+                        sx={TABLE_BUTTON_STYLES}
                     >
                         <PlaylistRemoveOutlinedIcon/>
                     </Button>

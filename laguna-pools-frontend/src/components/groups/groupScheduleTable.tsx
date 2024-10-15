@@ -1,20 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {DayEnum} from "../../../utils/enums/DayEnum";
-import {HoursEnum} from "../../../utils/enums/HoursEnum";
-import './groupScheduleTable.css';
-import {AlertDialog} from "../../../utils/alertsUtils";
+import {DayEnum} from "../../utils/enums/DayEnum";
+import {HoursEnum} from "../../utils/enums/HoursEnum";
+import {AlertDialog} from "../../utils/alertsUtils";
 import {Button, FormControl, InputLabel, SelectChangeEvent} from "@mui/material";
 import {Refresh} from "@mui/icons-material";
-import authClient from "../../../api/api";
-import {HttpMethod} from "../../../utils/enums/httpMethodEnum";
+import authClient from "../../api/api";
+import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import ClientModal from "./clientsDialog";
 import {GroupsCustomObject, INITIAL_GRID} from "./initialGrid";
 import {fetchClientsFor, getCurrentTime} from "./utils";
-import {Client} from "../../models/clientsModel";
-import BranchSelector from "../branchSelector";
-import {ClientFilters, defaultClientFilters} from "../../models/clientFilterModels";
-import {UserApiService} from "../../../api/userApiService";
-import LoadingPage from "../../common/loadingPage";
+import {Client} from "../models/clients/clientsModel";
+import BranchSelector from "../clients/branchSelector";
+import {ClientFilters, defaultClientFilters} from "../models/clients/clientFilterModels";
+import {UserApiService} from "../../api/userApiService";
+import LoadingPage from "../common/loadingPage";
 
 const GroupScheduleTable: React.FC = () => {
     const [data, setData] = useState<{ [key in DayEnum]: GroupsCustomObject }>(INITIAL_GRID);

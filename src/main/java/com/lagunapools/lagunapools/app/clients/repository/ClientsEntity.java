@@ -28,14 +28,14 @@ public class ClientsEntity {
     private String firstName;
     private String lastName;
     private LocalDate age;
-    private Double cost;
+    private Double debt;
     private LocalDate expDate;
     private LocalDate doctorCheckTill;
     private String phoneNumber;
     private Boolean idStatus;
     private Boolean contractStatus;
     private String notes;
-    private String parent;
+    private String type;
     private String createdBy;
     private String updatedBy;
 
@@ -60,14 +60,14 @@ public class ClientsEntity {
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.age = client.getAge();
-        this.cost = client.getCost() == null ? 0.0 : client.getCost();
+        this.debt = client.getDebt() == null ? 0.0 : client.getDebt();
         this.expDate = client.getExpDate();
         this.doctorCheckTill = client.getDoctorCheckTill();
         this.phoneNumber = client.getPhoneNumber();
         this.idStatus = client.getIdStatus();
         this.contractStatus = client.getContractStatus();
         this.notes = client.getNotes();
-        this.parent = client.getParent();
+        this.type = client.getType();
         this.createdBy = username;
         this.updatedBy = username;
         this.groups = GroupMapper.toEntities(client.getGroups());

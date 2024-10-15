@@ -14,7 +14,7 @@ import {
     Tooltip
 } from "@mui/material";
 import {Delete, Edit, Save} from "@mui/icons-material";
-import {Client} from "../models/clientsModel";
+import {Client} from "../models/clients/clientsModel";
 import UnpublishedOutlinedIcon from '@mui/icons-material/UnpublishedOutlined';
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
 import {DayEnum} from "../../utils/enums/DayEnum";
@@ -27,6 +27,9 @@ import ClientAttendancesDialog from "./clientAttendancesDialog";
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import FinancesDialog from "./financesDialog";
+import {TYPES} from "./constants";
 
 interface ClientRowProps {
     client: Client;
@@ -40,7 +43,12 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
     const [editableClient, setEditableClient] = useState<Client>(client);
     const [dayHourPairs, setDayHourPairs] = useState(editableClient.groups);
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditCalendarModalOpen, setIsEditCalendarModalOpen] = useState(false);
+    const [isFinanceModalOpen, setFinanceModalOpen] = useState<boolean>(false);
+
+    const financeModalCloseHandler = () => {
+        setFinanceModalOpen(false);
+    }
 
     const [hovered, setHovered] = useState(false);
 
@@ -53,7 +61,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
     };
 
     const modalCloseHandler = () => {
-        setIsModalOpen(false);
+        setIsEditCalendarModalOpen(false);
     }
 
     const handleEditClick = () => {
@@ -155,6 +163,34 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
         return {};
     };
 
+    const styles = {
+        Individual: {
+            background: '#3f43b5',
+            color: 'white',
+        },
+        Sport: {
+            background: 'rgba(234,118,118,0.8)',
+            color: 'white',
+        },
+        Special: {
+            background: 'rgba(244,219,105,0.93)',
+            color: 'black',
+        },
+    };
+
+    const getTypesRowStyle = (condition: keyof typeof styles) => {
+        const commonStyle = {
+            borderRadius: '8px',
+            padding: '8px',
+            marginBottom: 2,
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
+        };
+
+        return styles[condition] ? {...styles[condition], ...commonStyle} : commonStyle;
+    };
+
+    const typesRowStyle = getTypesRowStyle(client.type as keyof typeof styles);
+
     const getRowStyle = (condition: string) => {
         const styles = {
             expired: {
@@ -203,6 +239,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
             return 'warning';
         }
         return 'valid';
+    };
+
+    const handleTransactionSuccess = (updatedClient: Client) => {
+        onUpdate(updatedClient);
     };
 
     return (
@@ -265,13 +305,27 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <TextField
-                                        sx={{marginBottom: 1}}
-                                        label="Parent"
-                                        value={editableClient.parent}
-                                        onChange={(e) => handleInputChange("parent", e.target.value)}
+                                    <FormControl
                                         fullWidth
-                                    />
+                                        variant="outlined"
+                                    >
+                                        <InputLabel>Type</InputLabel>
+                                        <Select
+                                            sx={{marginBottom: 1}}
+                                            label="Type"
+                                            value={editableClient.type}
+                                            onChange={(e) => handleInputChange("type", e.target.value)}
+                                            fullWidth
+                                        >
+
+                                            {TYPES.map((type) => (
+                                                <MenuItem key={type} value={type}>
+                                                    {type}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+
                                 </Grid>
                             </Grid>
                         </TableCell>
@@ -400,10 +454,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                         <TableCell>
                             <TextField
                                 sx={{marginBottom: 1}}
-                                label="Cost"
+                                label="Debt"
                                 type="number"
-                                value={editableClient.cost}
-                                onChange={(e) => handleInputChange("cost", parseFloat(e.target.value))}
+                                value={editableClient.debt}
+                                onChange={(e) => handleInputChange("debt", parseFloat(e.target.value))}
                                 fullWidth
                             />
                         </TableCell>
@@ -441,7 +495,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                     <strong>Phone:</strong> {client.phoneNumber}
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <strong>Parent:</strong> {client.parent}
+                                     <span style={typesRowStyle}>
+                                        <strong>Type:</strong>
+                                        <span> {client.type}</span>
+                                    </span>
                                 </Grid>
                             </Grid>
                         </TableCell>
@@ -484,7 +541,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                             </Grid>
                         </TableCell>
                         <TableCell
-                            style={{backgroundColor: client.groups.length === 0 ? 'rgba(234,118,118,0.8)' : 'transparent'}}>
+                            style={{backgroundColor: (client.groups?.length ?? 0) === 0 ? 'rgba(234,118,118,0.8)' : 'transparent'}}>
                             {client.groups.length === 0 ? (
                                 <span>No groups available</span>
                             ) : (
@@ -495,11 +552,18 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                 ))
                             )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell style={{
+                            borderRadius: '8px',
+                            padding: '8px',
+                            marginBottom: '16px',
+                            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
+                            background: client.debt < 0 ? 'rgba(124,244,105,0.93)' : 'rgba(234,118,118,0.8)',
+                            color: client.debt < 0 ? 'black' : 'white',
+                        }}>
                             {new Intl.NumberFormat('ka-GE', {
                                 style: 'currency',
                                 currency: 'GEL'
-                            }).format(client.cost)}
+                            }).format(client.debt)}
                         </TableCell>
                         <TableCell>
                             <Tooltip title={client.notes} placement="top" arrow>
@@ -515,7 +579,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                         </TableCell>
                         <TableCell align="center" sx={{width: "160px"}}>
                             {!hovered ? <ManageAccountsOutlinedIcon/> : <>
-                                <IconButton onClick={() => setIsModalOpen(true)}>
+                                <IconButton onClick={() => setFinanceModalOpen(true)}>
+                                    <LocalAtmIcon/>
+                                </IconButton>
+                                <IconButton onClick={() => setIsEditCalendarModalOpen(true)}>
                                     <EditCalendarIcon/>
                                 </IconButton>
                                 <IconButton onClick={handleEditClick}>
@@ -532,7 +599,11 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
             </TableRow>
 
             <ClientAttendancesDialog client={client}
-                                     isModalOpen={isModalOpen} modalCloseHandler={modalCloseHandler}/>
+                                     isModalOpen={isEditCalendarModalOpen} modalCloseHandler={modalCloseHandler}/>
+
+            <FinancesDialog client={client}
+                            isModalOpen={isFinanceModalOpen} modalCloseHandler={financeModalCloseHandler}
+                            onTransactionSuccess={handleTransactionSuccess}/>
         </>
     );
 };
