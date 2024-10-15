@@ -547,7 +547,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
                                 marginBottom: '16px',
                                 boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
                                 background: (client.groups?.length ?? 0) === 0 ? 'rgba(234,118,118,0.8)' : 'transparent',
-                                color: client.debt < 0 ? 'black' : 'white',
+                                color: client.groups?.length === 0 ? 'white' : 'black',
                             }}>
                             {client.groups.length === 0 ? (
                                 <span>No groups available</span>
