@@ -8,6 +8,7 @@ import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
 const ExcelImport: React.FC = () => {
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("File input triggered");
         const file = event.target.files?.[0];
 
         if (file) {
@@ -16,7 +17,6 @@ const ExcelImport: React.FC = () => {
                 ApiService.request("clients/list", HttpMethod.POST,
                     {clients: parsedClients}
                 ).catch(err => console.error(err));
-
             } catch (error) {
                 console.error('Error reading Excel file:', error);
             }
@@ -29,7 +29,7 @@ const ExcelImport: React.FC = () => {
                 type="file"
                 accept=".xlsx, .xls"
                 onChange={handleFileUpload}
-                style={{display: 'none'}} // Hide the input element
+                style={{display: 'none'}}
                 id="file-upload"
             />
 
