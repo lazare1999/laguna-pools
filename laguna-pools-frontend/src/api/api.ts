@@ -22,20 +22,27 @@ const createAuthClient = async () => {
 };
 
 class ApiService {
-
     static async request(endpoint: string, method: HttpMethod, data?: any): Promise<any> {
         try {
             const authClient = await createAuthClient();
-
+            let response;
             switch (method) {
                 case HttpMethod.GET:
-                    return await authClient.get(endpoint);
+                    response = await authClient.get(endpoint);
+                    break;
                 case HttpMethod.POST:
-                    return await authClient.post(endpoint, data);
+                    response = await authClient.post(endpoint, data);
+                    break;
                 case HttpMethod.DELETE:
-                    return await authClient.delete(endpoint, {data});
+                    response = await authClient.delete(endpoint, {data});
+                    break;
+                default:
+                    throw new Error("Wrong method!");
             }
+            console.log("API response: ", response);
+            return response;
         } catch (error) {
+            console.error("API request error: ", error);
             throw error;
         }
     }

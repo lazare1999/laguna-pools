@@ -20,4 +20,18 @@ describe('Test excel importing', () => {
     test('should return 4 clients', () => {
         expect(clients.length).toBe(4);
     });
+
+    test("test that groups are read correctly", () => {
+        expect(clients[0].groups[0].day).toEqual("Monday");
+        expect(clients[0].groups[0].hour).toEqual("10:00");
+    });
+
+    test("test that multiple groups are read correctly", () => {
+        expect(clients[1].groups.length).toBe(2);
+        expect(clients[1].groups[1].day).toEqual("Friday");
+    });
+
+    test("test that empty groups are read correctly", () => {
+        expect(clients[2].groups).toEqual([]);
+    });
 });

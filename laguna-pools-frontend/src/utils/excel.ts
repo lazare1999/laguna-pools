@@ -44,6 +44,12 @@ export interface Client {
     contractStatus: boolean;
     notes: string;
     type: string;
+    groups: Group[];
+}
+
+export interface Group {
+    day: string;
+    hour: string;
 }
 
 export const fetchExcelFile = async (file: File): Promise<Client[]> => {
@@ -59,7 +65,7 @@ export const fetchExcelFile = async (file: File): Promise<Client[]> => {
 
             const clients: Client[] = jsonData
                 .slice(1)
-                .filter(row => row[0]) // Skip rows where the first column is empty
+                .filter(row => row[0])
                 .map(row => ({
                     id: null,
                     firstName: row[0] as string,
@@ -73,7 +79,7 @@ export const fetchExcelFile = async (file: File): Promise<Client[]> => {
                     contractStatus: Boolean(row[8]),
                     type: row[9] as string,
                     notes: row[10] as string,
-                    groups: []
+                    groups: parseGroupString(row[11] as string)
                 }));
 
             resolve(clients);
@@ -81,5 +87,21 @@ export const fetchExcelFile = async (file: File): Promise<Client[]> => {
 
         reader.onerror = reject;
         reader.readAsArrayBuffer(file);
+    });
+};
+
+
+const parseGroupString = (groupString: string): Group[] => {
+    if (!groupString || groupString === "") return [];
+
+    const entries = groupString.split(',').map(entry => entry.trim());
+
+    return entries.map((entry) => {
+        const [day, hour] = entry.split(' ');
+
+        return {
+            day,
+            hour
+        };
     });
 };
