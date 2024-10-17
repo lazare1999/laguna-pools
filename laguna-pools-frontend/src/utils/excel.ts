@@ -97,7 +97,11 @@ const parseGroupString = (groupString: string): Group[] => {
     const entries = groupString.split(',').map(entry => entry.trim());
 
     return entries.map((entry) => {
-        const [day, hour] = entry.split(' ');
+        let [day, hour] = entry.split(' ');
+
+        if (hour.split(':')[0].length === 1) {
+            hour = `0${hour}`;
+        }
 
         return {
             day,
