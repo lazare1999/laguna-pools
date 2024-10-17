@@ -15,21 +15,18 @@ interface ComponentMapperProps {
     currentComponent: Component
     selectHandler: (select: Component) => void;
     setOpenSessionWindow: (open: boolean) => void;
-    branchesHandler: (branches: string[]) => void;
 }
 
 const ComponentMapper: React.FC<ComponentMapperProps> = ({
                                                              currentComponent,
                                                              selectHandler,
-                                                             setOpenSessionWindow,
-                                                             branchesHandler
+                                                             setOpenSessionWindow
                                                          }) => {
     const moveToControlPanel = () => selectHandler(Component.CONTROL_PANEL);
 
     switch (currentComponent) {
         case Component.LOGIN:
-            return <Login selectHandler={selectHandler} setOpenSessionWindow={setOpenSessionWindow}
-                          branchesHandler={branchesHandler}/>;
+            return <Login selectHandler={selectHandler} setOpenSessionWindow={setOpenSessionWindow}/>;
         case Component.REGISTER:
             return <MoveBackWrapper onBack={moveToControlPanel}><RegisterForm/></MoveBackWrapper>;
         case Component.CLIENTS_TABLE:
