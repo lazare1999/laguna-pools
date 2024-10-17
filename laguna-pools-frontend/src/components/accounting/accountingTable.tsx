@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
     Box,
     Button,
-    Dialog,
     FormControl,
     InputLabel,
     SelectChangeEvent,
@@ -21,15 +20,13 @@ import {AccountingFilters, defaultAccountingFilters} from "../models/accounting/
 import {Refresh} from "@mui/icons-material";
 import PlaylistRemoveOutlinedIcon from "@mui/icons-material/PlaylistRemoveOutlined";
 import LoadingPage from "../common/loadingPage";
-import AccountingPageGraphs from "./accountingPageGraphs";
 import authClient from "../../api/api";
 import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 import {AlertDialog, Toast} from "../../utils/alertsUtils";
 import {AccountingClientModel} from "../models/accounting/accountingClientModel";
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import CustomDialogTitle from "../common/lagunaDialog";
 import AccountingRow from "./accountingRow";
-import {Client, DEFAULT_CLIENT} from "../models/clients/clientsModel";
+import {DEFAULT_CLIENT} from "../models/clients/clientsModel";
 import {TABLE_BUTTON_STYLES} from "../../utils/constants";
 
 import AddIcon from '@mui/icons-material/Add';
@@ -53,16 +50,40 @@ const AccountingTable: React.FC = () => {
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [count, setCount] = useState<number>(0);
-    const [openGraphModal, setOpenGraphModal] = useState<boolean>(false);
     const [alertOpen, setAlertOpen] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
     const [toastOpen, setToastOpen] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<string>("");
     const [isAddAccountingDialogOpen, setAddAccountingDialogOpen] = useState<boolean>(false);
 
+    const fetchData = useCallback(async () => {
+        setAccountingLoading(true);
+        try {
+            const params: Record<string, any> = {
+                pageKey: page,
+                pageSize: rowsPerPage,
+                ...filters
+            };
+            const queryString = new URLSearchParams(params as any).toString();
+            const response = await authClient.request(`accounting?${queryString}`, HttpMethod.GET);
+
+            if (Array.isArray(response.data.content)) {
+                setAccounting(response.data.content);
+                setCount(response.data.total);
+            } else {
+                setAlertMessage('Network response was not ok');
+                setAlertOpen(true);
+            }
+        } catch (error) {
+            setAlertMessage(`Error fetching data: ${error}`);
+            setAlertOpen(true);
+        }
+        setAccountingLoading(false);
+    }, [page, rowsPerPage, filters]);
+
     useEffect(() => {
         fetchData().then(r => r);
-    }, [page, rowsPerPage]);
+    }, [fetchData]);
 
     const accountingDialogOpenHandler = () => {
         setAddAccountingDialogOpen(false);
@@ -96,31 +117,6 @@ const AccountingTable: React.FC = () => {
         });
     };
 
-    const fetchData = async () => {
-        setAccountingLoading(true);
-        try {
-            const params: Record<string, any> = {
-                pageKey: page,
-                pageSize: rowsPerPage,
-                ...filters
-            };
-            const queryString = new URLSearchParams(params as any).toString();
-            const response = await authClient.request(`accounting?${queryString}`, HttpMethod.GET);
-
-            if (Array.isArray(response.data.content)) {
-                setAccounting(response.data.content);
-                setCount(response.data.total);
-            } else {
-                setAlertMessage('Network response was not ok');
-                setAlertOpen(true);
-            }
-        } catch (error) {
-            setAlertMessage(`Error fetching data: ${error}`);
-            setAlertOpen(true);
-        }
-        setAccountingLoading(false);
-    };
-
     const handleRefresh = () => {
         fetchData().then(r => r);
     };
@@ -134,14 +130,6 @@ const AccountingTable: React.FC = () => {
             (event: React.ChangeEvent<HTMLInputElement>) => {
                 setFilters({...filters, [key]: event.target.value});
             };
-
-    const handleOpenGraphModal = () => {
-        setOpenGraphModal(true);
-    };
-
-    const handleCloseGraphModal = () => {
-        setOpenGraphModal(false);
-    };
 
     const handleCalculateTodayIncome = async () => {
         try {
@@ -280,15 +268,15 @@ const AccountingTable: React.FC = () => {
                         onRowsPerPageChange={handleRowsPerPageChange}
                     />
 
-                    <Dialog
-                        open={openGraphModal}
-                        onClose={handleCloseGraphModal}
-                        maxWidth="md"
-                        fullWidth
-                    >
-                        <CustomDialogTitle>Finances Graphs</CustomDialogTitle>
-                        <AccountingPageGraphs dayFrom={filters.dayFrom} dayTo={filters.dayTo}/>
-                    </Dialog>
+                    {/*<Dialog*/}
+                    {/*    open={openGraphModal}*/}
+                    {/*    onClose={handleCloseGraphModal}*/}
+                    {/*    maxWidth="md"*/}
+                    {/*    fullWidth*/}
+                    {/*>*/}
+                    {/*    <CustomDialogTitle>Finances Graphs</CustomDialogTitle>*/}
+                    {/*    <AccountingPageGraphs dayFrom={filters.dayFrom} dayTo={filters.dayTo}/>*/}
+                    {/*</Dialog>*/}
                     <AlertDialog
                         open={alertOpen}
                         title="Error"

@@ -39,7 +39,6 @@ class ApiService {
                 default:
                     throw new Error("Wrong method!");
             }
-            console.log("API response: ", response);
             return response;
         } catch (error) {
             console.error("API request error: ", error);

@@ -8,7 +8,6 @@ import {HttpMethod} from "../../utils/enums/httpMethodEnum";
 
 const ExcelImport: React.FC = () => {
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("File input triggered");
         const file = event.target.files?.[0];
 
         if (file) {
