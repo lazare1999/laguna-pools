@@ -104,7 +104,7 @@ const parseGroupString = (groupString: string): Group[] => {
         }
 
         return {
-            day,
+            day: day.toUpperCase(),
             hour
         };
     });
