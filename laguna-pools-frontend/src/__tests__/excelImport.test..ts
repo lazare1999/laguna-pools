@@ -32,6 +32,11 @@ describe('Test excel importing', () => {
     });
 
     test("test that empty groups are read correctly", () => {
-        expect(clients[2].groups).toEqual([]);
+        expect(clients[3].groups).toEqual([]);
     });
+
+    test("test that hour is read correctly", () => {
+        expect(clients[2].groups[0].hour).toEqual("09:00");
+    });
+
 });
