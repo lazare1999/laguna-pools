@@ -33,17 +33,17 @@ export const exportTableToExcel = (tableData: any[], fileName: string) => {
 
 export interface Client {
     id: number | null;
-    firstName: string;
-    lastName: string;
-    age: string;
-    debt: number;
-    expDate: string;
-    doctorCheckTill: string;
-    phoneNumber: string;
-    idStatus: boolean;
-    contractStatus: boolean;
-    notes: string;
-    type: string;
+    firstName: string | null;
+    lastName: string | null;
+    age: string | null;
+    debt: number | null;
+    expDate: string | null;
+    doctorCheckTill: string | null;
+    phoneNumber: string | null;
+    idStatus: boolean | false;
+    contractStatus: boolean | false;
+    notes: string | null;
+    type: string | null;
     groups: Group[];
 }
 
