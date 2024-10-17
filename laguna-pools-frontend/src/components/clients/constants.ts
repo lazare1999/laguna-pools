@@ -1,1 +1,1 @@
-export const TYPES: string[] = ["Individual", "Sport", "Special"]
+export const TYPES: string[] = ["Individual", "Sport", "Special", "Social"]

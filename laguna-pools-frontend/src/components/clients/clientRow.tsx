@@ -165,7 +165,7 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
 
     const styles = {
         Individual: {
-            background: '#3f43b5',
+            background: '#6e3fb5',
             color: 'white',
         },
         Sport: {
@@ -174,6 +174,10 @@ const ClientRow: React.FC<ClientRowProps> = ({client, onDelete, onUpdate, rowInd
         },
         Special: {
             background: 'rgba(244,219,105,0.93)',
+            color: 'black',
+        },
+        Social: {
+            background: '#3f43b5',
             color: 'black',
         },
     };
