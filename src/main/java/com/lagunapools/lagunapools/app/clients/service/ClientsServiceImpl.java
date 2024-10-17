@@ -238,12 +238,11 @@ public class ClientsServiceImpl implements ClientsService {
     }
 
     @Override
-    @Transactional
     public ResponseEntity<?> addClientsList(AddClientsListRequestDTO clients) {
         if (userDetailsService.userIsAdmin()) {
             return badRequestResponse("Admin not allowed to add client");
         }
-        
+
         try {
             clients.getClients().forEach(this::addClient);
         } catch (Exception e) {
